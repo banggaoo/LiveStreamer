@@ -1,5 +1,5 @@
 framework module LiveStreamer {
-  umbrella header "LiveStreamer-umbrella.h"
+  umbrella header "LiveStreamer.h"
 
   export *
   module * { export * }

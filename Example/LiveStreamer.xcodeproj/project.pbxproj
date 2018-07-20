@@ -7,13 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
-		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
-		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
-		7ADF970965A4B7B5135F2EE2 /* Pods_LiveStreamer_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91DA8C03D4D14B47E186EF7E /* Pods_LiveStreamer_Example.framework */; };
+		70174E95210180BD00D60151 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174E8E210180BC00D60151 /* AppDelegate.swift */; };
+		70174E96210180BD00D60151 /* LiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174E8F210180BD00D60151 /* LiveViewController.swift */; };
+		70174E97210180BD00D60151 /* VisualEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174E90210180BD00D60151 /* VisualEffect.swift */; };
+		70174E98210180BD00D60151 /* Logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 70174E91210180BD00D60151 /* Logo.png */; };
+		70174E99210180BD00D60151 /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174E92210180BD00D60151 /* Preference.swift */; };
+		70174E9A210180BD00D60151 /* PreferenceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174E93210180BD00D60151 /* PreferenceViewController.swift */; };
+		70174E9B210180BD00D60151 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 70174E94210180BD00D60151 /* Main.storyboard */; };
+		70174EA7210183A200D60151 /* Pods_LiveStreamer_Example.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 91DA8C03D4D14B47E186EF7E /* Pods_LiveStreamer_Example.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		70174EA8210183B000D60151 /* Pods_LiveStreamer_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E0A5DE2131BA99FD7140419 /* Pods_LiveStreamer_Tests.framework */; };
+		70174EAA2101844D00D60151 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70174EA92101844D00D60151 /* UIKit.framework */; };
 		F278DE87DD6F758698FEC6C6 /* Pods_LiveStreamer_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E0A5DE2131BA99FD7140419 /* Pods_LiveStreamer_Tests.framework */; };
 /* End PBXBuildFile section */
 
@@ -27,6 +33,20 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		70174E9F210181BE00D60151 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				70174EA7210183A200D60151 /* Pods_LiveStreamer_Example.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		00E4DAA57DC3F66769987831 /* LiveStreamer.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LiveStreamer.podspec; path = ../LiveStreamer.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		0B9F6FE0F8B06F9CEFA2AA09 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
@@ -35,14 +55,21 @@
 		4E0A5DE2131BA99FD7140419 /* Pods_LiveStreamer_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LiveStreamer_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD01AFB9204008FA782 /* LiveStreamer_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiveStreamer_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		607FACD71AFB9204008FA782 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		607FACDA1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		607FACDC1AFB9204008FA782 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		607FACDF1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		607FACE51AFB9204008FA782 /* LiveStreamer_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LiveStreamer_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
+		70174E8E210180BC00D60151 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		70174E8F210180BD00D60151 /* LiveViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveViewController.swift; sourceTree = "<group>"; };
+		70174E90210180BD00D60151 /* VisualEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisualEffect.swift; sourceTree = "<group>"; };
+		70174E91210180BD00D60151 /* Logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Logo.png; sourceTree = "<group>"; };
+		70174E92210180BD00D60151 /* Preference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preference.swift; sourceTree = "<group>"; };
+		70174E93210180BD00D60151 /* PreferenceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferenceViewController.swift; sourceTree = "<group>"; };
+		70174E94210180BD00D60151 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		70174EA32101826300D60151 /* LiveStreamer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = LiveStreamer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		70174EA62101827500D60151 /* LiveStreamer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LiveStreamer.framework; path = "../../../../Library/Developer/Xcode/DerivedData/LiveStreamer-bfpnbnovcbsqxaezrxsepyvvwmhz/Build/Products/Debug-iphoneos/LiveStreamer.framework"; sourceTree = "<group>"; };
+		70174EA92101844D00D60151 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		7CC989FFA976C144D46B4B0E /* Pods-LiveStreamer_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LiveStreamer_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LiveStreamer_Example/Pods-LiveStreamer_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		91DA8C03D4D14B47E186EF7E /* Pods_LiveStreamer_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LiveStreamer_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		92F7AA7C09180A367B85DAF5 /* Pods-LiveStreamer_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LiveStreamer_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-LiveStreamer_Example/Pods-LiveStreamer_Example.release.xcconfig"; sourceTree = "<group>"; };
@@ -54,7 +81,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7ADF970965A4B7B5135F2EE2 /* Pods_LiveStreamer_Example.framework in Frameworks */,
+				70174EAA2101844D00D60151 /* UIKit.framework in Frameworks */,
+				70174EA8210183B000D60151 /* Pods_LiveStreamer_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -76,6 +104,7 @@
 				607FACD21AFB9204008FA782 /* Example for LiveStreamer */,
 				607FACE81AFB9204008FA782 /* Tests */,
 				607FACD11AFB9204008FA782 /* Products */,
+				70174EA32101826300D60151 /* LiveStreamer.framework */,
 				FEAE6A7DECBE610CB6C8E305 /* Pods */,
 				8BF58338E5A65A2CA5DBBF0D /* Frameworks */,
 			);
@@ -93,9 +122,13 @@
 		607FACD21AFB9204008FA782 /* Example for LiveStreamer */ = {
 			isa = PBXGroup;
 			children = (
-				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
-				607FACD71AFB9204008FA782 /* ViewController.swift */,
-				607FACD91AFB9204008FA782 /* Main.storyboard */,
+				70174E8E210180BC00D60151 /* AppDelegate.swift */,
+				70174E8F210180BD00D60151 /* LiveViewController.swift */,
+				70174E91210180BD00D60151 /* Logo.png */,
+				70174E94210180BD00D60151 /* Main.storyboard */,
+				70174E92210180BD00D60151 /* Preference.swift */,
+				70174E93210180BD00D60151 /* PreferenceViewController.swift */,
+				70174E90210180BD00D60151 /* VisualEffect.swift */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
@@ -124,6 +157,7 @@
 		607FACE91AFB9204008FA782 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				70174EA62101827500D60151 /* LiveStreamer.framework */,
 				607FACEA1AFB9204008FA782 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -142,6 +176,7 @@
 		8BF58338E5A65A2CA5DBBF0D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				70174EA92101844D00D60151 /* UIKit.framework */,
 				91DA8C03D4D14B47E186EF7E /* Pods_LiveStreamer_Example.framework */,
 				4E0A5DE2131BA99FD7140419 /* Pods_LiveStreamer_Tests.framework */,
 			);
@@ -171,6 +206,7 @@
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
 				E8B11EFAFF2304DDB9895963 /* [CP] Embed Pods Frameworks */,
+				70174E9F210181BE00D60151 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -207,15 +243,17 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0830;
-				LastUpgradeCheck = 0830;
+				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = CocoaPods;
 				TargetAttributes = {
 					607FACCF1AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
-						LastSwiftMigration = 0900;
+						DevelopmentTeam = B23RT9FP44;
+						LastSwiftMigration = 0940;
 					};
 					607FACE41AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = B23RT9FP44;
 						LastSwiftMigration = 0900;
 						TestTargetID = 607FACCF1AFB9204008FA782;
 					};
@@ -245,9 +283,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
+				70174E98210180BD00D60151 /* Logo.png in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
+				70174E9B210180BD00D60151 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -322,8 +361,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
-				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
+				70174E9A210180BD00D60151 /* PreferenceViewController.swift in Sources */,
+				70174E97210180BD00D60151 /* VisualEffect.swift in Sources */,
+				70174E96210180BD00D60151 /* LiveViewController.swift in Sources */,
+				70174E99210180BD00D60151 /* Preference.swift in Sources */,
+				70174E95210180BD00D60151 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -346,14 +388,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		607FACD91AFB9204008FA782 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				607FACDA1AFB9204008FA782 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		607FACDE1AFB9204008FA782 /* LaunchScreen.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -377,12 +411,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -430,12 +466,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -469,13 +507,18 @@
 			baseConfigurationReference = 7CC989FFA976C144D46B4B0E /* Pods-LiveStreamer_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				DEVELOPMENT_TEAM = B23RT9FP44;
 				INFOPLIST_FILE = LiveStreamer/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -484,13 +527,17 @@
 			baseConfigurationReference = 92F7AA7C09180A367B85DAF5 /* Pods-LiveStreamer_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				DEVELOPMENT_TEAM = B23RT9FP44;
 				INFOPLIST_FILE = LiveStreamer/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -498,6 +545,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = EA19DB8209E729D3BB55E840 /* Pods-LiveStreamer_Tests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = B23RT9FP44;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -520,6 +569,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 429D3042521180B9A6B7A290 /* Pods-LiveStreamer_Tests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = B23RT9FP44;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
