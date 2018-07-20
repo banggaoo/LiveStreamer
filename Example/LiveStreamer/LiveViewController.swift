@@ -65,7 +65,7 @@ final class LiveViewController: UIViewController {
             
             if Thread.isMainThread {
                 
-                currentFPSLabel?.text = "\(object)"
+                currentFPSLabel?.text = "FPS : \(object ?? "FPS")"
             }
         }
     }

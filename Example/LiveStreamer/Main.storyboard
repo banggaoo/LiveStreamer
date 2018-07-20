@@ -40,8 +40,8 @@
                                     <action selector="rotateCamera:" destination="9pv-A4-QxB" eventType="touchDown" id="516-MC-1k2"/>
                                 </connections>
                             </button>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="2Sy-na-foy">
-                                <rect key="frame" x="16" y="58" width="351" height="29"/>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="2Sy-na-foy">
+                                <rect key="frame" x="167" y="58" width="200" height="29"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="200" id="RrQ-qe-7IF"/>
                                 </constraints>

@@ -67,7 +67,6 @@
 		70174E92210180BD00D60151 /* Preference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preference.swift; sourceTree = "<group>"; };
 		70174E93210180BD00D60151 /* PreferenceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferenceViewController.swift; sourceTree = "<group>"; };
 		70174E94210180BD00D60151 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
-		70174EA32101826300D60151 /* LiveStreamer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = LiveStreamer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		70174EA62101827500D60151 /* LiveStreamer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LiveStreamer.framework; path = "../../../../Library/Developer/Xcode/DerivedData/LiveStreamer-bfpnbnovcbsqxaezrxsepyvvwmhz/Build/Products/Debug-iphoneos/LiveStreamer.framework"; sourceTree = "<group>"; };
 		70174EA92101844D00D60151 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		7CC989FFA976C144D46B4B0E /* Pods-LiveStreamer_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LiveStreamer_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LiveStreamer_Example/Pods-LiveStreamer_Example.debug.xcconfig"; sourceTree = "<group>"; };
@@ -104,7 +103,6 @@
 				607FACD21AFB9204008FA782 /* Example for LiveStreamer */,
 				607FACE81AFB9204008FA782 /* Tests */,
 				607FACD11AFB9204008FA782 /* Products */,
-				70174EA32101826300D60151 /* LiveStreamer.framework */,
 				FEAE6A7DECBE610CB6C8E305 /* Pods */,
 				8BF58338E5A65A2CA5DBBF0D /* Frameworks */,
 			);
