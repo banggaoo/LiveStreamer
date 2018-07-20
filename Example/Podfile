@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'LiveStreamer_Example' do
+  pod 'LiveStreamer', :path => '../'
+
+  target 'LiveStreamer_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
