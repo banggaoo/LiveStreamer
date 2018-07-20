@@ -1,0 +1,16 @@
+PODS:
+  - LiveStreamer (0.1.0)
+
+DEPENDENCIES:
+  - LiveStreamer (from `../`)
+
+EXTERNAL SOURCES:
+  LiveStreamer:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  LiveStreamer: 996cc8c1171f9103e0c1160f6b9b765145a26572
+
+PODFILE CHECKSUM: c3bf249a126883d932836be2ecd0a7ce09010850
+
+COCOAPODS: 1.5.3

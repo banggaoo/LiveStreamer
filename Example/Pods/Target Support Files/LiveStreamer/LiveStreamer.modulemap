@@ -1,0 +1,6 @@
+framework module LiveStreamer {
+  umbrella header "LiveStreamer-umbrella.h"
+
+  export *
+  module * { export * }
+}
