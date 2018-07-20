@@ -28,10 +28,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		00E4DAA57DC3F66769987831 /* LiveStreamer.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = LiveStreamer.podspec; path = ../LiveStreamer.podspec; sourceTree = "<group>"; };
-		0B9F6FE0F8B06F9CEFA2AA09 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		00E4DAA57DC3F66769987831 /* LiveStreamer.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LiveStreamer.podspec; path = ../LiveStreamer.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		0B9F6FE0F8B06F9CEFA2AA09 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		429D3042521180B9A6B7A290 /* Pods-LiveStreamer_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LiveStreamer_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-LiveStreamer_Tests/Pods-LiveStreamer_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		454AC4FA5A1A06E0DB6195BC /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		454AC4FA5A1A06E0DB6195BC /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		4E0A5DE2131BA99FD7140419 /* Pods_LiveStreamer_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LiveStreamer_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD01AFB9204008FA782 /* LiveStreamer_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiveStreamer_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
