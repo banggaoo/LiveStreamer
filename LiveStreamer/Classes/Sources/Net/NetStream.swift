@@ -199,6 +199,14 @@ open class NetStream: NSObject {
     open func dispose() {
         lockQueue.async {
             self.mixer.dispose()
+            
+            let session: AVAudioSession = AVAudioSession.sharedInstance()
+            do {
+                try session.setActive(false)
+            } catch {
+                
+                print("Unexpected error: \(error).")
+            }
         }
     }
 

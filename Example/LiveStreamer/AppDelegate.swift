@@ -9,14 +9,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]? = nil) -> Bool {
 
-        let session: AVAudioSession = AVAudioSession.sharedInstance()
-        do {
-            try session.setPreferredSampleRate(44_100)
-            try session.setCategory(AVAudioSessionCategoryPlayAndRecord, with: .allowBluetooth)
-            try session.setMode(AVAudioSessionModeDefault)
-            try session.setActive(true)
-        } catch {
-        }
         return true
     }
 }

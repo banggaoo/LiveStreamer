@@ -49,7 +49,7 @@ final class VideoIOComponent: IOComponent {
 
     var videoSettings: [NSObject: AnyObject] = AVMixer.defaultVideoSettings {
         didSet {
-            output.videoSettings = videoSettings as! [String: Any]
+            output.videoSettings = videoSettings as? [String: Any]
         }
     }
 
@@ -162,8 +162,8 @@ final class VideoIOComponent: IOComponent {
         get {
             if _output == nil {
                 _output = AVCaptureVideoDataOutput()
-                _output!.alwaysDiscardsLateVideoFrames = true
-                _output!.videoSettings = videoSettings as! [String: Any]
+                _output?.alwaysDiscardsLateVideoFrames = true
+                _output?.videoSettings = videoSettings as? [String: Any]
             }
             return _output!
         }
@@ -297,6 +297,31 @@ final class VideoIOComponent: IOComponent {
         guard var buffer: CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
         }
+        
+        CVPixelBufferLockBaseAddress(buffer, .readOnly)
+        defer { CVPixelBufferUnlockBaseAddress(buffer, .readOnly) }
+        
+        if drawable != nil || !effects.isEmpty {
+            let image: CIImage = effect(buffer)
+            if !effects.isEmpty {
+                #if os(macOS)
+                // green edge hack for OSX
+                buffer = CVPixelBuffer.create(image)!
+                #endif
+                context?.render(image, to: buffer)
+            }
+            drawable?.draw(image: image)
+        }
+        
+        encoder.encodeImageBuffer(
+            buffer,
+            presentationTimeStamp: sampleBuffer.presentationTimeStamp,
+            duration: sampleBuffer.duration
+        )
+        
+        mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: .video)
+        
+        /*
         CVPixelBufferLockBaseAddress(buffer, .readOnly)
         defer { CVPixelBufferUnlockBaseAddress(buffer, .readOnly) }
         let image: CIImage = effect(buffer)
@@ -314,6 +339,7 @@ final class VideoIOComponent: IOComponent {
         )
         drawable?.draw(image: image)
         mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: .video)
+ */
     }
 
     func effect(_ buffer: CVImageBuffer) -> CIImage {

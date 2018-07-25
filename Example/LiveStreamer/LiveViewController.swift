@@ -6,13 +6,17 @@ import AVFoundation
 extension LiveViewController: LiveStreamingDelegate {
     
     func broadcastStatusWith(code: String) {
-        print("broadcastStatusWith")
         
         switch code {
             
         case RTMPConnection.Code.connectSuccess.rawValue:
             
-            publishButton?.setTitle("■", for: [])
+            DispatchQueue.main.async {
+
+                self.publishButton?.setTitle("■", for: [])
+                
+                UIApplication.shared.isIdleTimerDisabled = true
+            }
             break
             
         case RTMPConnection.Code.connectNetworkChange.rawValue, RTMPConnection.Code.connectClosed.rawValue:
@@ -20,8 +24,20 @@ extension LiveViewController: LiveStreamingDelegate {
             break
             
         default:
+            
+            DispatchQueue.main.async {
+
+                self.publishButton?.setTitle("●", for: [])
+
+                UIApplication.shared.isIdleTimerDisabled = false
+            }
             break
         }
+    }
+    
+    func fpsChanged(fps: Float) {
+        
+        
     }
 }
 
@@ -42,21 +58,18 @@ final class LiveViewController: UIViewController {
     @IBOutlet var fpsControl: UISegmentedControl?
     @IBOutlet var effectSegmentControl: UISegmentedControl?
     
-    
-    override func viewWillAppear(_ animated: Bool) {
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
         liveStreamer = LiveStreamer(view: lfView)
         
         liveStreamer.delegate = self
         
-        liveStreamer.videoSize = CGSize(width: 608, height: 1080)
-        
-        liveStreamer.registerFPSObserver(target: self);
+        liveStreamer.videoSize = CGSize(width: 720, height: 1280)
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        
-        liveStreamer.unRegisterFPSObserver(target: self);
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -65,7 +78,7 @@ final class LiveViewController: UIViewController {
             
             if Thread.isMainThread {
                 
-                currentFPSLabel?.text = "FPS : \(object ?? "FPS")"
+                currentFPSLabel?.text = "FPS : \(object ?? "")"
             }
         }
     }
@@ -113,13 +126,12 @@ final class LiveViewController: UIViewController {
         if publish.isSelected {
 
             liveStreamer.stopStreaming()
-
             publish.setTitle("●", for: [])
             
         } else {
             
-            let liveStreamUri: String = "rtmp://1b6cf5.entrypoint.cloud.wowza.com/app-6f91"
-            let liveStreamName: String = "188e39fc"
+            let liveStreamUri: String = "rtmp://client33541:f32f1e8c@08fd49.entrypoint.cloud.wowza.com/app-399f"
+            let liveStreamName: String = "c21b35ac"
 
             liveStreamer.startStreaming(uri: liveStreamUri, streamName:liveStreamName)
         }
@@ -131,14 +143,16 @@ final class LiveViewController: UIViewController {
         
         if record.isSelected {
             
-            liveStreamer.stopRecording()
+            UIApplication.shared.isIdleTimerDisabled = false
 
+            liveStreamer.stopRecording()
             record.setTitle("●", for: [])
             
         } else {
             
+            UIApplication.shared.isIdleTimerDisabled = true
+
             liveStreamer.startRecodring()
-            
             record.setTitle("■", for: [])
         }
         

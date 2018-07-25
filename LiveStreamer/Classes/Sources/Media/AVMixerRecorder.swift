@@ -14,7 +14,7 @@ public protocol AVMixerRecorderDelegate: class {
 // MARK: -
 open class AVMixerRecorder: NSObject {
 
-    open static let defaultOutputSettings: [AVMediaType: [String: Any]] = [
+    public static let defaultOutputSettings: [AVMediaType: [String: Any]] = [
         .audio: [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
             AVSampleRateKey: 0,
@@ -30,10 +30,10 @@ open class AVMixerRecorder: NSObject {
     open var writer: AVAssetWriter?
     open var fileName: String?
     open /*weak*/ var delegate: AVMixerRecorderDelegate?  // remove weak for saving delegate
-    open var writerInputs: [AVMediaType: AVAssetWriterInput] = [: ]
+    open var writerInputs: [AVMediaType: AVAssetWriterInput] = [:]
     open var outputSettings: [AVMediaType: [String: Any]] = AVMixerRecorder.defaultOutputSettings
     open var pixelBufferAdaptor: AVAssetWriterInputPixelBufferAdaptor?
-    open let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AVMixerRecorder.lock")
+    public let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AVMixerRecorder.lock")
     private(set) var running: Bool = false
     fileprivate(set) var sourceTime: CMTime = kCMTimeZero
 
@@ -47,25 +47,17 @@ open class AVMixerRecorder: NSObject {
     public override init() {
         super.init()
         //delegate = DefaultAVMixerRecorderDelegate()
-        ///print("DefaultAVMixerRecorderDelegate() \(DefaultAVMixerRecorderDelegate())")
-
-       // print("delegate \(delegate)")
-       // print("self.delegate \(self.delegate)")
-
+        
     }
 
     // Movie Creator
     // In appendSampleBuffer from VideoIOComponent , you can create original
     final func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, mediaType: AVMediaType) {
-        //print("appendSampleBuffer")
         lockQueue.async {
             
-            //print("delegate \(self.delegate) \(self.running)")
-
             guard let delegate: AVMixerRecorderDelegate = self.delegate, self.running else {
                 return
             }
-            //print("rotateFile")
 
             delegate.rotateFile(self, withPresentationTimeStamp: sampleBuffer.presentationTimeStamp, mediaType: mediaType)
 
@@ -78,7 +70,6 @@ open class AVMixerRecorder: NSObject {
 
             switch writer.status {
             case .unknown:
-                print("startWriting")
 
                 writer.startWriting()
                 
@@ -92,7 +83,6 @@ open class AVMixerRecorder: NSObject {
             }
 
             if input.isReadyForMoreMediaData {
-                //print("append(sampleBuffer")
 
                 input.append(sampleBuffer)
             }
@@ -150,7 +140,6 @@ open class AVMixerRecorder: NSObject {
 extension AVMixerRecorder: Running {
     // MARK: Running
     final func startRunning() {
-        print("startRunning")
         lockQueue.async {
             guard !self.running else {
                 return

@@ -38,7 +38,6 @@ class LiveStreamerRecorderDelegate: DefaultAVMixerRecorderDelegate {
     }
     
     override func didStartRunning(_ recorder: AVMixerRecorder) {
-        print("didStartRunning")
         
     }
 }
@@ -46,6 +45,7 @@ class LiveStreamerRecorderDelegate: DefaultAVMixerRecorderDelegate {
 public protocol LiveStreamingDelegate: class {
 
     func broadcastStatusWith(code: String)
+    func fpsChanged(fps: Float)
 }
 
 public class LiveStreamer: NSObject {
@@ -56,6 +56,7 @@ public class LiveStreamer: NSObject {
     
    public weak var delegate: LiveStreamingDelegate?
 
+    var delegations: [String: AnyObject] = [:]
 
     // CamView
     var lfView: GLHKView
@@ -116,8 +117,7 @@ public class LiveStreamer: NSObject {
 
     
     public init(view: GLHKView) {
-        print("public init(view: GLHKView")
-
+        print("init(view: GLHKView")
         lfView = view
         
         super.init()
@@ -127,12 +127,28 @@ public class LiveStreamer: NSObject {
     
     func prepareBroadcast() {
         
+        //activeAudioSession()
+        
         createRTMPStream()
         
         configureBroadcast()
 
         attachCamera()
     }
+    /*
+    func activeAudioSession() {
+        
+        let session: AVAudioSession = AVAudioSession.sharedInstance()
+        do {
+            try session.setPreferredSampleRate(44_100)
+            try session.setCategory(AVAudioSessionCategoryPlayAndRecord, with: .allowBluetooth)
+            try session.setMode(AVAudioSessionModeDefault)
+            try session.setActive(true)
+        } catch let error {
+
+            print("Unexpected error: \(error).")
+        }
+    }*/
     
     func createRTMPStream() {
 
@@ -144,6 +160,9 @@ public class LiveStreamer: NSObject {
         rtmpStream.syncOrientation = true
         
         captureSettings = [
+            // for 4:3 resolution
+            //"sessionPreset": AVCaptureSession.Preset.photo.rawValue,
+
             "sessionPreset": AVCaptureSession.Preset.hd1280x720.rawValue,
             "continuousAutofocus": true,
             "continuousExposure": true
@@ -154,6 +173,8 @@ public class LiveStreamer: NSObject {
         sampleRate = 44_100
         
         rtmpStream.mixer.recorder.delegate = LiveStreamerRecorderDelegate()
+        
+        registerFPSObserver()
     }
     
     func attachCamera() {
@@ -173,12 +194,27 @@ public class LiveStreamer: NSObject {
     
     deinit {
         
+        disableMedia()
+    }
+    
+    public func disableMedia() {
+        
         stopStreaming()
         stopRecording()
-
+        
+        unRegisterFPSObserver()
+        
         rtmpStream.dispose()
     }
     
+    public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        
+        if keyPath == "currentFPS" {
+            
+            delegate?.fpsChanged(fps: Float(rtmpStream.currentFPS))
+        }
+    }
+
     open func isTorchModeSupported() -> Bool {
         
         return rtmpStream.isTorchModeSupported()
@@ -188,18 +224,28 @@ public class LiveStreamer: NSObject {
 
         // Prevent rotation while recording
         rtmpStream.syncOrientation = !isReady
-        
-        //UIApplication.shared.isIdleTimerDisabled = isReady
     }
     
-    open func registerFPSObserver(target: NSObject) {
+    open func registerFPSObserver() {
         
-        self.rtmpStream.addObserver(target, forKeyPath: "currentFPS", options: .new, context: nil)
+        guard let liveStreamer: AnyObject = delegations["currentFPS"], liveStreamer is LiveStreamer else {
+            
+            delegations["currentFPS"] = self
+            
+            self.rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
+            
+            return
+        }
     }
 
-    open func unRegisterFPSObserver(target: NSObject) {
+    open func unRegisterFPSObserver() {
         
-        self.rtmpStream.removeObserver(target, forKeyPath: "currentFPS")
+        if let liveStreamer: AnyObject = delegations["currentFPS"], liveStreamer is LiveStreamer {
+
+            delegations.removeValue(forKey: "currentFPS")
+            
+            self.rtmpStream.removeObserver(self, forKeyPath: "currentFPS")
+        }
     }
  
     open func startRecodring() {
@@ -228,7 +274,6 @@ public class LiveStreamer: NSObject {
         rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(rtmpStatusHandler), observer: self)
         rtmpConnection.connect(liveStreamAddress.uri)
         // Need time to prepare service. will callback at rtmpStatusHandler()
-        
     }
  
     open func stopStreaming() {
@@ -246,14 +291,14 @@ public class LiveStreamer: NSObject {
     
     
     @objc func rtmpStatusHandler(_ notification: Notification) {
+        print("rtmpStatusHandler\(notification)")
         let e: Event = Event.from(notification)
         if let data: ASObject = e.data as? ASObject, let code: String = data["code"] as? String {
             
-            //streamingDelegate?.broadcastStatusWith(code: code)
+            delegate?.broadcastStatusWith(code: code)
 
             switch code {
             case RTMPConnection.Code.connectSuccess.rawValue:
-
                 
                 rtmpStream!.publish(liveStreamAddress.streamName, type:.live)
                 break
@@ -294,18 +339,4 @@ public class LiveStreamer: NSObject {
             _ = rtmpStream.unregisterEffect(video: currentEffect)
         }
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 }

@@ -222,8 +222,8 @@ open class RTMPStream: NetStream {
     }
 
     static let defaultID: UInt32 = 0
-    open static let defaultAudioBitrate: UInt32 = AACEncoder.defaultBitrate
-    open static let defaultVideoBitrate: UInt32 = H264Encoder.defaultBitrate
+    public static let defaultAudioBitrate: UInt32 = AACEncoder.defaultBitrate
+    public static let defaultVideoBitrate: UInt32 = H264Encoder.defaultBitrate
     weak open var qosDelegate: RTMPStreamDelegate?
     open internal(set) var info: RTMPStreamInfo = RTMPStreamInfo()
     open private(set) var objectEncoding: UInt8 = RTMPConnection.defaultObjectEncoding
@@ -320,6 +320,9 @@ open class RTMPStream: NetStream {
     public init(connection: RTMPConnection) {
         self.rtmpConnection = connection
         super.init()
+
+        activeAudioSession()
+
         dispatcher = EventDispatcher(target: self)
         rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(on(status:)), observer: self)
         if rtmpConnection.connected {
@@ -330,6 +333,20 @@ open class RTMPStream: NetStream {
     deinit {
         mixer.stopRunning()
         rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector: #selector(on(status:)), observer: self)
+    }
+
+    func activeAudioSession() {
+        
+        let session: AVAudioSession = AVAudioSession.sharedInstance()
+        do {
+            try session.setPreferredSampleRate(44_100)
+            try session.setCategory(AVAudioSessionCategoryPlayAndRecord, with: .allowBluetooth)
+            try session.setMode(AVAudioSessionModeDefault)
+            try session.setActive(true)
+        } catch let error {
+            
+            print("Unexpected error: \(error).")
+        }
     }
 
     open func receiveAudio(_ flag: Bool) {
