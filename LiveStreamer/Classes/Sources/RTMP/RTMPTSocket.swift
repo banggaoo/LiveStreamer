@@ -105,10 +105,10 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     }
 
     func close(isDisconnected: Bool) {
-        deinitConnection(isDisconnected: isDisconnected)
+        deinitConnection(isDisconnected: isDisconnected, eventCode: nil)
     }
-
-    func deinitConnection(isDisconnected: Bool) {
+ 
+    func deinitConnection(isDisconnected: Bool, eventCode: Stream.Event?) {
         if isDisconnected {
             let data: ASObject = (readyState == .handshakeDone) ?
                 RTMPConnection.Code.connectClosed.data("") : RTMPConnection.Code.connectFailed.data("")

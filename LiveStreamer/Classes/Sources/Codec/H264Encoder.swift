@@ -38,7 +38,7 @@ final class H264Encoder: NSObject {
         kCVPixelBufferOpenGLCompatibilityKey: kCFBooleanTrue
     ]
     #endif
-    static let defaultDataRateLimits: [Int] = [0, 0]
+    static let defaultDataRateLimits: [Int] = [200000, 1]
 
     @objc var muted: Bool = false
     @objc var scalingMode: String = H264Encoder.defaultScalingMode {
@@ -79,7 +79,7 @@ final class H264Encoder: NSObject {
             guard bitrate != oldValue else {
                 return
             }
-            setProperty(kVTCompressionPropertyKey_AverageBitRate, Int(bitrate) as CFTypeRef)
+            setProperty(kVTCompressionPropertyKey_AverageBitRate, Int(2400*1024) as CFTypeRef)
         }
     }
 
@@ -157,14 +157,14 @@ final class H264Encoder: NSObject {
 
     // @see: https: //developer.apple.com/library/mac/releasenotes/General/APIDiffsMacOSX10_8/VideoToolbox.html
     private var properties: [NSString: NSObject] {
-        let isBaseline: Bool = profileLevel.contains("Baseline")
+        //let isBaseline: Bool = profileLevel.contains("Baseline")
         var properties: [NSString: NSObject] = [
             kVTCompressionPropertyKey_RealTime: kCFBooleanTrue,
-            kVTCompressionPropertyKey_ProfileLevel: profileLevel as NSObject,
+            kVTCompressionPropertyKey_ProfileLevel: kVTProfileLevel_H264_Main_AutoLevel,
             kVTCompressionPropertyKey_AverageBitRate: Int(bitrate) as NSObject,
             kVTCompressionPropertyKey_ExpectedFrameRate: NSNumber(value: expectedFPS),
             kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration: NSNumber(value: maxKeyFrameIntervalDuration),
-            kVTCompressionPropertyKey_AllowFrameReordering: !isBaseline as NSObject,
+            kVTCompressionPropertyKey_AllowFrameReordering: kCFBooleanTrue,
             kVTCompressionPropertyKey_PixelTransferProperties: [
                 "ScalingMode": scalingMode
             ] as NSObject
@@ -181,9 +181,9 @@ final class H264Encoder: NSObject {
         if dataRateLimits != H264Encoder.defaultDataRateLimits {
             properties[kVTCompressionPropertyKey_DataRateLimits] = dataRateLimits as NSObject
         }
-        if !isBaseline {
+        //if !isBaseline {
             properties[kVTCompressionPropertyKey_H264EntropyMode] = kVTH264EntropyMode_CABAC
-        }
+        //}
         return properties
     }
 
@@ -257,6 +257,7 @@ final class H264Encoder: NSObject {
             nil,
             &flags
         )
+        //print("imageBuffer\(imageBuffer)")
         if !muted {
             lastImageBuffer = imageBuffer
         }

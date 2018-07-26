@@ -318,6 +318,7 @@ final class VideoIOComponent: IOComponent {
             presentationTimeStamp: sampleBuffer.presentationTimeStamp,
             duration: sampleBuffer.duration
         )
+        //print("buffer\(buffer)sampleBuffer.presentationTimeStamp\(sampleBuffer.presentationTimeStamp)sampleBuffer.duration\(sampleBuffer.duration)")
         
         mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: .video)
         

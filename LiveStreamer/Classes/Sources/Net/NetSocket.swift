@@ -1,7 +1,7 @@
 import Foundation
 
 public class NetSocket: NSObject {
-    static public let defaultTimeout: Int64 = 15 // sec
+    static public let defaultTimeout: Int64 = 5 // sec
     static public let defaultWindowSizeC: Int = Int(UInt16.max)
 
     public var inputBuffer: Data = Data()
@@ -20,7 +20,7 @@ public class NetSocket: NSObject {
     private var buffer: UnsafeMutablePointer<UInt8>?
     private var runloop: RunLoop?
     private let outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.output")
-    private var timeoutHandler: (() -> Void)?
+    public var timeoutHandler: (() -> Void)?
 
     @discardableResult
     final public func doOutput(data: Data, locked: UnsafeMutablePointer<UInt32>? = nil) -> Int {
@@ -70,6 +70,7 @@ public class NetSocket: NSObject {
         }
         var total: Int = 0
         while total < maxLength {
+            //print("outputStream.write")
             let length: Int = outputStream.write(buffer.advanced(by: total), maxLength: maxLength - total)
             if length <= 0 {
                 break
@@ -81,11 +82,21 @@ public class NetSocket: NSObject {
     }
 
     func close(isDisconnected: Bool) {
+
+        close(isDisconnected: isDisconnected, eventCode: nil)
+    }
+    
+    func close(isDisconnected: Bool, eventCode: Stream.Event?) {
         outputQueue.async {
             guard let runloop: RunLoop = self.runloop else {
                 return
             }
-            self.deinitConnection(isDisconnected: isDisconnected)
+            if let eventCode = eventCode {
+                
+                self.deinitConnection(isDisconnected: isDisconnected, eventCode: eventCode)
+            }else{
+                self.deinitConnection(isDisconnected: isDisconnected, eventCode: nil)
+            }
             self.runloop = nil
             CFRunLoopStop(runloop.getCFRunLoop())
             print("isDisconnected: \(isDisconnected)")
@@ -134,8 +145,13 @@ public class NetSocket: NSObject {
         runloop?.run()
         connected = false
     }
-
+    /*
     func deinitConnection(isDisconnected: Bool) {
+        
+        deinitConnection(isDisconnected: isDisconnected, eventCode: nil)
+    }*/
+
+    func deinitConnection(isDisconnected: Bool, eventCode: Stream.Event?) {
         inputStream?.close()
         inputStream?.remove(from: runloop!, forMode: .defaultRunLoopMode)
         inputStream?.delegate = nil
@@ -163,6 +179,10 @@ public class NetSocket: NSObject {
             listen()
         }
     }
+    
+    func retryConnection() {
+        
+    }
 }
 
 extension NetSocket: StreamDelegate {
@@ -181,18 +201,24 @@ extension NetSocket: StreamDelegate {
             }
         //  2 = 1 << 1
         case .hasBytesAvailable:
+            //print("hasBytesAvailable")
             if aStream == inputStream {
                 doInput()
             }
+            break
         //  4 = 1 << 2
         case .hasSpaceAvailable:
+            //print("hasSpaceAvailable")
             break
         //  8 = 1 << 3
         case .errorOccurred:
-            close(isDisconnected: true)
+            print("errorOccurred"+aStream.streamError.debugDescription)
+            close(isDisconnected: true, eventCode: eventCode)
+            break
         // 16 = 1 << 4
         case .endEncountered:
-            close(isDisconnected: true)
+            print("endEncountered")
+            close(isDisconnected: true, eventCode: eventCode)
         default:
             break
         }

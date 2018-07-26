@@ -34,7 +34,7 @@ open class RTMPConnection: EventDispatcher {
     static public let supportedProtocols: Set<String> = ["rtmp", "rtmps", "rtmpt", "rtmpts"]
     static public let defaultPort: Int = 1935
     static public let defaultFlashVer: String = "FMLE/3.0 (compatible; FMSc/1.0)"
-    static public let defaultChunkSizeS: Int = 1024 * 8
+    static public let defaultChunkSizeS: Int = 1024 * 1024
     static public let defaultCapabilities: Int = 239
     static public let defaultObjectEncoding: UInt8 = 0x00
 
@@ -185,6 +185,7 @@ open class RTMPConnection: EventDispatcher {
     /// The statistics of outgoing bytes per second.
     @objc dynamic open private(set) var currentBytesOutPerSecond: Int32 = 0
 
+    
     var socket: RTMPSocketCompatible!
     var streams: [UInt32: RTMPStream] = [: ]
     var sequence: Int64 = 0
@@ -233,6 +234,22 @@ open class RTMPConnection: EventDispatcher {
         removeEventListener(Event.RTMP_STATUS, selector: #selector(on(status:)))
     }
 
+    open func start(_ command: String) {
+        
+        guard let uri = URL(string: command), let user: String = uri.user else {
+            // If it is not a secure connect
+ 
+            connect(command)
+            return
+        }
+        
+        let query: String = uri.query ?? ""
+        let command: String = uri.absoluteString + (query == "" ? "?" : "&") + "authmod=adobe&user=\(user)"
+        print("start command"+command)
+    
+        connect(command)
+    }
+    
     @available(*, unavailable)
     open func connect(_ command: String) {
         connect(command, arguments: nil)
@@ -258,9 +275,13 @@ open class RTMPConnection: EventDispatcher {
     }
 
     open func connect(_ command: String, arguments: Any?...) {
+        print("connect")
         guard let uri = URL(string: command), let scheme: String = uri.scheme, !connected && RTMPConnection.supportedProtocols.contains(scheme) else {
             return
         }
+        
+        print("uri\(uri)")
+
         self.uri = uri
         self.arguments = arguments
         timer = Timer(timeInterval: 1.0, target: self, selector: #selector(on(timer:)), userInfo: nil, repeats: true)
@@ -270,13 +291,21 @@ open class RTMPConnection: EventDispatcher {
         default:
             socket = socket is RTMPSocket ? socket : RTMPSocket()
         }
+        
+        print("socket")
+
         socket.delegate = self
         socket.securityLevel = uri.scheme == "rtmps" || uri.scheme == "rtmpts"  ? .negotiatedSSL : .none
         socket.connect(withName: uri.host!, port: uri.port ?? RTMPConnection.defaultPort)
     }
 
-    open func close() {
+    open func stop() {
+        
         close(isDisconnected: false)
+    }
+
+    open func close() {
+        close(isDisconnected: true)
     }
 
     func close(isDisconnected: Bool) {
@@ -325,6 +354,7 @@ open class RTMPConnection: EventDispatcher {
                 message: RTMPSetChunkSizeMessage(UInt32(socket.chunkSizeS))
             ), locked: nil)
         case .connectRejected?:
+            print("connectRejected")
             guard
                 let uri: URL = uri,
                 let user: String = uri.user,
@@ -332,31 +362,46 @@ open class RTMPConnection: EventDispatcher {
                 let description: String = data["description"] as? String else {
                 break
             }
-            socket.deinitConnection(isDisconnected: false)
+            socket.deinitConnection(isDisconnected: false, eventCode: nil)
             switch true {
             case description.contains("reason=nosuchuser"):
                 break
             case description.contains("reason=authfailed"):
                 break
             case description.contains("reason=needauth"):
+                print("description.contains reason=needauth")
                 let command: String = RTMPConnection.createSanJoseAuthCommand(uri, description: description)
+                print("command"+command)
                 connect(command, arguments: arguments)
             case description.contains("authmod=adobe"):
+                print("description.contains authmod=adobe")
                 if user == "" || password == "" {
                     close(isDisconnected: true)
                     break
                 }
                 let query: String = uri.query ?? ""
                 let command: String = uri.absoluteString + (query == "" ? "?" : "&") + "authmod=adobe&user=\(user)"
+                print("command"+command)
                 connect(command, arguments: arguments)
             default:
                 break
             }
+        case .connectFailed?:
+            print("connectFailed")
+            break
+            
         case .connectClosed?:
+            print(".connectClosed")
             if let description: String = data["description"] as? String {
                 print(description)
             }
             close(isDisconnected: true)
+            /*
+            if isUserWantConnect {
+                if let uri: URL = self.uri {
+                    connect(uri.absoluteString)
+                }
+            }*/
         default:
             break
         }
@@ -410,14 +455,21 @@ open class RTMPConnection: EventDispatcher {
         for (_, stream) in streams {
             stream.on(timer: timer)
         }
+        //print("previousQueueBytesOut.count"+String(previousQueueBytesOut.count))
         if measureInterval <= previousQueueBytesOut.count {
             var count: Int = 0
             for i in 0..<previousQueueBytesOut.count - 1 where previousQueueBytesOut[i] < previousQueueBytesOut[i + 1] {
                 count += 1
             }
+          //  print("count"+String(count))
+
             if count == measureInterval - 1 {
                 for (_, stream) in streams {
                     stream.qosDelegate?.didPublishInsufficientBW(stream, withConnection: self)
+                }
+            }else if count == 0 {
+                for (_, stream) in streams {
+                    stream.qosDelegate?.didPublishSufficientBW(stream, withConnection: self)
                 }
             }
             previousQueueBytesOut.removeFirst()
@@ -436,6 +488,7 @@ extension RTMPConnection: RTMPSocketDelegate {
             }
             socket.doOutput(chunk: chunk, locked: nil)
         case .closed:
+            print("RTMPConnection .closed")
             connected = false
             sequence = 0
             currentChunk = nil
@@ -445,6 +498,13 @@ extension RTMPConnection: RTMPSocketDelegate {
             messages.removeAll()
             operations.removeAll()
             fragmentedChunks.removeAll()
+            /*
+            if isUserWantConnect {
+                // Reconnect
+                if let uri: URL = self.uri {
+                    //socket.connect(withName: uri.host!, port: uri.port ?? RTMPConnection.defaultPort)
+                }
+            }*/
         default:
             break
         }

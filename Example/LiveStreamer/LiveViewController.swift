@@ -19,7 +19,7 @@ extension LiveViewController: LiveStreamingDelegate {
             }
             break
             
-        case RTMPConnection.Code.connectNetworkChange.rawValue, RTMPConnection.Code.connectClosed.rawValue:
+        case RTMPConnection.Code.connectNetworkChange.rawValue:
             
             break
             
@@ -65,7 +65,7 @@ final class LiveViewController: UIViewController {
         
         liveStreamer.delegate = self
         
-        liveStreamer.videoSize = CGSize(width: 720, height: 1280)
+        liveStreamer.videoSize = CGSize(width: 1920, height: 1080)
     }
     
     override func viewDidDisappear(_ animated: Bool) {

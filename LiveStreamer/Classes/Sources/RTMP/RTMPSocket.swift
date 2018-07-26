@@ -17,7 +17,7 @@ protocol RTMPSocketCompatible: class {
     func doOutput(chunk: RTMPChunk, locked: UnsafeMutablePointer<UInt32>?) -> Int
     func close(isDisconnected: Bool)
     func connect(withName: String, port: Int)
-    func deinitConnection(isDisconnected: Bool)
+    func deinitConnection(isDisconnected: Bool, eventCode: Stream.Event?)
 }
 
 // MARK: -
@@ -87,7 +87,10 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
     }
 
     func connect(withName: String, port: Int) {
+        print("connect")
         inputQueue.async {
+            print("inputQueue.async")
+
             Stream.getStreamsToHost(
                 withName: withName,
                 port: port,
@@ -129,6 +132,8 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
     }
 
     override func initConnection() {
+        print("initConnection")
+
         handshake.clear()
         readyState = .uninitialized
         chunkSizeS = RTMPChunk.defaultSize
@@ -136,19 +141,30 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
         super.initConnection()
     }
 
-    override func deinitConnection(isDisconnected: Bool) {
+    override func deinitConnection(isDisconnected: Bool, eventCode: Stream.Event?) {
         if isDisconnected {
-            let data: ASObject = (readyState == .handshakeDone) ?
+            
+            var data: ASObject = (readyState == .handshakeDone) ?
                 RTMPConnection.Code.connectClosed.data("") : RTMPConnection.Code.connectFailed.data("")
+
+            if let eventCode = eventCode, eventCode == .errorOccurred {
+
+                data = RTMPConnection.Code.connectFailed.data("")
+            }
             events.append(Event(type: Event.RTMP_STATUS, bubbles: false, data: data))
         }
         readyState = .closing
-        super.deinitConnection(isDisconnected: isDisconnected)
+        super.deinitConnection(isDisconnected: isDisconnected, eventCode: eventCode)
     }
 
     override func didTimeout() {
-        deinitConnection(isDisconnected: false)
+        deinitConnection(isDisconnected: false, eventCode: nil)
         delegate?.dispatch(Event.IO_ERROR, bubbles: false, data: nil)
-        print("connection timedout")
+        print("connection timeout")
+    }
+    
+    override func retryConnection() {
+        print("retryConnection")
+        
     }
 }
