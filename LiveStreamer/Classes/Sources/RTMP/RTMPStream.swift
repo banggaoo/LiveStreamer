@@ -317,7 +317,7 @@ open class RTMPStream: NetStream {
     private var howToPublish: RTMPStream.HowToPublish = .live
     private var rtmpConnection: RTMPConnection
     
-    public var maximumBitrate: UInt32 = 4096 * 1024
+    public var maximumBitrate: UInt32 = 2048 * 1024
 
     public init(connection: RTMPConnection) {
         self.rtmpConnection = connection

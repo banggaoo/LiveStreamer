@@ -59,6 +59,7 @@ final class VideoIOComponent: IOComponent {
                 return
             }
             for connection in output.connections where connection.isVideoOrientationSupported {
+                connection.isVideoMirrored = true
                 connection.videoOrientation = orientation
                 if torch {
                     setTorchMode(.on)

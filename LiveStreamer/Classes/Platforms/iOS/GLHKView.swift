@@ -60,11 +60,13 @@ extension GLHKView: GLKViewDelegate {
         var inRect: CGRect = CGRect(x: 0, y: 0, width: CGFloat(drawableWidth), height: CGFloat(drawableHeight))
         var fromRect: CGRect = displayImage.extent
         VideoGravityUtil.calculate(videoGravity, inRect: &inRect, fromRect: &fromRect)
-        if position == .front {
+      /*  if position == .front {
             currentStream?.mixer.videoIO.context?.draw(displayImage.oriented(forExifOrientation: 2), in: inRect, from: fromRect)
         } else {
             currentStream?.mixer.videoIO.context?.draw(displayImage, in: inRect, from: fromRect)
-        }
+        }*/
+        currentStream?.mixer.videoIO.context?.draw(displayImage, in: inRect, from: fromRect)
+
     }
 }
 

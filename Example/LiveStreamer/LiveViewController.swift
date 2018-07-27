@@ -12,7 +12,7 @@ extension LiveViewController: LiveStreamingDelegate {
         case RTMPConnection.Code.connectSuccess.rawValue:
             
             DispatchQueue.main.async {
-
+                
                 self.publishButton?.setTitle("■", for: [])
                 
                 UIApplication.shared.isIdleTimerDisabled = true
@@ -30,6 +30,8 @@ extension LiveViewController: LiveStreamingDelegate {
                 self.publishButton?.setTitle("●", for: [])
 
                 UIApplication.shared.isIdleTimerDisabled = false
+                
+                self.publishButton?.isSelected = !((self.publishButton?.isSelected)!)
             }
             break
         }
@@ -60,12 +62,23 @@ final class LiveViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         liveStreamer = LiveStreamer(view: lfView)
-        
+
         liveStreamer.delegate = self
-        
+
+        // Please check suitable media setting for streaming
+        // http://jira.stunitas.com:8080/secure/attachment/10505/IMG_1209.PNG
+
+        // Please be sure your device`s camera support resolution with front/back camera both. If you set higher resolution, camera doesn't work properly
+        liveStreamer.sessionPreset = AVCaptureSession.Preset.hd1920x1080
         liveStreamer.videoSize = CGSize(width: 1920, height: 1080)
+
+        liveStreamer.videoFPS = 30
+        liveStreamer.videoBitrate = 1024 * 1024
+        liveStreamer.audioBitrate = 128 * 1024
+
+        liveStreamer.sampleRate = 44_100
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -91,10 +104,7 @@ final class LiveViewController: UIViewController {
 
     @IBAction func toggleTorch(_ sender: UIButton) {
         
-        if let liveStreamer: LiveStreamer = liveStreamer {
-            
-            liveStreamer.torch = !(liveStreamer.torch)
-        }
+        liveStreamer.torch = !(liveStreamer.torch)
     }
 
     @IBAction func on(slider: UISlider) {

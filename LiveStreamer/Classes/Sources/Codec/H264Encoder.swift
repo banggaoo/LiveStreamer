@@ -79,7 +79,7 @@ final class H264Encoder: NSObject {
             guard bitrate != oldValue else {
                 return
             }
-            setProperty(kVTCompressionPropertyKey_AverageBitRate, Int(2400*1024) as CFTypeRef)
+            setProperty(kVTCompressionPropertyKey_AverageBitRate, Int(bitrate) as CFTypeRef)
         }
     }
 
