@@ -8,13 +8,12 @@
 
 import UIKit
 import AVFoundation
-import Photos
 
 struct LiveStreamAddress {
     // If you want to use singleton
     //static var defaultInstance: Preference = Preference()
     
-    // uri is like "rtmp://test:test@192.168.11.15/live/01",  "rtmp://1b6cf5.entrypoint.cloud.wowza.com/app-6f91/188e39fc"
+    // uri is like "rtmp://test:test@192.168.11.15/live/01",  "rtmp://1b6cf5.entrypoint.cloud.wowza.com/app-6f91"
     public var uri: String
     public var streamName: String  // "188e39fc"
 }
@@ -23,9 +22,8 @@ class LiveStreamerRTMPStreamQoSDelagate: RTMPStreamDelegate {
     
     // detect upload insufficent BandWidth
     func didPublishInsufficientBW(_ stream: RTMPStream, withConnection: RTMPConnection) {
-        //print("didPublishInsufficientBW")
+
         if var videoBitrate = stream.videoSettings["bitrate"] as? UInt32 {
-            //print("videoBitrate"+String(videoBitrate))
 
             if videoBitrate <= 2048 {
                 videoBitrate = 2048
@@ -38,9 +36,8 @@ class LiveStreamerRTMPStreamQoSDelagate: RTMPStreamDelegate {
     }
     
     func didPublishSufficientBW(_ stream: RTMPStream, withConnection: RTMPConnection) {
-        //print("didPublishSufficientBW")
+
         if var videoBitrate = stream.videoSettings["bitrate"] as? UInt32 {
-            //print("videoBitrate"+String(videoBitrate))
 
             videoBitrate = UInt32(Double(videoBitrate) + 50 * 1024)
 
@@ -58,32 +55,30 @@ class LiveStreamerRTMPStreamQoSDelagate: RTMPStreamDelegate {
     }
 }
 
-class LiveStreamerRecorderDelegate: DefaultAVMixerRecorderDelegate {
-    override func didFinishWriting(_ recorder: AVMixerRecorder) {
+
+extension LiveStreamer: AVMixerRecorderOuterDelegate {
+    
+    public func didFinishWriting(_ recorder: AVMixerRecorder) {
         
-        guard let writer: AVAssetWriter = recorder.writer else { return }
-        
-        // Store local video to photo library and remove from document folder
-        PHPhotoLibrary.shared().performChanges({() -> Void in
-            PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: writer.outputURL)
-        }, completionHandler: { (_, error) -> Void in
-            do {
-                try FileManager.default.removeItem(at: writer.outputURL)
-            } catch let error {
-                print(error)
-            }
-        })
+        recorderDelegate?.didFinishWriting(recorder)
     }
     
-    override func didStartRunning(_ recorder: AVMixerRecorder) {
+    public func didStartRunning(_ recorder: AVMixerRecorder) {
         
+        recorderDelegate?.didStartRunning(recorder)
     }
 }
 
 public protocol LiveStreamingDelegate: class {
-
+    
     func broadcastStatusWith(code: String)
     func fpsChanged(fps: Float)
+}
+
+public protocol LiveRecorderDelegate: class {
+    
+    func didFinishWriting(_ recorder: AVMixerRecorder)
+    func didStartRunning(_ recorder: AVMixerRecorder)
 }
 
 @available(iOSApplicationExtension 9.0, *)
@@ -96,7 +91,8 @@ public class LiveStreamer: NSObject {
     var isUserWantConnect: Bool = false
     var isConnectionFailed: Bool = false
 
-   public weak var delegate: LiveStreamingDelegate?
+    public weak var delegate: LiveStreamingDelegate?
+    public weak var recorderDelegate: LiveRecorderDelegate?
 
     var delegations: [String: AnyObject] = [:]
 
@@ -239,7 +235,7 @@ public class LiveStreamer: NSObject {
         
         sampleRate = 44_100
         
-        rtmpStream.mixer.recorder.delegate = LiveStreamerRecorderDelegate()
+        rtmpStream.mixer.recorder.outerDelegate = self
         
         registerFPSObserver()
     }

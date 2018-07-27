@@ -59,7 +59,6 @@ final class VideoIOComponent: IOComponent {
                 return
             }
             for connection in output.connections where connection.isVideoOrientationSupported {
-                connection.isVideoMirrored = true
                 connection.videoOrientation = orientation
                 if torch {
                     setTorchMode(.on)
@@ -248,6 +247,10 @@ final class VideoIOComponent: IOComponent {
         input = try AVCaptureDeviceInput(device: camera)
         mixer.session.addOutput(output)
         for connection in output.connections where connection.isVideoOrientationSupported {
+            
+            if camera.position == .front {
+                connection.isVideoMirrored = true
+            }
             connection.videoOrientation = orientation
         }
         output.setSampleBufferDelegate(self, queue: lockQueue)

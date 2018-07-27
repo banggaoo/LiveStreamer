@@ -1,6 +1,7 @@
 import LiveStreamer
 import UIKit
 import AVFoundation
+import Photos
 
 
 extension LiveViewController: LiveStreamingDelegate {
@@ -39,6 +40,28 @@ extension LiveViewController: LiveStreamingDelegate {
     
     func fpsChanged(fps: Float) {
         
+    }
+}
+
+extension LiveViewController: LiveRecorderDelegate {
+
+    public func didFinishWriting(_ recorder: AVMixerRecorder) {
+        
+        guard let writer: AVAssetWriter = recorder.writer else { return }
+        
+        // Store local video to photo library and remove from document folder
+        PHPhotoLibrary.shared().performChanges({() -> Void in
+            PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: writer.outputURL)
+        }, completionHandler: { (_, error) -> Void in
+            do {
+                try FileManager.default.removeItem(at: writer.outputURL)
+            } catch let error {
+                print(error)
+            }
+        })
+    }
+    
+    public func didStartRunning(_ recorder: AVMixerRecorder) {
         
     }
 }
@@ -66,6 +89,7 @@ final class LiveViewController: UIViewController {
         liveStreamer = LiveStreamer(view: lfView)
 
         liveStreamer.delegate = self
+        liveStreamer.recorderDelegate = self
 
         // Please check suitable media setting for streaming
         // http://jira.stunitas.com:8080/secure/attachment/10505/IMG_1209.PNG
@@ -80,15 +104,15 @@ final class LiveViewController: UIViewController {
 
         liveStreamer.sampleRate = 44_100
     }
-    
+
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
     }
-    
+
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        
+
         if keyPath == "currentFPS" {
-            
+
             if Thread.isMainThread {
                 
                 currentFPSLabel?.text = "FPS : \(object ?? "")"

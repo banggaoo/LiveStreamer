@@ -11,6 +11,12 @@ public protocol AVMixerRecorderDelegate: class {
     func didFinishWriting(_ recorder: AVMixerRecorder)
 }
 
+public protocol AVMixerRecorderOuterDelegate {
+    
+    func didFinishWriting(_ recorder: AVMixerRecorder)
+    func didStartRunning(_ recorder: AVMixerRecorder)
+}
+
 // MARK: -
 open class AVMixerRecorder: NSObject {
 
@@ -30,6 +36,7 @@ open class AVMixerRecorder: NSObject {
     open var writer: AVAssetWriter?
     open var fileName: String?
     open /*weak*/ var delegate: AVMixerRecorderDelegate?  // remove weak for saving delegate
+    open /*weak*/ var outerDelegate: AVMixerRecorderOuterDelegate?  // remove weak for saving delegate
     open var writerInputs: [AVMediaType: AVAssetWriterInput] = [:]
     open var outputSettings: [AVMediaType: [String: Any]] = AVMixerRecorder.defaultOutputSettings
     open var pixelBufferAdaptor: AVAssetWriterInputPixelBufferAdaptor?
@@ -46,7 +53,7 @@ open class AVMixerRecorder: NSObject {
 
     public override init() {
         super.init()
-        //delegate = DefaultAVMixerRecorderDelegate()
+        delegate = DefaultAVMixerRecorderDelegate()
         
     }
 
@@ -129,7 +136,7 @@ open class AVMixerRecorder: NSObject {
             input.markAsFinished()
         }
         writer.finishWriting {
-            self.delegate?.didFinishWriting(self)
+            self.outerDelegate?.didFinishWriting(self)
             self.writer = nil
             self.writerInputs.removeAll()
             self.pixelBufferAdaptor = nil
@@ -145,7 +152,7 @@ extension AVMixerRecorder: Running {
                 return
             }
             self.running = true
-            self.delegate?.didStartRunning(self)
+            self.outerDelegate?.didStartRunning(self)
         }
     }
 
@@ -185,7 +192,6 @@ open class DefaultAVMixerRecorderDelegate: NSObject {
     #endif
 }
 
-@objc
 extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
     // MARK: AVMixerRecorderDelegate
     open func rotateFile(_ recorder: AVMixerRecorder, withPresentationTimeStamp: CMTime, mediaType: AVMediaType) {
