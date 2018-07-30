@@ -13,25 +13,25 @@ struct LiveStreamAddress {
     // If you want to use singleton
     //static var defaultInstance: Preference = Preference()
     
-    // uri is like "rtmp://test:test@192.168.11.15/live/01",  "rtmp://1b6cf5.entrypoint.cloud.wowza.com/app-6f91"
+    // uri is like "rtmp://test:test@192.168.11.15/live",  "rtmp://1b6cf5.entrypoint.cloud.wowza.com/app-6f91"
     public var uri: String
-    public var streamName: String  // "188e39fc"
+    public var streamName: String  // ex : "188e39fc"
 }
 
-class LiveStreamerRTMPStreamQoSDelagate: RTMPStreamDelegate {
+class LiveStreamerRTMPStreamQoSDelegate: RTMPStreamDelegate {
     
     // detect upload insufficent BandWidth
     func didPublishInsufficientBW(_ stream: RTMPStream, withConnection: RTMPConnection) {
 
         if var videoBitrate = stream.videoSettings["bitrate"] as? UInt32 {
 
-            if videoBitrate <= 2048 {
-                videoBitrate = 2048
-            }else{
-                videoBitrate = UInt32(videoBitrate / 2)
+            videoBitrate = UInt32(videoBitrate / 2)
+
+            if videoBitrate < stream.minimumBitrate {
+                videoBitrate = stream.minimumBitrate
             }
             
-            stream.videoSettings["bitrate"] = UInt32(videoBitrate / 2)
+            stream.videoSettings["bitrate"] = videoBitrate
         }
     }
     
@@ -99,6 +99,15 @@ public class LiveStreamer: NSObject {
     // CamView
     var lfView: GLHKView
     
+    private var timer: Timer? {
+        didSet {
+            oldValue?.invalidate()
+            if let timer: Timer = timer {
+                RunLoop.main.add(timer, forMode: .commonModes)
+            }
+        }
+    }
+
     // Changeable while recording/streaming
     var _cameraPosition: AVCaptureDevice.Position = .front
     open var cameraPosition: AVCaptureDevice.Position {
@@ -130,6 +139,25 @@ public class LiveStreamer: NSObject {
     open var zoomRate: Float = 1.0 { didSet { rtmpStream.setZoomFactor(CGFloat(zoomRate), ramping: true, withRate: 5.0) } }
 
     open var torch: Bool = false { didSet { rtmpStream.torch = torch } }
+
+    open var abrOn: Bool = true {
+        
+        didSet {
+            
+            objc_sync_enter(self)
+            rtmpStream.qosDelegate = nil
+            objc_sync_exit(self)
+            
+            if abrOn {
+                
+                rtmpStream.qosDelegate = LiveStreamerRTMPStreamQoSDelegate()
+                
+            }else{
+                
+                rtmpStream.videoSettings["bitrate"] = videoBitrate
+            }
+        }
+    }
 
     // Unchangeable while recording/streaming
     var captureSettings: [String: Any] = [:] { didSet { rtmpStream.captureSettings = captureSettings } }
@@ -177,20 +205,10 @@ public class LiveStreamer: NSObject {
         }
     }
  
-    // If you want to keep movie file in document folder, remove FileManager.default.removeItem in LiveStreamerRecorderDelegate
     open var recordFileName: String = "Movie" { didSet { rtmpStream.mixer.recorder.fileName = recordFileName } }
     
     open var videoFPS: Float = 30.0 { didSet { rtmpStream.captureSettings["fps"] = videoFPS } }
-
-    private var timer: Timer? {
-        didSet {
-            oldValue?.invalidate()
-            if let timer: Timer = timer {
-                RunLoop.main.add(timer, forMode: .commonModes)
-            }
-        }
-    }
-
+    
     
     public init(view: GLHKView) {
         print("init(view: GLHKView")
@@ -198,30 +216,18 @@ public class LiveStreamer: NSObject {
         
         super.init()
 
-        prepareBroadcast()
-    }
-    
-    func prepareBroadcast() {
-        
-        createRTMPStream()
-        
-        configureBroadcast()
-
-        attachCamera()
-    }
-    
-    func createRTMPStream() {
-
         rtmpStream = RTMPStream(connection: rtmpConnection)
-        
-        rtmpStream.qosDelegate = LiveStreamerRTMPStreamQoSDelagate()
+
+        configureBroadcast()
     }
     
     @available(iOSApplicationExtension 9.0, *)
     func configureBroadcast() {
 
-        rtmpStream.syncOrientation = true
+        rtmpStream.mixer.recorder.outerDelegate = self
         
+        rtmpStream.mixer.recorder.fileName = recordFileName
+
         captureSettings = [
             // for 4:3 resolution
             //"sessionPreset": AVCaptureSession.Preset.photo.rawValue,
@@ -235,12 +241,16 @@ public class LiveStreamer: NSObject {
         
         sampleRate = 44_100
         
-        rtmpStream.mixer.recorder.outerDelegate = self
+        rtmpStream.syncOrientation = true
+        
+        abrOn = true
         
         registerFPSObserver()
     }
     
-    func attachCamera() {
+    public func startCapturing() {
+        
+        guard !(lfView.streamLoaded) else { return }
         
         rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
             print(error)
@@ -288,11 +298,13 @@ public class LiveStreamer: NSObject {
     
     func readyForBroadcast(isReady: Bool) {
 
-        // Set video size ratio
-        rtmpStream.videoSettings = [
-            "width": videoSize.width,
-            "height": videoSize.height
-        ]
+        if isReady {
+            // Set video size ratio
+            rtmpStream.videoSettings = [
+                "width": videoSize.width,
+                "height": videoSize.height
+            ]
+        }
         
         // Prevent rotation while recording
         rtmpStream.syncOrientation = !isReady
@@ -331,6 +343,8 @@ public class LiveStreamer: NSObject {
     
     open func stopRecording() {
         
+        if (rtmpStream.recordingState == .notRecording) { return }
+
         readyForBroadcast(isReady: false)
 
         rtmpStream.stopRecording()
@@ -338,11 +352,13 @@ public class LiveStreamer: NSObject {
     
     open func startStreaming(uri: String, streamName: String) {
 
-        isUserWantConnect = true
-        isConnectionFailed = false
-        
+        if !(rtmpStream.readyState == .closed || rtmpStream.readyState == .initialized) { return }
+
         liveStreamAddress.uri = uri
         liveStreamAddress.streamName = streamName
+        
+        isUserWantConnect = true
+        isConnectionFailed = false
         
         readyForBroadcast(isReady: true)
         
@@ -358,6 +374,8 @@ public class LiveStreamer: NSObject {
  
     open func stopStreaming() {
         
+        if rtmpStream.readyState == .closed || rtmpStream.readyState == .initialized { return }
+
         isUserWantConnect = false
         
         readyForBroadcast(isReady: false)
@@ -377,7 +395,7 @@ public class LiveStreamer: NSObject {
     }
     
     @objc private func on(timer: Timer) {
-        // Check connection retry is needed
+        // Check connection is need to retry
         
         print("on\(isUserWantConnect)\(isConnectionFailed)\(rtmpConnection.connected)")
 
@@ -385,10 +403,11 @@ public class LiveStreamer: NSObject {
             
             print("rtmpStream.readyState\(rtmpStream.readyState)")
 
-            if !rtmpConnection.connected {
-                // Need to close for reconnect
+            if rtmpConnection.connected {
+                // Need to close the connection for reconnect
                 
                 rtmpConnection.close()
+                return
             }
             
             if rtmpStream.readyState == .closed || rtmpStream.readyState == .initialized {
@@ -402,8 +421,7 @@ public class LiveStreamer: NSObject {
     
     @objc func rtmpIOErrorHandler(_ notification: Notification) {
         print("rtmpIOErrorHandler\(notification)")
-        // Socket timeout
-        // when timed out, reconnection is not working
+        // Socket timeout. when timed out, reconnection is not working
 
         isConnectionFailed = true
     }

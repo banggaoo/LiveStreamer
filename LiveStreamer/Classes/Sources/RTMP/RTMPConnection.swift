@@ -388,6 +388,10 @@ open class RTMPConnection: EventDispatcher {
             }
         case .connectFailed?:
             print("connectFailed")
+            if let description: String = data["description"] as? String {
+                print(description)
+            }
+            close(isDisconnected: true)
             break
             
         case .connectClosed?:
@@ -396,12 +400,7 @@ open class RTMPConnection: EventDispatcher {
                 print(description)
             }
             close(isDisconnected: true)
-            /*
-            if isUserWantConnect {
-                if let uri: URL = self.uri {
-                    connect(uri.absoluteString)
-                }
-            }*/
+            
         default:
             break
         }
@@ -497,13 +496,7 @@ extension RTMPConnection: RTMPSocketDelegate {
             messages.removeAll()
             operations.removeAll()
             fragmentedChunks.removeAll()
-            /*
-            if isUserWantConnect {
-                // Reconnect
-                if let uri: URL = self.uri {
-                    //socket.connect(withName: uri.host!, port: uri.port ?? RTMPConnection.defaultPort)
-                }
-            }*/
+            
         default:
             break
         }

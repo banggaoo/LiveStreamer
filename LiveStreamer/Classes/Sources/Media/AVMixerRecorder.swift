@@ -284,17 +284,11 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
 
     func createWriter(_ fileName: String?) -> AVAssetWriter? {
         do {
-            let dateFormatter: DateFormatter = DateFormatter()
-            dateFormatter.locale = Locale(identifier: "en_US")
-            dateFormatter.dateFormat = dateFormat
-            var fileComponent: String? = nil
-            if var fileName: String = fileName {
-                if let q: String.Index = fileName.index(of: "?") {
-                    fileName.removeSubrange(q..<fileName.endIndex)
-                }
-                fileComponent = fileName + dateFormatter.string(from: Date())
+            guard let fileName: String = fileName else {
+                return nil
             }
-            let url: URL = moviesDirectory.appendingPathComponent((fileComponent ?? UUID().uuidString) + ".mp4")
+            
+            let url: URL = moviesDirectory.appendingPathComponent(fileName + ".mp4")
             print("\(url)")
             
             do {

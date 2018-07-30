@@ -1,7 +1,7 @@
 import Foundation
 
 public class NetSocket: NSObject {
-    static public let defaultTimeout: Int64 = 5 // sec
+    static public let defaultTimeout: Int64 = 3 // sec
     static public let defaultWindowSizeC: Int = Int(UInt16.max)
 
     public var inputBuffer: Data = Data()

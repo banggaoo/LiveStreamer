@@ -19,6 +19,17 @@ open class GLHKView: GLKView {
             oldValue?.mixer.videoIO.drawable = nil
         }
     }
+    
+    open var streamLoaded: Bool {
+        
+        get {
+            
+            guard let _: NetStream = currentStream else {
+                return false
+            }
+            return true
+        }
+    }
 
     public override init(frame: CGRect) {
         super.init(frame: frame, context: EAGLContext(api: .openGLES2)!)
@@ -47,7 +58,7 @@ open class GLHKView: GLKView {
             }
         }
         currentStream = stream
-    }
+    } 
 }
 
 extension GLHKView: GLKViewDelegate {

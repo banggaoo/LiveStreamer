@@ -40,6 +40,10 @@ extension LiveViewController: LiveStreamingDelegate {
     
     func fpsChanged(fps: Float) {
         
+        if Thread.isMainThread {
+            
+            currentFPSLabel?.text = "FPS : \(fps)"
+        }
     }
 }
 
@@ -103,21 +107,23 @@ final class LiveViewController: UIViewController {
         liveStreamer.audioBitrate = 128 * 1024
 
         liveStreamer.sampleRate = 44_100
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        // It is better to run startCapturing method after view is appeared
+        liveStreamer.startCapturing()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+
+    }
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-    }
-
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-
-        if keyPath == "currentFPS" {
-
-            if Thread.isMainThread {
-                
-                currentFPSLabel?.text = "FPS : \(object ?? "")"
-            }
-        }
     }
  
     @IBAction func rotateCamera(_ sender: UIButton) {
