@@ -251,6 +251,10 @@ final class VideoIOComponent: IOComponent {
             if camera.position == .front {
                 connection.isVideoMirrored = true
             }
+            
+            if connection.isVideoStabilizationSupported {
+                connection.preferredVideoStabilizationMode = AVCaptureVideoStabilizationMode.auto
+            }
             connection.videoOrientation = orientation
         }
         output.setSampleBufferDelegate(self, queue: lockQueue)
