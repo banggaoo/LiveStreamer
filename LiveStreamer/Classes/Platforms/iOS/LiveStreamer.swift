@@ -197,9 +197,9 @@ public class LiveStreamer: NSObject {
         
         set {
             
-            if (rtmpStream.recordingState == .recording) { return }
+            guard rtmpStream.recordingState == .notRecording else { return }
             
-            if !(rtmpStream.readyState == .closed || rtmpStream.readyState == .initialized) { return }
+            guard rtmpStream.readyState == .closed || rtmpStream.readyState == .initialized else { return }
 
             _videoSize = newValue
         }
@@ -304,22 +304,26 @@ public class LiveStreamer: NSObject {
                 "width": videoSize.width,
                 "height": videoSize.height
             ]
+            
+            rtmpStream.syncOrientation = false
+        }else{
+            
+            guard rtmpStream.readyState == .closed || rtmpStream.readyState == .initialized else { return }
+            
+            guard rtmpStream.recordingState == .notRecording else { return }
+
+            // Prevent rotation while recording
+            rtmpStream.syncOrientation = true
         }
-        
-        // Prevent rotation while recording
-        rtmpStream.syncOrientation = !isReady
     }
     
     open func registerFPSObserver() {
         
-        guard let liveStreamer: AnyObject = delegations["currentFPS"], liveStreamer is LiveStreamer else {
-            
-            delegations["currentFPS"] = self
-            
-            self.rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
-            
-            return
-        }
+        guard let liveStreamer: AnyObject = delegations["currentFPS"], liveStreamer is LiveStreamer else { return }
+        
+        delegations["currentFPS"] = self
+        
+        self.rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
     }
 
     open func unRegisterFPSObserver() {
@@ -334,7 +338,7 @@ public class LiveStreamer: NSObject {
  
     open func startRecodring() {
         
-        if (rtmpStream.recordingState == .recording) { return }
+        guard rtmpStream.recordingState == .notRecording else { return }
 
         readyForBroadcast(isReady: true)
         
@@ -343,7 +347,7 @@ public class LiveStreamer: NSObject {
     
     open func stopRecording() {
         
-        if (rtmpStream.recordingState == .notRecording) { return }
+        guard rtmpStream.recordingState == .recording else { return }
 
         readyForBroadcast(isReady: false)
 
@@ -352,7 +356,7 @@ public class LiveStreamer: NSObject {
     
     open func startStreaming(uri: String, streamName: String) {
 
-        if !(rtmpStream.readyState == .closed || rtmpStream.readyState == .initialized) { return }
+        guard rtmpStream.readyState == .closed || rtmpStream.readyState == .initialized else { return }
 
         liveStreamAddress.uri = uri
         liveStreamAddress.streamName = streamName
@@ -374,7 +378,7 @@ public class LiveStreamer: NSObject {
  
     open func stopStreaming() {
         
-        if rtmpStream.readyState == .closed || rtmpStream.readyState == .initialized { return }
+        guard !(rtmpStream.readyState == .closed || rtmpStream.readyState == .initialized) else { return }
 
         isUserWantConnect = false
         

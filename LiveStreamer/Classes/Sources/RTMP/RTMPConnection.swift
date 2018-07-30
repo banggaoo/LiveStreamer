@@ -276,9 +276,11 @@ open class RTMPConnection: EventDispatcher {
 
     open func connect(_ command: String, arguments: Any?...) {
         print("connect")
-        guard let uri = URL(string: command), let scheme: String = uri.scheme, !connected && RTMPConnection.supportedProtocols.contains(scheme) else {
-            return
-        }
+        
+        guard
+            let uri = URL(string: command), let scheme: String = uri.scheme,
+            !connected && RTMPConnection.supportedProtocols.contains(scheme)
+            else { return }
         
         print("uri\(uri)")
 
@@ -292,8 +294,6 @@ open class RTMPConnection: EventDispatcher {
             socket = socket is RTMPSocket ? socket : RTMPSocket()
         }
         
-        print("socket")
-
         socket.delegate = self
         socket.securityLevel = uri.scheme == "rtmps" || uri.scheme == "rtmpts"  ? .negotiatedSSL : .none
         socket.connect(withName: uri.host!, port: uri.port ?? RTMPConnection.defaultPort)

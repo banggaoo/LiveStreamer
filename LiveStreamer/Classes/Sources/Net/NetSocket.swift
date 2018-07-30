@@ -70,7 +70,6 @@ public class NetSocket: NSObject {
         }
         var total: Int = 0
         while total < maxLength {
-            //print("outputStream.write")
             let length: Int = outputStream.write(buffer.advanced(by: total), maxLength: maxLength - total)
             if length <= 0 {
                 break
@@ -201,14 +200,12 @@ extension NetSocket: StreamDelegate {
             }
         //  2 = 1 << 1
         case .hasBytesAvailable:
-            //print("hasBytesAvailable")
             if aStream == inputStream {
                 doInput()
             }
             break
         //  4 = 1 << 2
         case .hasSpaceAvailable:
-            //print("hasSpaceAvailable")
             break
         //  8 = 1 << 3
         case .errorOccurred:

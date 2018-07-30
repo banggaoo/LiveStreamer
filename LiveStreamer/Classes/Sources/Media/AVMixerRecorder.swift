@@ -299,7 +299,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
             }
             return try AVAssetWriter(outputURL: url, fileType: .mp4)
         } catch {
-            print("create an AVAssetWriter")
+            print("\(error)")
         }
         return nil
     }
