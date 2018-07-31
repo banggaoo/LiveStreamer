@@ -87,7 +87,7 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
     }
 
     func connect(withName: String, port: Int) {
-        print("connect")
+        print("connect \(inputQueue) \(self.inputStream) \(self.outputStream)")
         inputQueue.async {
 
             Stream.getStreamsToHost(
@@ -141,15 +141,16 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
     }
 
     override func deinitConnection(isDisconnected: Bool, eventCode: Stream.Event?) {
+        print("deinitConnection")
         if isDisconnected {
             
-            var data: ASObject = (readyState == .handshakeDone) ?
+            let data: ASObject = (readyState == .handshakeDone) ?
                 RTMPConnection.Code.connectClosed.data("") : RTMPConnection.Code.connectFailed.data("")
-
+/*
             if let eventCode = eventCode, eventCode == .errorOccurred {
 
-                data = RTMPConnection.Code.connectFailed.data("")
-            }
+                data = RTMPConnection.Code.connectClosed.data("")
+            }*/
             events.append(Event(type: Event.RTMP_STATUS, bubbles: false, data: data))
         }
         readyState = .closing

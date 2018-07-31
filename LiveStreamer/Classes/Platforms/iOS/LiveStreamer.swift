@@ -89,7 +89,6 @@ public class LiveStreamer: NSObject {
     var liveStreamAddress: LiveStreamAddress = LiveStreamAddress(uri: "", streamName: "")
     
     var isUserWantConnect: Bool = false
-    var isConnectionFailed: Bool = false
 
     public weak var delegate: LiveStreamingDelegate?
     public weak var recorderDelegate: LiveRecorderDelegate?
@@ -362,11 +361,10 @@ public class LiveStreamer: NSObject {
         liveStreamAddress.streamName = streamName
         
         isUserWantConnect = true
-        isConnectionFailed = false
         
         readyForBroadcast(isReady: true)
         
-        timer = Timer(timeInterval: 3.0, target: self, selector: #selector(on(timer:)), userInfo: nil, repeats: true)
+        timer = Timer(timeInterval: 2.0, target: self, selector: #selector(on(timer:)), userInfo: nil, repeats: true)
 
         //rtmpConnection.addEventListener(Event.SYNC, selector: #selector(rtmpStatusHandler), observer: self)
         //rtmpConnection.addEventListener(Event.EVENT, selector: #selector(rtmpStatusHandler), observer: self)
@@ -401,22 +399,14 @@ public class LiveStreamer: NSObject {
     @objc private func on(timer: Timer) {
         // Check connection is need to retry
         
-        print("on\(isUserWantConnect)\(isConnectionFailed)\(rtmpConnection.connected)")
+        print("on\(isUserWantConnect)\(rtmpConnection.connected)")
+        print("rtmpStream.readyState\(rtmpStream.readyState)")
 
-        if isUserWantConnect, isConnectionFailed {
-            
-            print("rtmpStream.readyState\(rtmpStream.readyState)")
-
-            if rtmpConnection.connected {
-                // Need to close the connection for reconnect
-                
-                rtmpConnection.close()
-                return
-            }
-            
+        if isUserWantConnect {
+ 
             if rtmpStream.readyState == .closed || rtmpStream.readyState == .initialized {
                 
-                isConnectionFailed = false
+                // If we try to start socket connection rapidly, problem occur. So we have disconnect properly before reconnect
                 rtmpConnection.start(liveStreamAddress.uri)
             }
         }
@@ -427,7 +417,6 @@ public class LiveStreamer: NSObject {
         print("rtmpIOErrorHandler\(notification)")
         // Socket timeout. when timed out, reconnection is not working
 
-        isConnectionFailed = true
     }
     
     @objc func rtmpStatusHandler(_ notification: Notification) {
@@ -441,8 +430,6 @@ public class LiveStreamer: NSObject {
                 
             case RTMPConnection.Code.connectSuccess.rawValue:
                 
-                isConnectionFailed = false
-                
                 rtmpStream!.publish(liveStreamAddress.streamName, type:.live)
                 break
                 
@@ -452,24 +439,19 @@ public class LiveStreamer: NSObject {
                 
             case RTMPConnection.Code.connectIdleTimeOut.rawValue:
 
-                isConnectionFailed = true
                 break
                 
             case RTMPConnection.Code.connectFailed.rawValue:
-                
-                isConnectionFailed = true
+                // If handshake is failed before deinitconnect, connectFailed call. Or connectClosed call
                 break
                 
             case RTMPConnection.Code.connectRejected.rawValue:
                 // Server is not yet started or needs authentication
-                
-                isConnectionFailed = true
                 break
                 
             case RTMPConnection.Code.connectClosed.rawValue:
                 // Server is closing
-
-                isConnectionFailed = false
+ 
                 break
                 
             default:

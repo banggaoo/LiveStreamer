@@ -72,6 +72,8 @@ public class NetSocket: NSObject {
         while total < maxLength {
             let length: Int = outputStream.write(buffer.advanced(by: total), maxLength: maxLength - total)
             if length <= 0 {
+                print("length <= 0")
+                // Socket write error
                 break
             }
             total += length
@@ -86,6 +88,7 @@ public class NetSocket: NSObject {
     }
     
     func close(isDisconnected: Bool, eventCode: Stream.Event?) {
+        print("close: \(eventCode)")
         outputQueue.async {
             guard let runloop: RunLoop = self.runloop else {
                 return
@@ -210,13 +213,22 @@ extension NetSocket: StreamDelegate {
         //  8 = 1 << 3
         case .errorOccurred:
             print("errorOccurred"+aStream.streamError.debugDescription)
-            close(isDisconnected: true, eventCode: eventCode)
+            
+            if let description = aStream.streamError?.localizedDescription, description.contains("Socket is not connected") {
+                
+                close(isDisconnected: true, eventCode: eventCode)
+
+            }else{
+                
+                close(isDisconnected: true, eventCode: nil)
+            }
             break
         // 16 = 1 << 4
         case .endEncountered:
             print("endEncountered")
-            close(isDisconnected: true, eventCode: eventCode)
+            close(isDisconnected: true, eventCode: nil)
         default:
+            print("endEncountered")
             break
         }
     }
