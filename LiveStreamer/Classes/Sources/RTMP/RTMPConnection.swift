@@ -34,7 +34,7 @@ open class RTMPConnection: EventDispatcher {
     static public let supportedProtocols: Set<String> = ["rtmp", "rtmps", "rtmpt", "rtmpts"]
     static public let defaultPort: Int = 1935
     static public let defaultFlashVer: String = "FMLE/3.0 (compatible; FMSc/1.0)"
-    static public let defaultChunkSizeS: Int = 128 * 1024
+    static public let defaultChunkSizeS: Int = 8 * 1024
     static public let defaultCapabilities: Int = 239
     static public let defaultObjectEncoding: UInt8 = 0x00
 

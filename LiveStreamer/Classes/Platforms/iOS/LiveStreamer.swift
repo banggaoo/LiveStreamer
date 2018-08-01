@@ -32,6 +32,8 @@ class LiveStreamerRTMPStreamQoSDelegate: RTMPStreamDelegate {
             }
             
             stream.videoSettings["bitrate"] = videoBitrate
+            
+            print("didPublishInsufficientBW \(videoBitrate)")
         }
     }
     
@@ -47,6 +49,8 @@ class LiveStreamerRTMPStreamQoSDelegate: RTMPStreamDelegate {
             }
             
             stream.videoSettings["bitrate"] = videoBitrate
+            
+            print("didPublishSufficientBW \(videoBitrate)")
         }
     }
     
@@ -298,19 +302,41 @@ public class LiveStreamer: NSObject {
     func readyForBroadcast(isReady: Bool) {
 
         if isReady {
-            // Set video size ratio
-            rtmpStream.videoSettings = [
-                "width": videoSize.width,
-                "height": videoSize.height
-            ]
             
             rtmpStream.syncOrientation = false
+
+            var longerSize: CGFloat = 0.0
+            var shorterSize: CGFloat = 0.0
+
+            if videoSize.width > videoSize.height {
+                
+                longerSize = videoSize.width
+                shorterSize = videoSize.height
+                
+            }else{
+                
+                longerSize = videoSize.height
+                shorterSize = videoSize.width
+            }
+            
+            // Set video size ratio
+            if rtmpStream.orientation == .portrait || rtmpStream.orientation == .portraitUpsideDown {
+                
+                rtmpStream.videoSettings = [
+                    "width": shorterSize,
+                    "height": longerSize
+                ]
+
+            }else{
+                
+                rtmpStream.videoSettings = [
+                    "width": longerSize,
+                    "height": shorterSize
+                ]
+            }
+            
         }else{
             
-            guard rtmpStream.readyState == .closed || rtmpStream.readyState == .initialized else { return }
-            
-            guard rtmpStream.recordingState == .notRecording else { return }
-
             // Prevent rotation while recording
             rtmpStream.syncOrientation = true
         }

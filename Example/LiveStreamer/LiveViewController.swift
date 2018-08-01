@@ -7,11 +7,13 @@ import Photos
 extension LiveViewController: LiveStreamingDelegate {
     
     func broadcastStatusWith(code: String) {
-        
+        print("broadcastStatusWith \(code)")
         switch code {
             
-        case RTMPConnection.Code.connectSuccess.rawValue:
-            
+        case RTMPConnection.Code.connectSuccess.rawValue,
+             RTMPStream.Code.publishStart.rawValue,
+             RTMPStream.Code.connectSuccess.rawValue:
+
             DispatchQueue.main.async {
                 
                 self.publishButton?.setTitle("■", for: [])
@@ -24,16 +26,25 @@ extension LiveViewController: LiveStreamingDelegate {
             
             break
             
-        default:
-            
+        case RTMPConnection.Code.connectClosed.rawValue,
+             RTMPConnection.Code.connectFailed.rawValue,
+             RTMPConnection.Code.connectIdleTimeOut.rawValue,
+             RTMPConnection.Code.connectInvalidApp.rawValue,
+             RTMPStream.Code.connectRejected.rawValue,
+             RTMPStream.Code.connectFailed.rawValue,
+             RTMPStream.Code.connectClosed.rawValue:
+
             DispatchQueue.main.async {
-
+                
                 self.publishButton?.setTitle("●", for: [])
-
+                
                 UIApplication.shared.isIdleTimerDisabled = false
                 
                 self.publishButton?.isSelected = !((self.publishButton?.isSelected)!)
             }
+            
+        default:
+            
             break
         }
     }
@@ -99,17 +110,16 @@ final class LiveViewController: UIViewController {
         // http://jira.stunitas.com:8080/secure/attachment/10505/IMG_1209.PNG
 
         // Please be sure your device`s camera support resolution with front/back camera both. If you set higher resolution, camera doesn't work properly
-        liveStreamer.sessionPreset = AVCaptureSession.Preset.hd1920x1080
+        liveStreamer.sessionPreset = AVCaptureSession.Preset.hd1280x720
         
         // Please change video size follow orientation. If your device using portrait, please set video size w1080, h1920
-        liveStreamer.videoSize = CGSize(width: 1080, height: 1920)
+        liveStreamer.videoSize = CGSize(width: 720, height: 1280)
 
         liveStreamer.videoFPS = 30
         liveStreamer.videoBitrate = 1024 * 1024
         liveStreamer.audioBitrate = 128 * 1024
 
         liveStreamer.sampleRate = 44_100
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -172,8 +182,8 @@ final class LiveViewController: UIViewController {
             
         } else {
             
-            let liveStreamUri: String = "rtmp://client33541:f32f1e8c@08fd49.entrypoint.cloud.wowza.com/app-399f"
-            let liveStreamName: String = "c21b35ac"
+            let liveStreamUri: String = "rtmp://client33541:5a28110e@8392e6.entrypoint.cloud.wowza.com/app-9fe9"
+            let liveStreamName: String = "cfdacb3b"
 
             liveStreamer.startStreaming(uri: liveStreamUri, streamName:liveStreamName)
         }
