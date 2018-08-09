@@ -19,7 +19,7 @@ final class VideoIOComponent: IOComponent {
         return queue
     }()
 
-    var effects: [VisualEffect] = []
+    private(set) var effects: Set<VisualEffect> = []
 
 #if os(iOS) || os(macOS)
     var fps: Float64 = AVMixer.defaultFPS {
@@ -364,11 +364,7 @@ final class VideoIOComponent: IOComponent {
         defer {
             objc_sync_exit(effects)
         }
-        if effects.contains(effect) {
-            return false
-        }
-        effects.append(effect)
-        return true
+        return effects.insert(effect).inserted
     }
 
     func unregisterEffect(_ effect: VisualEffect) -> Bool {
@@ -376,11 +372,7 @@ final class VideoIOComponent: IOComponent {
         defer {
             objc_sync_exit(effects)
         }
-        if let i: Int = effects.index(of: effect) {
-            effects.remove(at: i)
-            return true
-        }
-        return false
+        return effects.remove(effect) != nil
     }
 }
 
