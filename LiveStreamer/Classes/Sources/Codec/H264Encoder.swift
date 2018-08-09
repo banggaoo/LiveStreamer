@@ -120,6 +120,7 @@ final class H264Encoder: NSObject {
                 return
             }
             setProperty(kVTCompressionPropertyKey_ExpectedFrameRate, NSNumber(value: expectedFPS))
+            setProperty(kVTCompressionPropertyKey_MaxKeyFrameInterval, NSNumber(value: expectedFPS))
         }
     }
     var formatDescription: CMFormatDescription? {
@@ -155,12 +156,12 @@ final class H264Encoder: NSObject {
     private var invalidateSession: Bool = true
     private var lastImageBuffer: CVImageBuffer?
 
-    // @see: https: //developer.apple.com/library/mac/releasenotes/General/APIDiffsMacOSX10_8/VideoToolbox.html
+    // @see: https://developer.apple.com/library/mac/releasenotes/General/APIDiffsMacOSX10_8/VideoToolbox.html
     private var properties: [NSString: NSObject] {
         //let isBaseline: Bool = profileLevel.contains("Baseline")
         var properties: [NSString: NSObject] = [
             kVTCompressionPropertyKey_RealTime: kCFBooleanTrue,
-            kVTCompressionPropertyKey_ProfileLevel: kVTProfileLevel_H264_Main_AutoLevel,
+            kVTCompressionPropertyKey_ProfileLevel: kVTProfileLevel_H264_Baseline_AutoLevel,
             kVTCompressionPropertyKey_AverageBitRate: Int(bitrate) as NSObject,
             kVTCompressionPropertyKey_ExpectedFrameRate: NSNumber(value: expectedFPS),
             kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration: NSNumber(value: maxKeyFrameIntervalDuration),
