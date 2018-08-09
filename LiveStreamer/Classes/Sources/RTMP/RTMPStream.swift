@@ -316,8 +316,10 @@ open class RTMPStream: NetStream {
     private var howToPublish: RTMPStream.HowToPublish = .live
     private var rtmpConnection: RTMPConnection
     
-    public var minimumBitrate: UInt32 = 128 * 1024
-    public var maximumBitrate: UInt32 = 1024 * 1024
+    public var minimumBitrate: UInt32 = Preference.minimumBitrate
+    public var maximumBitrate: UInt32 = Preference.maximumBitrate
+
+    public var sampleRate: Double = Preference.sampleRate
 
     public init(connection: RTMPConnection) {
         self.rtmpConnection = connection
@@ -341,7 +343,7 @@ open class RTMPStream: NetStream {
         
         let session: AVAudioSession = AVAudioSession.sharedInstance()
         do {
-            try session.setPreferredSampleRate(44_100)
+            try session.setPreferredSampleRate(sampleRate)
             try session.setCategory(AVAudioSessionCategoryPlayAndRecord, with: .allowBluetooth)
             try session.setMode(AVAudioSessionModeDefault)
             try session.setActive(true)
@@ -528,13 +530,14 @@ open class RTMPStream: NetStream {
     }
 
     open func close() {
-        
-        guard !(readyState == .closed || readyState == .initialized) else { return }
+        print("close")
+
+        guard readyState != .closed else { return }
         
         play()
         publish(nil)
         lockQueue.sync {
-            print("close")
+            print("self.readyState = .closed")
             self.readyState = .closed
             /*
             self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
@@ -657,6 +660,7 @@ open class RTMPStream: NetStream {
         
         switch code {
         case RTMPConnection.Code.connectSuccess.rawValue:
+            print("RTMPConnection.Code.connectSuccess.rawValue")
             readyState = .initialized
             rtmpConnection.createStream(self)
         case RTMPStream.Code.playStart.rawValue:

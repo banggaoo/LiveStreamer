@@ -26,10 +26,10 @@ final class AACEncoder: NSObject {
 
     static let packetSize: UInt32 = 1
     static let framesPerPacket: UInt32 = 1024
-    static let minimumBitrate: UInt32 = 8 * 1024
+    static let minimumBitrate: UInt32 = Preference.audioMinimumBitrate
 
     static let defaultProfile: UInt32 = UInt32(MPEG4ObjectID.AAC_LC.rawValue)
-    static let defaultBitrate: UInt32 = 32 * 1024
+    static let defaultBitrate: UInt32 = Preference.audioDefaultBitrate
     // 0 means according to a input source
     static let defaultChannels: UInt32 = 0
     // 0 means according to a input source

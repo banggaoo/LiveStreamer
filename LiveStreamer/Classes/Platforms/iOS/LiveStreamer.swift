@@ -9,6 +9,23 @@
 import UIKit
 import AVFoundation
 
+public struct Preference {
+
+    static public let defaultKeyFrame: Float = 30.0
+    
+    static public let defaultBitrate: UInt32 = 1024 * 1024 * 1
+    static public let minimumBitrate: UInt32 = 512 * 1024 * 1
+    static public let maximumBitrate: UInt32 = 1024 * 1024 * 2
+
+    static public let audioDefaultBitrate: UInt32 = 128 * 1024
+    static public let audioMinimumBitrate: UInt32 = 96 * 1024
+    static public let audioMaximumBitrate: UInt32 = 192 * 1024
+    
+    static public let sampleRate: Double = 44_100
+    
+    static public let incrementBitrate: UInt32 = 512 * 1024
+}
+
 struct LiveStreamAddress {
     // If you want to use singleton
     //static var defaultInstance: Preference = Preference()
@@ -26,7 +43,6 @@ class LiveStreamerRTMPStreamQoSDelegate: RTMPStreamDelegate {
         if var videoBitrate = stream.videoSettings["bitrate"] as? UInt32 {
 
             videoBitrate = UInt32(videoBitrate / 2)
-
             if videoBitrate < stream.minimumBitrate {
                 videoBitrate = stream.minimumBitrate
             }
@@ -41,10 +57,8 @@ class LiveStreamerRTMPStreamQoSDelegate: RTMPStreamDelegate {
 
         if var videoBitrate = stream.videoSettings["bitrate"] as? UInt32 {
 
-            videoBitrate = UInt32(Double(videoBitrate) + 50 * 1024)
-
+            videoBitrate = videoBitrate + Preference.incrementBitrate
             if videoBitrate > stream.maximumBitrate {
-                
                 videoBitrate = stream.maximumBitrate
             }
             
@@ -119,7 +133,7 @@ public class LiveStreamer: NSObject {
         
         set {
             
-            if _cameraPosition == newValue { return }
+            guard _cameraPosition != newValue else { return }
  
             if let newDevice: AVCaptureDevice = DeviceUtil.device(withPosition: newValue) {
                 
@@ -136,8 +150,12 @@ public class LiveStreamer: NSObject {
         }
     }
     
-    open var videoBitrate: UInt32 = 1024 * 1024 { didSet { rtmpStream.videoSettings["bitrate"] = videoBitrate } }
-    open var audioBitrate: UInt32 = 128 * 1024 { didSet { rtmpStream.audioSettings["bitrate"] = audioBitrate } }
+    open var videoBitrate: UInt32 = Preference.defaultBitrate { didSet { rtmpStream.videoSettings["bitrate"] = videoBitrate } }
+    open var audioBitrate: UInt32 = Preference.audioDefaultBitrate { didSet { rtmpStream.audioSettings["bitrate"] = audioBitrate } }
+    
+    open var maximumVideoBitrate: UInt32 = Preference.maximumBitrate { didSet { rtmpStream.maximumBitrate = maximumVideoBitrate } }
+    open var minimumVideoBitrate: UInt32 = Preference.minimumBitrate { didSet { rtmpStream.minimumBitrate = minimumVideoBitrate } }
+
     
     open var zoomRate: Float = 1.0 { didSet { rtmpStream.setZoomFactor(CGFloat(zoomRate), ramping: true, withRate: 5.0) } }
 
@@ -165,10 +183,11 @@ public class LiveStreamer: NSObject {
     // Unchangeable while recording/streaming
     var captureSettings: [String: Any] = [:] { didSet { rtmpStream.captureSettings = captureSettings } }
     
-    open var sampleRate: Double = 44_100 {
+    open var sampleRate: Double = Preference.sampleRate {
         
         didSet {
             
+            rtmpStream.sampleRate = sampleRate
             rtmpStream.audioSettings = [
                 "sampleRate": sampleRate
             ]
@@ -210,7 +229,7 @@ public class LiveStreamer: NSObject {
  
     open var recordFileName: String = "Movie" { didSet { rtmpStream.mixer.recorder.fileName = recordFileName } }
     
-    open var videoFPS: Float = 30.0 { didSet { rtmpStream.captureSettings["fps"] = videoFPS } }
+    open var videoFPS: Float = Preference.defaultKeyFrame { didSet { rtmpStream.captureSettings["fps"] = videoFPS } }
     
     
     public init(view: GLHKView) {
@@ -242,7 +261,7 @@ public class LiveStreamer: NSObject {
         
         videoSize = CGSize(width: 1280, height: 720)
         
-        sampleRate = 44_100
+        sampleRate = Preference.sampleRate
         
         rtmpStream.syncOrientation = true
         
@@ -430,19 +449,28 @@ public class LiveStreamer: NSObject {
 
         if isUserWantConnect {
  
-            if rtmpStream.readyState == .closed || rtmpStream.readyState == .initialized {
+            if rtmpStream.readyState == .closed {
                 
                 // If we try to start socket connection rapidly, problem occur. So we have disconnect properly before reconnect
+                
+                //rtmpConnection.addEventListener(Event.IO_ERROR, selector: #selector(rtmpIOErrorHandler), observer: self)
+                //rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(rtmpStatusHandler), observer: self)
+
                 rtmpConnection.start(liveStreamAddress.uri)
             }
         }
     }
     
-    
     @objc func rtmpIOErrorHandler(_ notification: Notification) {
         print("rtmpIOErrorHandler\(notification)")
         // Socket timeout. when timed out, reconnection is not working
 
+        // Close stream for reconnect
+        rtmpStream.close()
+        rtmpConnection.stop()
+        
+        //rtmpConnection.removeEventListener(Event.IO_ERROR, selector: #selector(rtmpIOErrorHandler), observer: self)
+        //rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector: #selector(rtmpStatusHandler), observer: self)
     }
     
     @objc func rtmpStatusHandler(_ notification: Notification) {

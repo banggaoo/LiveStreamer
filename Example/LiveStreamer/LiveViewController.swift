@@ -112,14 +112,7 @@ final class LiveViewController: UIViewController {
         // Please be sure your device`s camera support resolution with front/back camera both. If you set higher resolution, camera doesn't work properly
         liveStreamer.sessionPreset = AVCaptureSession.Preset.hd1280x720
         
-        // Please change video size follow orientation. If your device using portrait, please set video size w1080, h1920
         liveStreamer.videoSize = CGSize(width: 720, height: 1280)
-
-        liveStreamer.videoFPS = 30
-        liveStreamer.videoBitrate = 1024 * 1024
-        liveStreamer.audioBitrate = 128 * 1024
-
-        liveStreamer.sampleRate = 44_100
     }
     
     override func viewDidAppear(_ animated: Bool) {
