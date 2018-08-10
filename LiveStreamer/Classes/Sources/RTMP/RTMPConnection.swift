@@ -466,7 +466,7 @@ open class RTMPConnection: EventDispatcher {
             for i in 0..<previousQueueBytesOut.count - 1 where previousQueueBytesOut[i] < previousQueueBytesOut[i + 1] {
                 count += 1
             }
-          //  print("count"+String(count))
+            print("count"+String(count))
 
             if count == measureInterval - 1 {
                 for (_, stream) in streams {

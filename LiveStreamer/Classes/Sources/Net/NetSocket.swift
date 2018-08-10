@@ -72,7 +72,7 @@ public class NetSocket: NSObject {
         while total < maxLength {
             let length: Int = outputStream.write(buffer.advanced(by: total), maxLength: maxLength - total)
             if length <= 0 {
-                print("length <= 0")
+                //print("length <= 0")
                 // Socket write error
                 break
             }
@@ -147,12 +147,7 @@ public class NetSocket: NSObject {
         runloop?.run()
         connected = false
     }
-    /*
-    func deinitConnection(isDisconnected: Bool) {
-        
-        deinitConnection(isDisconnected: isDisconnected, eventCode: nil)
-    }*/
-
+    
     func deinitConnection(isDisconnected: Bool, eventCode: Stream.Event?) {
         inputStream?.close()
         inputStream?.remove(from: runloop!, forMode: .defaultRunLoopMode)

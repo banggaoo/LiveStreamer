@@ -15,9 +15,9 @@ public struct Preference {
     
     static public let defaultBitrate: UInt32 = 1024 * 1024 * 1
     static public let minimumBitrate: UInt32 = 512 * 1024 * 1
-    static public let maximumBitrate: UInt32 = 1024 * 1024 * 2
+    static public let maximumBitrate: UInt32 = 1024 * 1024 * 3
 
-    static public let audioDefaultBitrate: UInt32 = 128 * 1024
+    static public let audioDefaultBitrate: UInt32 = 192 * 1024
     static public let audioMinimumBitrate: UInt32 = 96 * 1024
     static public let audioMaximumBitrate: UInt32 = 192 * 1024
     
@@ -407,10 +407,10 @@ public class LiveStreamer: NSObject {
         
         isUserWantConnect = true
         
+        timer = Timer(timeInterval: 2.0, target: self, selector: #selector(on(timer:)), userInfo: nil, repeats: true)
+        
         readyForBroadcast(isReady: true)
         
-        timer = Timer(timeInterval: 2.0, target: self, selector: #selector(on(timer:)), userInfo: nil, repeats: true)
-
         //rtmpConnection.addEventListener(Event.SYNC, selector: #selector(rtmpStatusHandler), observer: self)
         //rtmpConnection.addEventListener(Event.EVENT, selector: #selector(rtmpStatusHandler), observer: self)
         rtmpConnection.addEventListener(Event.IO_ERROR, selector: #selector(rtmpIOErrorHandler), observer: self)
@@ -418,17 +418,17 @@ public class LiveStreamer: NSObject {
         rtmpConnection.start(liveStreamAddress.uri)
         // Need time to prepare service. will callback at rtmpStatusHandler()
     }
- 
+  
     open func stopStreaming() {
         
         guard !(rtmpStream.readyState == .closed || rtmpStream.readyState == .initialized) else { return }
 
         isUserWantConnect = false
         
-        readyForBroadcast(isReady: false)
-
         timer = nil
-
+        
+        readyForBroadcast(isReady: false)
+        
         rtmpConnection.stop()
         //rtmpConnection.removeEventListener(Event.SYNC, selector: #selector(rtmpStatusHandler), observer: self)
         //rtmpConnection.removeEventListener(Event.EVENT, selector: #selector(rtmpStatusHandler), observer: self)
@@ -449,14 +449,16 @@ public class LiveStreamer: NSObject {
 
         if isUserWantConnect {
  
-            if rtmpStream.readyState == .closed {
+            if rtmpConnection.connected == false {
                 
+                if rtmpStream.readyState == .closed {
                 // If we try to start socket connection rapidly, problem occur. So we have disconnect properly before reconnect
                 
                 //rtmpConnection.addEventListener(Event.IO_ERROR, selector: #selector(rtmpIOErrorHandler), observer: self)
                 //rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(rtmpStatusHandler), observer: self)
 
-                rtmpConnection.start(liveStreamAddress.uri)
+                    rtmpConnection.start(liveStreamAddress.uri)
+                }
             }
         }
     }
@@ -466,9 +468,8 @@ public class LiveStreamer: NSObject {
         // Socket timeout. when timed out, reconnection is not working
 
         // Close stream for reconnect
-        rtmpStream.close()
         rtmpConnection.stop()
-        
+
         //rtmpConnection.removeEventListener(Event.IO_ERROR, selector: #selector(rtmpIOErrorHandler), observer: self)
         //rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector: #selector(rtmpStatusHandler), observer: self)
     }
