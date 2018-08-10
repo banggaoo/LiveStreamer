@@ -253,7 +253,7 @@ final class VideoIOComponent: IOComponent {
             }
             
             if connection.isVideoStabilizationSupported {
-                connection.preferredVideoStabilizationMode = AVCaptureVideoStabilizationMode.auto
+                //connection.preferredVideoStabilizationMode = AVCaptureVideoStabilizationMode.auto
             }
             connection.videoOrientation = orientation
         }
