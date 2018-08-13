@@ -407,7 +407,7 @@ public class LiveStreamer: NSObject {
         
         isUserWantConnect = true
         
-        timer = Timer(timeInterval: 2.0, target: self, selector: #selector(on(timer:)), userInfo: nil, repeats: true)
+        timer = Timer(timeInterval: 4.0, target: self, selector: #selector(on(timer:)), userInfo: nil, repeats: true)
         
         readyForBroadcast(isReady: true)
         
@@ -451,7 +451,7 @@ public class LiveStreamer: NSObject {
  
             if rtmpConnection.connected == false {
                 
-                if rtmpStream.readyState == .closed {
+                if rtmpStream.readyState == .closed || rtmpStream.readyState == .initialized {
                 // If we try to start socket connection rapidly, problem occur. So we have disconnect properly before reconnect
                 
                 //rtmpConnection.addEventListener(Event.IO_ERROR, selector: #selector(rtmpIOErrorHandler), observer: self)
