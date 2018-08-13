@@ -28,6 +28,7 @@ open class AVMixerRecorder: NSObject {
         ],
         .video: [
             AVVideoCodecKey: AVVideoCodecH264,
+            AVVideoCompressionPropertiesKey: [AVVideoAverageBitRateKey: 1024 * 1024 * 1],
             AVVideoHeightKey: 0,
             AVVideoWidthKey: 0
         ]
@@ -202,6 +203,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
             recorder.finishWriting()
         }
         recorder.writer = createWriter(recorder.fileName)
+        recorder.writer?.shouldOptimizeForNetworkUse = true
         rotateTime = CMTimeAdd(
             withPresentationTimeStamp,
             CMTimeMake(duration == 0 ? .max : duration * Int64(withPresentationTimeStamp.timescale), withPresentationTimeStamp.timescale)
