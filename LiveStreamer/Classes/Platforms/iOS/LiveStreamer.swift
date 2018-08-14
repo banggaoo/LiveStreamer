@@ -441,6 +441,13 @@ public class LiveStreamer: NSObject {
         rtmpStream.togglePause()
     }
     
+    func setTimer() {
+        
+        guard timer == nil else { return }
+        
+        timer = Timer(timeInterval: 4.0, target: self, selector: #selector(on(timer:)), userInfo: nil, repeats: true)
+    }
+    
     @objc private func on(timer: Timer) {
         // Check connection is need to retry
         
@@ -470,6 +477,8 @@ public class LiveStreamer: NSObject {
         // Close stream for reconnect
         rtmpConnection.stop()
 
+        setTimer()
+
         //rtmpConnection.removeEventListener(Event.IO_ERROR, selector: #selector(rtmpIOErrorHandler), observer: self)
         //rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector: #selector(rtmpStatusHandler), observer: self)
     }
@@ -486,6 +495,8 @@ public class LiveStreamer: NSObject {
             case RTMPConnection.Code.connectSuccess.rawValue:
                 
                 rtmpStream!.publish(liveStreamAddress.streamName, type:.live)
+                
+                timer = nil
                 break
                 
             case RTMPConnection.Code.connectNetworkChange.rawValue:
@@ -494,19 +505,25 @@ public class LiveStreamer: NSObject {
                 
             case RTMPConnection.Code.connectIdleTimeOut.rawValue:
 
+                setTimer()
                 break
                 
             case RTMPConnection.Code.connectFailed.rawValue:
                 // If handshake is failed before deinitconnect, connectFailed call. Or connectClosed call
+              
+                setTimer()
                 break
                 
             case RTMPConnection.Code.connectRejected.rawValue:
                 // Server is not yet started or needs authentication
+                
+                setTimer()
                 break
                 
             case RTMPConnection.Code.connectClosed.rawValue:
                 // Server is closing
  
+                setTimer()
                 break
                 
             default:

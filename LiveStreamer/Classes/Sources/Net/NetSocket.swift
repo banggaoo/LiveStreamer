@@ -209,7 +209,7 @@ extension NetSocket: StreamDelegate {
         case .errorOccurred:
             print("errorOccurred"+aStream.streamError.debugDescription)
             
-            if let description = aStream.streamError?.localizedDescription, description.contains("Socket is not connected") {
+            if aStream.streamError.debugDescription.contains("Socket is not connected") {
                 
                 close(isDisconnected: true, eventCode: eventCode)
 
