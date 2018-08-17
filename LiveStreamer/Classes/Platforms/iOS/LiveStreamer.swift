@@ -231,7 +231,6 @@ public class LiveStreamer: NSObject {
     
     open var videoFPS: Float = Preference.defaultKeyFrame { didSet { rtmpStream.captureSettings["fps"] = videoFPS } }
     
-    
     public init(view: GLHKView) {
         print("init(view: GLHKView")
         lfView = view
@@ -318,7 +317,7 @@ public class LiveStreamer: NSObject {
         return rtmpStream.isTorchModeSupported()
     }
     
-    func readyForBroadcast(isReady: Bool) {
+    open func readyForBroadcast(isReady: Bool) {
 
         if isReady {
             
@@ -410,7 +409,8 @@ public class LiveStreamer: NSObject {
         timer = Timer(timeInterval: 4.0, target: self, selector: #selector(on(timer:)), userInfo: nil, repeats: true)
         
         readyForBroadcast(isReady: true)
-        
+
+
         //rtmpConnection.addEventListener(Event.SYNC, selector: #selector(rtmpStatusHandler), observer: self)
         //rtmpConnection.addEventListener(Event.EVENT, selector: #selector(rtmpStatusHandler), observer: self)
         rtmpConnection.addEventListener(Event.IO_ERROR, selector: #selector(rtmpIOErrorHandler), observer: self)
@@ -421,8 +421,10 @@ public class LiveStreamer: NSObject {
   
     open func stopStreaming() {
         
-        guard !(rtmpStream.readyState == .closed || rtmpStream.readyState == .initialized) else { return }
+        //guard !(rtmpStream.readyState == .closed || rtmpStream.readyState == .initialized) else { return }
 
+        guard isUserWantConnect else { return }
+        
         isUserWantConnect = false
         
         timer = nil
