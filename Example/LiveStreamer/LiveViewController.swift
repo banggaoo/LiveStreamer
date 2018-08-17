@@ -98,6 +98,9 @@ final class LiveViewController: UIViewController {
     @IBOutlet var fpsControl: UISegmentedControl?
     @IBOutlet var effectSegmentControl: UISegmentedControl?
     
+    var cameraOrientation: UIDeviceOrientation = .portrait
+    var isStreamingStart = false
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -124,9 +127,16 @@ final class LiveViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-
+ 
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        liveStreamer.stopStreaming()
+        liveStreamer.stopRecording()
+    }
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
     }
@@ -172,6 +182,7 @@ final class LiveViewController: UIViewController {
 
             liveStreamer.stopStreaming()
             publish.setTitle("●", for: [])
+            isStreamingStart = false
             
         } else {
             
@@ -179,6 +190,11 @@ final class LiveViewController: UIViewController {
             let liveStreamName: String = "cfdacb3b"
 
             liveStreamer.startStreaming(uri: liveStreamUri, streamName:liveStreamName)
+            
+            isStreamingStart = true
+            cameraOrientation = UIDevice.current.orientation
+            
+            print("cameraOrientation \(cameraOrientation)")
         }
         
         publish.isSelected = !publish.isSelected
@@ -233,4 +249,11 @@ final class LiveViewController: UIViewController {
             break
         }
     }
+    
+    open override var shouldAutorotate: Bool {
+        get {
+            return !isStreamingStart
+        }
+    }
+ 
 }

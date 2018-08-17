@@ -14,8 +14,6 @@
 		70174E96210180BD00D60151 /* LiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174E8F210180BD00D60151 /* LiveViewController.swift */; };
 		70174E97210180BD00D60151 /* VisualEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174E90210180BD00D60151 /* VisualEffect.swift */; };
 		70174E98210180BD00D60151 /* Logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 70174E91210180BD00D60151 /* Logo.png */; };
-		70174E99210180BD00D60151 /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174E92210180BD00D60151 /* Preference.swift */; };
-		70174E9A210180BD00D60151 /* PreferenceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174E93210180BD00D60151 /* PreferenceViewController.swift */; };
 		70174E9B210180BD00D60151 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 70174E94210180BD00D60151 /* Main.storyboard */; };
 		70174EA7210183A200D60151 /* Pods_LiveStreamer_Example.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 91DA8C03D4D14B47E186EF7E /* Pods_LiveStreamer_Example.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		70174EA8210183B000D60151 /* Pods_LiveStreamer_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E0A5DE2131BA99FD7140419 /* Pods_LiveStreamer_Tests.framework */; };
@@ -64,8 +62,6 @@
 		70174E8F210180BD00D60151 /* LiveViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveViewController.swift; sourceTree = "<group>"; };
 		70174E90210180BD00D60151 /* VisualEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisualEffect.swift; sourceTree = "<group>"; };
 		70174E91210180BD00D60151 /* Logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Logo.png; sourceTree = "<group>"; };
-		70174E92210180BD00D60151 /* Preference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preference.swift; sourceTree = "<group>"; };
-		70174E93210180BD00D60151 /* PreferenceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferenceViewController.swift; sourceTree = "<group>"; };
 		70174E94210180BD00D60151 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		70174EA62101827500D60151 /* LiveStreamer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LiveStreamer.framework; path = "../../../../Library/Developer/Xcode/DerivedData/LiveStreamer-bfpnbnovcbsqxaezrxsepyvvwmhz/Build/Products/Debug-iphoneos/LiveStreamer.framework"; sourceTree = "<group>"; };
 		70174EA92101844D00D60151 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -124,8 +120,6 @@
 				70174E8F210180BD00D60151 /* LiveViewController.swift */,
 				70174E91210180BD00D60151 /* Logo.png */,
 				70174E94210180BD00D60151 /* Main.storyboard */,
-				70174E92210180BD00D60151 /* Preference.swift */,
-				70174E93210180BD00D60151 /* PreferenceViewController.swift */,
 				70174E90210180BD00D60151 /* VisualEffect.swift */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
@@ -359,10 +353,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				70174E9A210180BD00D60151 /* PreferenceViewController.swift in Sources */,
 				70174E97210180BD00D60151 /* VisualEffect.swift in Sources */,
 				70174E96210180BD00D60151 /* LiveViewController.swift in Sources */,
-				70174E99210180BD00D60151 /* Preference.swift in Sources */,
 				70174E95210180BD00D60151 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
