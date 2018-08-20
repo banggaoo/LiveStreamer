@@ -15,7 +15,7 @@ protocol RTMPSocketCompatible: class {
 
     @discardableResult
     func doOutput(chunk: RTMPChunk, locked: UnsafeMutablePointer<UInt32>?) -> Int
-    func close(isDisconnected: Bool)
+    func close(isDisconnected: Bool, eventCode: Stream.Event?)
     func connect(withName: String, port: Int)
     func deinitConnection(isDisconnected: Bool, eventCode: Stream.Event?)
 }
@@ -143,7 +143,8 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
     override func deinitConnection(isDisconnected: Bool, eventCode: Stream.Event?) {
         print("deinitConnection")
         if isDisconnected {
-            
+            print("isDisconnected")
+
             let data: ASObject = (readyState == .handshakeDone) ?
                 RTMPConnection.Code.connectClosed.data("") : RTMPConnection.Code.connectFailed.data("")
 /*

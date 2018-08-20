@@ -81,18 +81,20 @@ public class NetSocket: NSObject {
             OSAtomicAdd64(-Int64(length), &queueBytesOut)
         }
     }
-
+/*
     func close(isDisconnected: Bool) {
 
         close(isDisconnected: isDisconnected, eventCode: nil)
-    }
+    }*/
     
     func close(isDisconnected: Bool, eventCode: Stream.Event?) {
         print("close: \(eventCode)")
-        outputQueue.async {
-            guard let runloop: RunLoop = self.runloop else {
-                return
-            }
+        outputQueue.async {  // 아래가 바로 호출이 안되는데, sync 로 할까
+            print("outputQueue")
+
+            guard let runloop: RunLoop = self.runloop else { return }
+            print("runloop \(runloop)")
+
             if let eventCode = eventCode {
                 
                 self.deinitConnection(isDisconnected: isDisconnected, eventCode: eventCode)

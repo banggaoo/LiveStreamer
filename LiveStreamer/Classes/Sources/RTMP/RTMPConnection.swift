@@ -301,6 +301,7 @@ open class RTMPConnection: EventDispatcher {
 
     open func stop() {
         
+        // To not sending errorHandle, set isDisconnected to false
         close(isDisconnected: false)
     }
 
@@ -319,7 +320,7 @@ open class RTMPConnection: EventDispatcher {
             stream.close()
             streams.removeValue(forKey: id)
         }
-        socket.close(isDisconnected: false)
+        socket.close(isDisconnected: false, eventCode: nil)
         timer = nil
     }
 

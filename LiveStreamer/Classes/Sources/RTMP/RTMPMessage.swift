@@ -343,7 +343,7 @@ final class RTMPCommandMessage: RTMPMessage {
     }
 
     override func execute(_ connection: RTMPConnection) {
-
+        print("execute \(commandName)")
         guard let responder: Responder = connection.operations.removeValue(forKey: transactionId) else {
             switch commandName {
             case "close":

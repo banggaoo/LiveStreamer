@@ -32,7 +32,7 @@ open class NetService: NSObject {
             }
             clients.remove(at: index)
             client.delegate = nil
-            client.close(isDisconnected: true)
+            client.close(isDisconnected: true, eventCode: nil)
         }
     }
 

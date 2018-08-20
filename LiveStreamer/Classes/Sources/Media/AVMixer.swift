@@ -16,7 +16,7 @@ final public class AVMixer: NSObject {
         "continuousExposure"
     ]
 
-    static let defaultFPS: Float64 = Float64(Preference.defaultKeyFrame)
+    static let defaultFPS: Float64 = Float64(Preference.defaultFPS)
     static let defaultVideoSettings: [NSString: AnyObject] = [
         kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32BGRA)
     ]
