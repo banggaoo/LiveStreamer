@@ -11,7 +11,7 @@ import AVFoundation
 
 public struct Preference {
 
-    static public let defaultKeyFrame: Float = 30.0
+    static public let defaultFPS: Float = 24.0
     
     static public let defaultBitrate: UInt32 = 1024 * 1024 * 1
     static public let minimumBitrate: UInt32 = 512 * 1024 * 1
@@ -229,7 +229,7 @@ public class LiveStreamer: NSObject {
  
     open var recordFileName: String = "Movie" { didSet { rtmpStream.mixer.recorder.fileName = recordFileName } }
     
-    open var videoFPS: Float = Preference.defaultKeyFrame { didSet { rtmpStream.captureSettings["fps"] = videoFPS } }
+    open var videoFPS: Float = Preference.defaultFPS { didSet { rtmpStream.captureSettings["fps"] = videoFPS } }
     
     public init(view: GLHKView) {
         print("init(view: GLHKView")
@@ -462,10 +462,7 @@ public class LiveStreamer: NSObject {
                 
                 if rtmpStream.readyState == .closed || rtmpStream.readyState == .initialized {
                 // If we try to start socket connection rapidly, problem occur. So we have disconnect properly before reconnect
-                
-                //rtmpConnection.addEventListener(Event.IO_ERROR, selector: #selector(rtmpIOErrorHandler), observer: self)
-                //rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(rtmpStatusHandler), observer: self)
-
+                 
                     rtmpConnection.start(liveStreamAddress.uri)
                 }
             }
@@ -479,10 +476,8 @@ public class LiveStreamer: NSObject {
         // Close stream for reconnect
         rtmpConnection.stop()
 
+        // Retry connect
         setTimer()
-
-        //rtmpConnection.removeEventListener(Event.IO_ERROR, selector: #selector(rtmpIOErrorHandler), observer: self)
-        //rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector: #selector(rtmpStatusHandler), observer: self)
     }
     
     @objc func rtmpStatusHandler(_ notification: Notification) {
