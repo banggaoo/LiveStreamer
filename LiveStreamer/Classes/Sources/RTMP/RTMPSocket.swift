@@ -152,7 +152,10 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
 
                 data = RTMPConnection.Code.connectClosed.data("")
             }*/
-            events.append(Event(type: Event.RTMP_STATUS, bubbles: false, data: data))
+            
+            delegate?.dispatch(Event.RTMP_STATUS, bubbles: false, data: data)
+
+            //events.append(Event(type: Event.RTMP_STATUS, bubbles: false, data: data))
         }
         readyState = .closing
         super.deinitConnection(isDisconnected: isDisconnected, eventCode: eventCode)
