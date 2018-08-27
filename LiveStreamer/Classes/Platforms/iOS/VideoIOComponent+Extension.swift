@@ -23,7 +23,7 @@ extension VideoIOComponent {
             }
             device.unlockForConfiguration()
         } catch let error as NSError {
-            print("while locking device for ramp: \(error)")
+            //print("while locking device for ramp: \(error)")
         }
     }
 

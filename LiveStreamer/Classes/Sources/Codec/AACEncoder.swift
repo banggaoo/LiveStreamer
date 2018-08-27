@@ -63,7 +63,7 @@ final class AACEncoder: NSObject {
     @objc var sampleRate: Double = AACEncoder.defaultSampleRate
     @objc var actualBitrate: UInt32 = AACEncoder.defaultBitrate {
         didSet {
-            print("\(actualBitrate)")
+            //print("\(actualBitrate)")
         }
     }
 
@@ -84,7 +84,7 @@ final class AACEncoder: NSObject {
     private var currentBufferList: UnsafeMutableAudioBufferListPointer?
     private var inSourceFormat: AudioStreamBasicDescription? {
         didSet {
-            print("\(String(describing: self.inSourceFormat))")
+            //print("\(String(describing: self.inSourceFormat))")
             guard let inSourceFormat: AudioStreamBasicDescription = self.inSourceFormat else {
                 return
             }
@@ -146,7 +146,7 @@ final class AACEncoder: NSObject {
             setBitrateUntilNoErr(bitrate * inDestinationFormat.mChannelsPerFrame)
         }
         if status != noErr {
-            print("\(status)")
+            //print("\(status)")
         }
         return _converter!
     }
@@ -174,7 +174,7 @@ final class AACEncoder: NSObject {
         )
 
         if blockBuffer == nil {
-            print("IllegalState for blockBuffer")
+            //print("IllegalState for blockBuffer")
             return
         }
 

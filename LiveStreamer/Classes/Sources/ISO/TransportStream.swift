@@ -110,7 +110,7 @@ extension TSPacket: DataConvertible {
                     payload = try buffer.readBytes(buffer.bytesAvailable)
                 }
             } catch {
-                print("\(buffer)")
+                //print("\(buffer)")
             }
         }
     }
@@ -301,7 +301,7 @@ extension TSAdaptationField: DataConvertible {
                 }
                 stuffingBytes = try buffer.readBytes(buffer.bytesAvailable)
             } catch {
-                print("\(buffer)")
+                //print("\(buffer)")
             }
         }
     }
@@ -377,7 +377,7 @@ extension TSAdaptationExtensionField: DataConvertible {
                     DTSNextAccessUnit[0] = DTSNextAccessUnit[0] & 0x0f
                 }
             } catch {
-                print("\(buffer)")
+                //print("\(buffer)")
             }
         }
     }

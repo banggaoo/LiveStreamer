@@ -9,98 +9,6 @@
 import UIKit
 import AVFoundation
 
-public struct Preference {
-
-    static public let defaultFPS: Float = 24.0
-    
-    static public let defaultBitrate: UInt32 = 1024 * 1024 * 1
-    static public let minimumBitrate: UInt32 = 512 * 1024 * 1
-    static public let maximumBitrate: UInt32 = 1024 * 1024 * 3
-
-    static public let audioDefaultBitrate: UInt32 = 192 * 1024
-    static public let audioMinimumBitrate: UInt32 = 96 * 1024
-    static public let audioMaximumBitrate: UInt32 = 192 * 1024
-    
-    static public let sampleRate: Double = 44_100
-    
-    static public let incrementBitrate: UInt32 = 512 * 1024
-}
-
-public enum BroadcastStatusForUser: String {
-    
-    case initialize = "LiveStreamer.Init"
-    case ready = "LiveStreamer.Ready"
-    case start = "LiveStreamer.Start"
-    case startTrying = "LiveStreamer.Start.Trying"
-    case startFailed = "LiveStreamer.Start.Failed"
-    case failed = "LiveStreamer.Failed"
-    case failedRetying = "LiveStreamer.Failed.Retrying"
-    case failedTimeout = "LiveStreamer.Failed.Timeout"
-    case pause = "LiveStreamer.Pause"
-    case stop = "LiveStreamer.Stop"
-}
-
-struct LiveStreamAddress {
-    // If you want to use singleton
-    //static var defaultInstance: Preference = Preference()
-    
-    // uri is like "rtmp://test:test@192.168.11.15/live",  "rtmp://1b6cf5.entrypoint.cloud.wowza.com/app-6f91"
-    public var uri: String
-    public var streamName: String  // ex : "188e39fc"
-}
-
-class LiveStreamerRTMPStreamQoSDelegate: RTMPStreamDelegate {
-    
-    // detect upload insufficent BandWidth
-    func didPublishInsufficientBW(_ stream: RTMPStream, withConnection: RTMPConnection) {
-
-        if var videoBitrate = stream.videoSettings["bitrate"] as? UInt32 {
-
-            videoBitrate = UInt32(videoBitrate / 2)
-            if videoBitrate < stream.minimumBitrate {
-                videoBitrate = stream.minimumBitrate
-            }
-            
-            stream.videoSettings["bitrate"] = videoBitrate
-            
-            print("didPublishInsufficientBW \(videoBitrate)")
-        }
-    }
-    
-    func didPublishSufficientBW(_ stream: RTMPStream, withConnection: RTMPConnection) {
-
-        if var videoBitrate = stream.videoSettings["bitrate"] as? UInt32 {
-
-            videoBitrate = videoBitrate + Preference.incrementBitrate
-            if videoBitrate > stream.maximumBitrate {
-                videoBitrate = stream.maximumBitrate
-            }
-            
-            stream.videoSettings["bitrate"] = videoBitrate
-            
-            print("didPublishSufficientBW \(videoBitrate)")
-        }
-    }
-    
-    func clear() {
-
-    }
-}
-
-
-extension LiveStreamer: AVMixerRecorderOuterDelegate {
-    
-    public func didFinishWriting(_ recorder: AVMixerRecorder) {
-        
-        recorderDelegate?.didFinishWriting(recorder)
-    }
-    
-    public func didStartRunning(_ recorder: AVMixerRecorder) {
-        
-        recorderDelegate?.didStartRunning(recorder)
-    }
-}
-
 public protocol LiveStreamingDelegate: class {
     
     func broadcastStatusForUserWith(code: String)
@@ -121,12 +29,11 @@ public class LiveStreamer: NSObject {
     var currentEffect: VisualEffect?
     var liveStreamAddress: LiveStreamAddress = LiveStreamAddress(uri: "", streamName: "")
     
-    public var isUserWantConnect: Bool = false
+    public var isUserWantConnect = false
     
     var broadcastStatusForUser: BroadcastStatusForUser = .initialize {
         
         didSet {
-            
             delegate?.broadcastStatusForUserWith(code:broadcastStatusForUser.rawValue)
         }
     }
@@ -136,7 +43,7 @@ public class LiveStreamer: NSObject {
 
     var delegations: [String: AnyObject] = [:]
 
-    // CamView
+    // Camera View
     var lfView: GLHKView
     
     private var timer: Timer? {
@@ -147,6 +54,10 @@ public class LiveStreamer: NSObject {
             }
         }
     }
+    
+    static private let BroadcastTimeout = 50
+    
+    public var unableTimeCount = 0
 
     // Changeable while recording/streaming
     var _cameraPosition: AVCaptureDevice.Position = .front
@@ -155,7 +66,6 @@ public class LiveStreamer: NSObject {
         get { return _cameraPosition }
         
         set {
-            
             guard _cameraPosition != newValue else { return }
  
             if let newDevice: AVCaptureDevice = DeviceUtil.device(withPosition: newValue) {
@@ -165,7 +75,7 @@ public class LiveStreamer: NSObject {
                 rtmpStream.captureSettings["sessionPreset"] = supportedPreset.rawValue
 
                 rtmpStream.attachCamera(newDevice) { error in
-                    print(error)
+                    //print(error)
                     return
                 }
                 _cameraPosition = newValue
@@ -178,7 +88,6 @@ public class LiveStreamer: NSObject {
     
     open var maximumVideoBitrate: UInt32 = Preference.maximumBitrate { didSet { rtmpStream.maximumBitrate = maximumVideoBitrate } }
     open var minimumVideoBitrate: UInt32 = Preference.minimumBitrate { didSet { rtmpStream.minimumBitrate = minimumVideoBitrate } }
-
     
     open var zoomRate: Float = 1.0 { didSet { rtmpStream.setZoomFactor(CGFloat(zoomRate), ramping: true, withRate: 5.0) } }
 
@@ -187,7 +96,6 @@ public class LiveStreamer: NSObject {
     open var abrOn: Bool = true {
         
         didSet {
-            
             objc_sync_enter(self)
             rtmpStream.qosDelegate = nil
             objc_sync_exit(self)
@@ -195,7 +103,6 @@ public class LiveStreamer: NSObject {
             if abrOn {
                 
                 rtmpStream.qosDelegate = LiveStreamerRTMPStreamQoSDelegate()
-                
             }else{
                 
                 rtmpStream.videoSettings["bitrate"] = videoBitrate
@@ -209,7 +116,6 @@ public class LiveStreamer: NSObject {
     open var sampleRate: Double = Preference.sampleRate {
         
         didSet {
-            
             rtmpStream.sampleRate = sampleRate
             rtmpStream.audioSettings = [
                 "sampleRate": sampleRate
@@ -223,9 +129,7 @@ public class LiveStreamer: NSObject {
         get { return _sessionPreset }
         
         set {
-
             if let currentDevice: AVCaptureDevice = DeviceUtil.device(withPosition: cameraPosition) {
-
                 let supportedPreset: AVCaptureSession.Preset = currentDevice.supportedPreset(newValue)
                 
                 rtmpStream.captureSettings["sessionPreset"] = supportedPreset.rawValue
@@ -241,7 +145,6 @@ public class LiveStreamer: NSObject {
         get { return _videoSize }
         
         set {
-            
             guard rtmpStream.recordingState == .notRecording else { return }
             
             guard rtmpStream.readyState == .closed || rtmpStream.readyState == .initialized else { return }
@@ -255,7 +158,7 @@ public class LiveStreamer: NSObject {
     open var videoFPS: Float = Preference.defaultFPS { didSet { rtmpStream.captureSettings["fps"] = videoFPS } }
     
     public init(view: GLHKView) {
-        print("init(view: GLHKView")
+        //print("init(view: GLHKView")
         lfView = view
         
         super.init()
@@ -293,14 +196,13 @@ public class LiveStreamer: NSObject {
     }
     
     public func startCapturing() {
-        
         guard !(lfView.streamLoaded) else { return }
         
         rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
-            print(error)
+            //print(error)
         }
         rtmpStream.attachCamera(DeviceUtil.device(withPosition: cameraPosition)) { error in
-            print(error)
+            //print(error)
         }
         
         lfView.attachStream(rtmpStream)
@@ -386,7 +288,6 @@ public class LiveStreamer: NSObject {
     }
     
     open func registerFPSObserver() {
-        
         guard let liveStreamer: AnyObject = delegations["currentFPS"], liveStreamer is LiveStreamer else { return }
         
         delegations["currentFPS"] = self
@@ -405,7 +306,6 @@ public class LiveStreamer: NSObject {
     }
  
     open func startRecodring() {
-        
         guard rtmpStream.recordingState == .notRecording else { return }
 
         readyForBroadcast(isReady: true)
@@ -414,7 +314,6 @@ public class LiveStreamer: NSObject {
     }
     
     open func stopRecording() {
-        
         guard rtmpStream.recordingState == .recording else { return }
 
         readyForBroadcast(isReady: false)
@@ -423,7 +322,6 @@ public class LiveStreamer: NSObject {
     }
     
     open func startStreaming(uri: String, streamName: String) {
-
         guard rtmpStream.readyState == .closed || rtmpStream.readyState == .initialized else { return }
 
         liveStreamAddress.uri = uri
@@ -431,7 +329,7 @@ public class LiveStreamer: NSObject {
         
         isUserWantConnect = true
         
-        timer = Timer(timeInterval: 4.0, target: self, selector: #selector(on(timer:)), userInfo: nil, repeats: true)
+        setRetryConnectionTimer(timeInterval: TimeInterval(4))
         
         readyForBroadcast(isReady: true)
 
@@ -446,24 +344,27 @@ public class LiveStreamer: NSObject {
     }
   
     open func stopStreaming() {
-        
-        //guard !(rtmpStream.readyState == .closed || rtmpStream.readyState == .initialized) else { return }
-
         guard isUserWantConnect else { return }
         
         isUserWantConnect = false
         
+        endStreaming()
+        
+        broadcastStatusForUser = .stop
+    }
+    
+    func endStreaming() {
+        
         timer = nil
         
         readyForBroadcast(isReady: false)
-
+        
         rtmpConnection.stop()
         //rtmpConnection.removeEventListener(Event.SYNC, selector: #selector(rtmpStatusHandler), observer: self)
         //rtmpConnection.removeEventListener(Event.EVENT, selector: #selector(rtmpStatusHandler), observer: self)
         rtmpConnection.removeEventListener(Event.IO_ERROR, selector: #selector(rtmpIOErrorHandler), observer: self)
         rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector: #selector(rtmpStatusHandler), observer: self)
         
-        broadcastStatusForUser = .stop
     }
     
     open func pauseStreaming() {
@@ -472,9 +373,9 @@ public class LiveStreamer: NSObject {
         
         if rtmpStream.paused {
             
-            broadcastStatusForUser = .pause
-        }else{
             broadcastStatusForUser = .start
+        }else{
+            broadcastStatusForUser = .pause
         }
     }
     
@@ -496,10 +397,22 @@ public class LiveStreamer: NSObject {
         }
     }
     
+    func setBroadcastStatusForUserToClose() {
+        
+        if isUserWantConnect {
+
+            broadcastStatusForUser = .failed
+            setRetryConnectionTimer(timeInterval: TimeInterval(4))
+        }else{
+            
+            broadcastStatusForUser = .stop
+        }
+    }
+    
     func retryConnection() {
         
-        print("on\(isUserWantConnect)\(rtmpConnection.connected)")
-        print("rtmpStream.readyState\(rtmpStream.readyState)")
+        //print("on\(isUserWantConnect)\(rtmpConnection.connected)")
+        //print("rtmpStream.readyState\(rtmpStream.readyState)")
         
         if isUserWantConnect {
             
@@ -508,12 +421,27 @@ public class LiveStreamer: NSObject {
                 if rtmpStream.readyState == .closed || rtmpStream.readyState == .initialized {
                     // If we try to start socket connection rapidly, problem occur. So we have disconnect properly before reconnect
                     
+                    if let intervalDouble = timer?.timeInterval  {
+                        let intervalInt = Int(intervalDouble)
+                        
+                        unableTimeCount = unableTimeCount + intervalInt
+                    }
+                    
+                    guard unableTimeCount < LiveStreamer.BroadcastTimeout else {
+                        
+                        unableTimeCount = 0
+
+                        // Close stream for reconnect
+                        endStreaming()
+
+                        broadcastStatusForUser = .terminated
+                        return
+                    }
+                    
                     if broadcastStatusForUser == .startTrying || broadcastStatusForUser == .startFailed{
 
                         broadcastStatusForUser = .startTrying
-
                     }else{
-                        
                         broadcastStatusForUser = .failedRetying
                     }
                     
@@ -530,7 +458,7 @@ public class LiveStreamer: NSObject {
     }
     
     @objc func rtmpIOErrorHandler(_ notification: Notification) {
-        print("rtmpIOErrorHandler\(notification)")
+        //print("rtmpIOErrorHandler\(notification)")
         // Socket timeout. when timed out, reconnection is not working
 
         // Close stream for reconnect
@@ -540,7 +468,7 @@ public class LiveStreamer: NSObject {
     }
     
     @objc func rtmpStatusHandler(_ notification: Notification) {
-        print("rtmpStatusHandler \(notification)")
+        //print("rtmpStatusHandler \(notification)")
         let e: Event = Event.from(notification)
         if let data: ASObject = e.data as? ASObject, let code: String = data["code"] as? String {
             
@@ -554,6 +482,7 @@ public class LiveStreamer: NSObject {
                 
                 broadcastStatusForUser = .start
                 timer = nil
+                unableTimeCount = 0
                 break
                 
             case RTMPConnection.Code.connectNetworkChange.rawValue:
@@ -565,18 +494,21 @@ public class LiveStreamer: NSObject {
                  setBroadcastStatusForUserToFailed()
                  break
 
-            case RTMPConnection.Code.connectFailed.rawValue,
-                 // If handshake is failed before deinitconnect, connectFailed call. Or connectClosed call
-                 RTMPConnection.Code.connectRejected.rawValue:
+            case RTMPConnection.Code.connectRejected.rawValue:
                  // Server is not yet started or needs authentication
+
+                break
                 
+            case RTMPConnection.Code.connectFailed.rawValue:
+                 // If handshake is failed before deinitconnect, connectFailed call. Or connectClosed call
+            
                 broadcastStatusForUser = .failed
                 break
                 
             case RTMPConnection.Code.connectClosed.rawValue:
                 // Server is closing
  
-                broadcastStatusForUser = .stop
+                setBroadcastStatusForUserToClose()
                 break
                 
             default:
@@ -590,7 +522,7 @@ public class LiveStreamer: NSObject {
             let touchPoint: CGPoint = gesture.location(in: gestureView)
             let pointOfInterest: CGPoint = CGPoint(x: touchPoint.x/gestureView.bounds.size.width,
                                                    y: touchPoint.y/gestureView.bounds.size.height)
-            print("pointOfInterest: \(pointOfInterest)")
+            //print("pointOfInterest: \(pointOfInterest)")
             rtmpStream.setPointOfInterest(pointOfInterest, exposure: pointOfInterest)
         }
     }

@@ -33,7 +33,7 @@ public class MP4Sampler {
         do {
             _ = try reader.load()
         } catch {
-            print("")
+            //print("")
             return
         }
 

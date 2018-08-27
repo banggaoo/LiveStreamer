@@ -101,7 +101,7 @@ class TSWriter {
             self.currentFileHandle?.write(bytes)
         }, { exception in
             self.currentFileHandle?.write(bytes)
-            print("\(exception)")
+            //print("\(exception)")
         })
     }
 
@@ -138,7 +138,7 @@ class TSWriter {
             do {
                 try fileManager.createDirectory(atPath: temp, withIntermediateDirectories: false, attributes: nil)
             } catch let error as NSError {
-                print("\(error)")
+                //print("\(error)")
             }
         }
 
@@ -156,7 +156,7 @@ class TSWriter {
             do {
                 try fileManager.removeItem(at: info.url as URL)
             } catch let e as NSError {
-                print("\(e)")
+                //print("\(e)")
             }
         }
         currentFileURL = url
@@ -167,7 +167,7 @@ class TSWriter {
         nstry({
             self.currentFileHandle?.synchronizeFile()
         }, { exeption in
-            print("\(exeption)")
+            //print("\(exeption)")
         })
 
         currentFileHandle?.closeFile()
@@ -185,7 +185,7 @@ class TSWriter {
         nstry({
             self.currentFileHandle?.write(bytes)
         }, { exception in
-            print("\(exception)")
+            //print("\(exception)")
         })
         rotatedTimestamp = timestamp
 
@@ -198,7 +198,7 @@ class TSWriter {
             do {
                 try fileManager.removeItem(at: info.url as URL)
             } catch let e as NSError {
-                print("\(e)")
+                //print("\(e)")
             }
         }
         files.removeAll()

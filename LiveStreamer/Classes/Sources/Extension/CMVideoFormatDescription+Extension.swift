@@ -17,7 +17,7 @@ extension CMVideoFormatDescription {
             &formatDescription
         )
         guard status == noErr else {
-            print("\(status)")
+            //print("\(status)")
             return nil
         }
         return formatDescription

@@ -16,7 +16,7 @@ open class FLVReader {
             fileHandle?.seek(toFileOffset: 13)
             currentOffSet = 13
         } catch let error as NSError {
-            print("\(error)")
+            //print("\(error)")
         }
     }
 

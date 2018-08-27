@@ -89,7 +89,7 @@
 		701750542101B12600D60151 /* RTMPSharedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FEC2101B12600D60151 /* RTMPSharedObject.swift */; };
 		701750552101B12600D60151 /* RTMPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FED2101B12600D60151 /* RTMPSocket.swift */; };
 		701750562101B12600D60151 /* RTMPStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FEE2101B12600D60151 /* RTMPStream.swift */; };
-		701750572101B12600D60151 /* RTMPStreamDelagate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FEF2101B12600D60151 /* RTMPStreamDelagate.swift */; };
+		701750572101B12600D60151 /* RTMPStreamDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FEF2101B12600D60151 /* RTMPStreamDelegate.swift */; };
 		701750582101B12600D60151 /* RTMPTSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FF02101B12600D60151 /* RTMPTSocket.swift */; };
 		701750592101B12600D60151 /* AnyUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FF22101B12600D60151 /* AnyUtil.swift */; };
 		7017505A2101B12600D60151 /* ByteArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FF32101B12600D60151 /* ByteArray.swift */; };
@@ -102,6 +102,8 @@
 		701750612101B12600D60151 /* Mutex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FFA2101B12600D60151 /* Mutex.swift */; };
 		701750622101B12600D60151 /* TimerDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FFB2101B12600D60151 /* TimerDriver.swift */; };
 		701750632101B12600D60151 /* VideoGravityUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FFC2101B12600D60151 /* VideoGravityUtil.swift */; };
+		7057B0D5213410C100EFBCBA /* LiveStreamer_Define.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7057B0D4213410C100EFBCBA /* LiveStreamer_Define.swift */; };
+		7057B0D72134154F00EFBCBA /* LiveStreamer_Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7057B0D62134154F00EFBCBA /* LiveStreamer_Delegate.swift */; };
 		773C7809279E4441B51838B6B51C8BA8 /* LiveStreamer-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 20A2A69AE4F6F043F34C880FF14078E0 /* LiveStreamer-dummy.m */; };
 		878761E0573E1E13E293D1F8272ED746 /* Pods-LiveStreamer_Tests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 41589AB84F361C14B9460F837353E4C0 /* Pods-LiveStreamer_Tests-dummy.m */; };
 		A04F417818BC9E5F9F7D96755297B01D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A16F4CFC63FAC439D7A04994F579A03 /* Foundation.framework */; };
@@ -222,7 +224,7 @@
 		70174FEC2101B12600D60151 /* RTMPSharedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPSharedObject.swift; sourceTree = "<group>"; };
 		70174FED2101B12600D60151 /* RTMPSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPSocket.swift; sourceTree = "<group>"; };
 		70174FEE2101B12600D60151 /* RTMPStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPStream.swift; sourceTree = "<group>"; };
-		70174FEF2101B12600D60151 /* RTMPStreamDelagate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPStreamDelagate.swift; sourceTree = "<group>"; };
+		70174FEF2101B12600D60151 /* RTMPStreamDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPStreamDelegate.swift; sourceTree = "<group>"; };
 		70174FF02101B12600D60151 /* RTMPTSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPTSocket.swift; sourceTree = "<group>"; };
 		70174FF22101B12600D60151 /* AnyUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyUtil.swift; sourceTree = "<group>"; };
 		70174FF32101B12600D60151 /* ByteArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ByteArray.swift; sourceTree = "<group>"; };
@@ -235,6 +237,8 @@
 		70174FFA2101B12600D60151 /* Mutex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mutex.swift; sourceTree = "<group>"; };
 		70174FFB2101B12600D60151 /* TimerDriver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerDriver.swift; sourceTree = "<group>"; };
 		70174FFC2101B12600D60151 /* VideoGravityUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoGravityUtil.swift; sourceTree = "<group>"; };
+		7057B0D4213410C100EFBCBA /* LiveStreamer_Define.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveStreamer_Define.swift; sourceTree = "<group>"; };
+		7057B0D62134154F00EFBCBA /* LiveStreamer_Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveStreamer_Delegate.swift; sourceTree = "<group>"; };
 		7B5DC24E424FE880A8C3A724EA64EF67 /* Pods-LiveStreamer_Example-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-LiveStreamer_Example-resources.sh"; sourceTree = "<group>"; };
 		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		B80F5E5D6B52A8B68546B8BE5C2939B8 /* LiveStreamer.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = LiveStreamer.xcconfig; sourceTree = "<group>"; };
@@ -366,6 +370,8 @@
 				70174F8A2101B12500D60151 /* Info.plist */,
 				70174F8B2101B12500D60151 /* LiveStreamer.h */,
 				70174F8C2101B12500D60151 /* LiveStreamer.swift */,
+				7057B0D62134154F00EFBCBA /* LiveStreamer_Delegate.swift */,
+				7057B0D4213410C100EFBCBA /* LiveStreamer_Define.swift */,
 				70174F8D2101B12500D60151 /* MTHKView.swift */,
 				70174F8E2101B12500D60151 /* NetStream+Extension.swift */,
 				70174F8F2101B12500D60151 /* ScreenCaptureSession.swift */,
@@ -518,7 +524,7 @@
 				70174FEC2101B12600D60151 /* RTMPSharedObject.swift */,
 				70174FED2101B12600D60151 /* RTMPSocket.swift */,
 				70174FEE2101B12600D60151 /* RTMPStream.swift */,
-				70174FEF2101B12600D60151 /* RTMPStreamDelagate.swift */,
+				70174FEF2101B12600D60151 /* RTMPStreamDelegate.swift */,
 				70174FF02101B12600D60151 /* RTMPTSocket.swift */,
 			);
 			path = RTMP;
@@ -752,6 +758,7 @@
 				701750142101B12600D60151 /* H264Decoder.swift in Sources */,
 				701750562101B12600D60151 /* RTMPStream.swift in Sources */,
 				701750152101B12600D60151 /* H264Encoder.swift in Sources */,
+				7057B0D5213410C100EFBCBA /* LiveStreamer_Define.swift in Sources */,
 				701750522101B12600D60151 /* RTMPMessage.swift in Sources */,
 				701750022101B12600D60151 /* LiveStreamer.swift in Sources */,
 				701750182101B12600D60151 /* CMAudioFormatDescription+Extension.swift in Sources */,
@@ -761,7 +768,7 @@
 				701750362101B12600D60151 /* MP4Sampler.swift in Sources */,
 				701750062101B12600D60151 /* VideoIOComponent+Extension.swift in Sources */,
 				701750232101B12600D60151 /* VTSession+Extension.swift in Sources */,
-				701750572101B12600D60151 /* RTMPStreamDelagate.swift in Sources */,
+				701750572101B12600D60151 /* RTMPStreamDelegate.swift in Sources */,
 				701750472101B12600D60151 /* MIME.swift in Sources */,
 				701750612101B12600D60151 /* Mutex.swift in Sources */,
 				701750282101B12600D60151 /* FLVReader.swift in Sources */,
@@ -820,6 +827,7 @@
 				7017504C2101B12600D60151 /* AMF0Serializer.swift in Sources */,
 				7017502D2101B12600D60151 /* FLVVideoCodec.swift in Sources */,
 				701750632101B12600D60151 /* VideoGravityUtil.swift in Sources */,
+				7057B0D72134154F00EFBCBA /* LiveStreamer_Delegate.swift in Sources */,
 				701750272101B12600D60151 /* FLVFrameType.swift in Sources */,
 				701750512101B12600D60151 /* RTMPHandshake.swift in Sources */,
 				701750412101B12600D60151 /* IOComponent.swift in Sources */,

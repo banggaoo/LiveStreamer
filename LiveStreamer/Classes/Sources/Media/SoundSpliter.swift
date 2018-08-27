@@ -14,7 +14,7 @@ public class SoundSpliter: NSObject {
     private(set) var status: OSStatus = noErr {
         didSet {
             if status != 0 {
-                print("\(self.status)")
+                //print("\(self.status)")
             }
         }
     }

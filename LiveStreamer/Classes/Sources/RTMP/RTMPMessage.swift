@@ -56,7 +56,7 @@ class RTMPMessage {
             return RTMPAggregateMessage()
         default:
             guard let type: Type = Type(rawValue: value) else {
-                print("\(value)")
+                //print("\(value)")
                 return nil
             }
             return RTMPMessage(type: type)
@@ -317,7 +317,7 @@ final class RTMPCommandMessage: RTMPMessage {
                         arguments.append(try serializer.deserialize())
                     }
                 } catch {
-                    print("\(self.serializer)")
+                    //print("\(self.serializer)")
                 }
                 serializer.clear()
             }
@@ -343,7 +343,7 @@ final class RTMPCommandMessage: RTMPMessage {
     }
 
     override func execute(_ connection: RTMPConnection) {
-        print("execute \(commandName)")
+        //print("execute \(commandName)")
         guard let responder: Responder = connection.operations.removeValue(forKey: transactionId) else {
             switch commandName {
             case "close":
@@ -412,7 +412,7 @@ final class RTMPDataMessage: RTMPMessage {
                         arguments.append(try serializer.deserialize())
                     }
                 } catch {
-                    print("\(self.serializer)")
+                    //print("\(self.serializer)")
                 }
                 serializer.clear()
             }
@@ -498,7 +498,7 @@ final class RTMPSharedObjectMessage: RTMPMessage {
                         }
                     }
                 } catch {
-                    print("\(self.serializer)")
+                    //print("\(self.serializer)")
                 }
                 serializer.clear()
             }

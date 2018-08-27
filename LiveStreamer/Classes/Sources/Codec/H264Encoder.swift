@@ -143,7 +143,7 @@ final class H264Encoder: NSObject {
             for (key, _) in supportedProperty ?? [:] {
                 keys.append(key.description)
             }
-            print(keys.joined(separator: ", "))
+            //print(keys.joined(separator: ", "))
         }
     }
     private(set) var status: OSStatus = noErr
@@ -220,7 +220,7 @@ final class H264Encoder: NSObject {
                     Unmanaged.passUnretained(self).toOpaque(),
                     &_session
                     ) == noErr else {
-                    print("create a VTCompressionSessionCreate")
+                    //print("create a VTCompressionSessionCreate")
                     return nil
                 }
                 invalidateSession = false
@@ -258,7 +258,7 @@ final class H264Encoder: NSObject {
             nil,
             &flags
         )
-        //print("imageBuffer\(imageBuffer)")
+        ////print("imageBuffer\(imageBuffer)")
         if !muted {
             lastImageBuffer = imageBuffer
         }

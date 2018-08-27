@@ -291,7 +291,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
             }
             
             let url: URL = moviesDirectory.appendingPathComponent(fileName + ".mp4")
-            print("\(url)")
+            //print("\(url)")
             
             do {
             try FileManager.default.removeItem(at: url)
@@ -301,7 +301,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
             }
             return try AVAssetWriter(outputURL: url, fileType: .mp4)
         } catch {
-            print("\(error)")
+            //print("\(error)")
         }
         return nil
     }

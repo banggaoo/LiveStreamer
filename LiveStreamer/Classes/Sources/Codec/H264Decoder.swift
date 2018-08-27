@@ -44,7 +44,7 @@ final class H264Decoder {
     private(set) var status: OSStatus = noErr {
         didSet {
             if status != noErr {
-                print("\(self.status)")
+                //print("\(self.status)")
             }
         }
     }

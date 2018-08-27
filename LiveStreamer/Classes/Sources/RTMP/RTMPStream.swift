@@ -349,7 +349,7 @@ open class RTMPStream: NetStream {
             try session.setActive(true)
         } catch let error {
             
-            print("Unexpected error: \(error).")
+            //print("Unexpected error: \(error).")
         }
     }
 
@@ -530,14 +530,14 @@ open class RTMPStream: NetStream {
     }
 
     open func close() {
-        print("close")
+        //print("close")
 
         guard readyState != .closed else { return }
         
         play()
         publish(nil)
         lockQueue.sync {
-            print("self.readyState = .closed")
+            //print("self.readyState = .closed")
             self.readyState = .closed
             /*
             self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
@@ -660,7 +660,7 @@ open class RTMPStream: NetStream {
         
         switch code {
         case RTMPConnection.Code.connectSuccess.rawValue:
-            print("RTMPConnection.Code.connectSuccess.rawValue")
+            //print("RTMPConnection.Code.connectSuccess.rawValue")
             readyState = .initialized
             rtmpConnection.createStream(self)
         case RTMPStream.Code.playStart.rawValue:

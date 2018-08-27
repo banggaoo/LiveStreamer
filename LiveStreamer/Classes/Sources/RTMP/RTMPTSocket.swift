@@ -109,16 +109,19 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     }
  */
     
-    func close(isDisconnected: Bool, eventCode: Stream.Event?) {
+    func close(isDisconnected: Bool) {
 
-        deinitConnection(isDisconnected: isDisconnected, eventCode: eventCode)
+        deinitConnection(isDisconnected: isDisconnected)
     }
     
-    func deinitConnection(isDisconnected: Bool, eventCode: Stream.Event?) {
+    func deinitConnection() {
+    }
+
+    func deinitConnection(isDisconnected: Bool) {
         // If the disconnection is have to inform to user, set isDisconnected to true
         if isDisconnected {
             let data: ASObject = (readyState == .handshakeDone) ?
-                RTMPConnection.Code.connectClosed.data("") : RTMPConnection.Code.connectFailed.data("")
+                RTMPConnection.Code.connectClosed.data("") : RTMPConnection.Code.connectIdleTimeOut.data("")
             events.append(Event(type: Event.RTMP_STATUS, bubbles: false, data: data))
         }
         guard let connectionID: String = connectionID else {
@@ -132,7 +135,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         lastResponse = Date()
  
         if let error: Error = error {
-            print("\(error)")
+            //print("\(error)")
 
             if let lastRequestPathComponent: String = self.lastRequestPathComponent,
                let lastRequestData: Data = self.lastRequestData, !isRetryingRequest {
@@ -198,17 +201,17 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
 
     private func didIdent2(data: Data?, response: URLResponse?, error: Error?) {
         if let error: Error = error {
-            print("\(error)")
+            //print("\(error)")
         }
         doRequest("/open/1", Data([0x00]), didOpen)
        /* if logger.isEnabledFor(level: .trace) {
-            print("\(String(describing: data?.bytes)): \(String(describing: response))")
+            //print("\(String(describing: data?.bytes)): \(String(describing: response))")
         }*/
     }
 
     private func didOpen(data: Data?, response: URLResponse?, error: Error?) {
         if let error: Error = error {
-            print("\(error)")
+            //print("\(error)")
         }
         guard let data: Data = data else {
             return
@@ -216,27 +219,27 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         connectionID = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
         doRequest("/idle/\(connectionID!)/0", Data([0x00]), didIdle0)
       /*  if logger.isEnabledFor(level: .trace) {
-            print("\(data.bytes): \(String(describing: response))")
+            //print("\(data.bytes): \(String(describing: response))")
         }*/
     }
 
     private func didIdle0(data: Data?, response: URLResponse?, error: Error?) {
         if let error: Error = error {
-            print("\(error)")
+            //print("\(error)")
         }
         connected = true
       /*  if logger.isEnabledFor(level: .trace) {
-            print("\(String(describing: data?.bytes)): \(String(describing: response))")
+            //print("\(String(describing: data?.bytes)): \(String(describing: response))")
         }*/
     }
 
     private func didClose(data: Data?, response: URLResponse?, error: Error?) {
         if let error: Error = error {
-            print("\(error)")
+            //print("\(error)")
         }
         connected = false
       /*  if logger.isEnabledFor(level: .trace) {
-            print("\(String(describing: data?.bytes)): \(String(describing: response))")
+            //print("\(String(describing: data?.bytes)): \(String(describing: response))")
         }*/
     }
 
@@ -280,7 +283,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         request.httpMethod = "POST"
         session.uploadTask(with: request, from: data, completionHandler: completionHandler).resume()
       /*  if logger.isEnabledFor(level: .trace) {
-            print("\(self.request)")
+            //print("\(self.request)")
         }*/
     }
 }

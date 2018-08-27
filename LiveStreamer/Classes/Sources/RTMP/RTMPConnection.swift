@@ -245,7 +245,7 @@ open class RTMPConnection: EventDispatcher {
         
         let query: String = uri.query ?? ""
         let command: String = uri.absoluteString + (query == "" ? "?" : "&") + "authmod=adobe&user=\(user)"
-        print("start command"+command)
+        //print("start command"+command)
     
         connect(command)
     }
@@ -275,14 +275,14 @@ open class RTMPConnection: EventDispatcher {
     }
 
     open func connect(_ command: String, arguments: Any?...) {
-        print("connect")
+        //print("connect")
         
         guard
             let uri = URL(string: command), let scheme: String = uri.scheme,
             !connected && RTMPConnection.supportedProtocols.contains(scheme)
             else { return }
         
-        print("uri\(uri)")
+        //print("uri\(uri)")
 
         self.uri = uri
         self.arguments = arguments
@@ -320,7 +320,7 @@ open class RTMPConnection: EventDispatcher {
             stream.close()
             streams.removeValue(forKey: id)
         }
-        socket.close(isDisconnected: false, eventCode: nil)
+        socket.close(isDisconnected: isDisconnected)
         timer = nil
     }
 
@@ -355,7 +355,7 @@ open class RTMPConnection: EventDispatcher {
                 message: RTMPSetChunkSizeMessage(UInt32(socket.chunkSizeS))
             ), locked: nil)
         case .connectRejected?:
-            print("connectRejected")
+            //print("connectRejected")
             guard
                 let uri: URL = uri,
                 let user: String = uri.user,
@@ -363,48 +363,67 @@ open class RTMPConnection: EventDispatcher {
                 let description: String = data["description"] as? String else {
                 break
             }
-            socket.deinitConnection(isDisconnected: false, eventCode: nil)
             switch true {
             case description.contains("reason=nosuchuser"):
-                break
+                socket.deinitConnection(isDisconnected: false)
             case description.contains("reason=authfailed"):
-                break
+                socket.deinitConnection(isDisconnected: false)
+                
             case description.contains("reason=needauth"):
-                print("description.contains reason=needauth")
+                //print("description.contains reason=needauth")
+                
+                socket.deinitConnection()
+
                 let command: String = RTMPConnection.createSanJoseAuthCommand(uri, description: description)
-                print("command"+command)
+                //print("command"+command)
                 connect(command, arguments: arguments)
             case description.contains("authmod=adobe"):
-                print("description.contains authmod=adobe")
+                
+                socket.deinitConnection()
+
+                //print("description.contains authmod=adobe")
                 if user == "" || password == "" {
                     close(isDisconnected: true)
                     break
                 }
                 let query: String = uri.query ?? ""
                 let command: String = uri.absoluteString + (query == "" ? "?" : "&") + "authmod=adobe&user=\(user)"
-                print("command"+command)
+                //print("command"+command)
                 connect(command, arguments: arguments)
                 
             case description.contains("is missing"):
+                
+                socket.deinitConnection()
+
                 close(isDisconnected: true)
                 break
 
             default:
+                socket.deinitConnection(isDisconnected: false)
                 break
             }
-        case .connectFailed?:
-            print("connectFailed")
+        case .connectIdleTimeOut?:
+            //print("connectIdleTimeOut")
             if let description: String = data["description"] as? String {
-                print(description)
+                //print(description)
             }
             // Have to close the connection after timed out
             close(isDisconnected: true)
             break
             
-        case .connectClosed?:
-            print(".connectClosed")
+        case .connectFailed?:
+            //print("connectFailed")
             if let description: String = data["description"] as? String {
-                print(description)
+                //print(description)
+            }
+            // Have to close the connection after timed out
+            //close(isDisconnected: true)
+            break
+            
+        case .connectClosed?:
+            //print(".connectClosed")
+            if let description: String = data["description"] as? String {
+                //print(description)
             }
             close(isDisconnected: true)
             
@@ -461,13 +480,13 @@ open class RTMPConnection: EventDispatcher {
         for (_, stream) in streams {
             stream.on(timer: timer)
         }
-        //print("previousQueueBytesOut.count"+String(previousQueueBytesOut.count))
+        ////print("previousQueueBytesOut.count"+String(previousQueueBytesOut.count))
         if measureInterval <= previousQueueBytesOut.count {
             var count: Int = 0
             for i in 0..<previousQueueBytesOut.count - 1 where previousQueueBytesOut[i] < previousQueueBytesOut[i + 1] {
                 count += 1
             }
-            print("count"+String(count))
+            //print("count"+String(count))
 
             if count == measureInterval - 1 {
                 for (_, stream) in streams {
@@ -544,7 +563,7 @@ extension RTMPConnection: RTMPSocketDelegate {
 
         if let message: RTMPMessage = chunk.message, chunk.ready {
           /*  if logger.isEnabledFor(level: .trace) {
-                print(chunk.description)
+                //print(chunk.description)
             }*/
             switch chunk.type {
             case .zero:

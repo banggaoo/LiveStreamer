@@ -88,7 +88,7 @@ extension LiveViewController: LiveRecorderDelegate {
             do {
                 try FileManager.default.removeItem(at: writer.outputURL)
             } catch let error {
-                print(error)
+                //print(error)
             }
         })
     }
@@ -125,9 +125,6 @@ final class LiveViewController: UIViewController {
 
         liveStreamer.delegate = self
         liveStreamer.recorderDelegate = self
-
-        // Please check suitable media setting for streaming
-        // http://jira.stunitas.com:8080/secure/attachment/10505/IMG_1209.PNG
 
         // Please be sure your device`s camera support resolution with front/back camera both. If you set higher resolution, camera doesn't work properly
         liveStreamer.sessionPreset = AVCaptureSession.Preset.hd1280x720
@@ -211,7 +208,7 @@ final class LiveViewController: UIViewController {
             isStreamingStart = true
             cameraOrientation = UIDevice.current.orientation
             
-            print("cameraOrientation \(cameraOrientation)")
+            //print("cameraOrientation \(cameraOrientation)")
         }
         
         publish.isSelected = !publish.isSelected

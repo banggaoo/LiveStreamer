@@ -205,7 +205,7 @@ open class NetStream: NSObject {
                 try session.setActive(false)
             } catch {
                 
-                print("Unexpected error: \(error).")
+                //print("Unexpected error: \(error).")
             }
         }
     }

@@ -1,7 +1,7 @@
 import Foundation
 
 public class NetSocket: NSObject {
-    static public let defaultTimeout: Int64 = 3 // sec
+    static public let defaultTimeout: Int64 = 2 // sec
     static public let defaultWindowSizeC: Int = Int(UInt16.max)
 
     public var inputBuffer: Data = Data()
@@ -19,7 +19,7 @@ public class NetSocket: NSObject {
 
     private var buffer: UnsafeMutablePointer<UInt8>?
     private var runloop: RunLoop?
-    private let outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.output")
+    public let outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.output")
     public var timeoutHandler: (() -> Void)?
 
     @discardableResult
@@ -53,7 +53,7 @@ public class NetSocket: NSObject {
                     self.doOutputProcess(fileHandle.readData(ofLength: remain))
                 }
             } catch let error as NSError {
-                print("\(error)")
+                //print("\(error)")
             }
         }
     }
@@ -72,7 +72,7 @@ public class NetSocket: NSObject {
         while total < maxLength {
             let length: Int = outputStream.write(buffer.advanced(by: total), maxLength: maxLength - total)
             if length <= 0 {
-                //print("length <= 0")
+                ////print("length <= 0")
                 // Socket write error
                 break
             }
@@ -81,29 +81,19 @@ public class NetSocket: NSObject {
             OSAtomicAdd64(-Int64(length), &queueBytesOut)
         }
     }
-/*
+ 
     func close(isDisconnected: Bool) {
-
-        close(isDisconnected: isDisconnected, eventCode: nil)
-    }*/
-    
-    func close(isDisconnected: Bool, eventCode: Stream.Event?) {
-        print("close: \(eventCode)")
+        //print("close: \(isDisconnected)")
+        
         outputQueue.async {  // 아래가 바로 호출이 안되는데, sync 로 할까
-            print("outputQueue")
+            //print("outputQueue")
 
             guard let runloop: RunLoop = self.runloop else { return }
-            print("runloop \(runloop)")
+            //print("runloop \(runloop)")
 
-            if let eventCode = eventCode {
-                
-                self.deinitConnection(isDisconnected: isDisconnected, eventCode: eventCode)
-            }else{
-                self.deinitConnection(isDisconnected: isDisconnected, eventCode: nil)
-            }
+            self.deinitConnection(isDisconnected: isDisconnected)
             self.runloop = nil
             CFRunLoopStop(runloop.getCFRunLoop())
-            print("isDisconnected: \(isDisconnected)")
         }
     }
 
@@ -150,7 +140,10 @@ public class NetSocket: NSObject {
         connected = false
     }
     
-    func deinitConnection(isDisconnected: Bool, eventCode: Stream.Event?) {
+    func deinitConnection() {
+    }
+    
+    func deinitConnection(isDisconnected: Bool) {
         inputStream?.close()
         inputStream?.remove(from: runloop!, forMode: .defaultRunLoopMode)
         inputStream?.delegate = nil
@@ -165,6 +158,9 @@ public class NetSocket: NSObject {
     }
 
     func didTimeout() {
+    }
+
+    func didErrorOccured(_ aStream: Stream, handle eventCode: Stream.Event) {
     }
 
     private func doInput() {
@@ -209,23 +205,23 @@ extension NetSocket: StreamDelegate {
             break
         //  8 = 1 << 3
         case .errorOccurred:
-            print("errorOccurred"+aStream.streamError.debugDescription)
+            //print("errorOccurred "+aStream.streamError.debugDescription)
             
             if aStream.streamError.debugDescription.contains("Socket is not connected") {
                 
-                close(isDisconnected: true, eventCode: eventCode)
-
             }else{
                 
-                close(isDisconnected: true, eventCode: nil)
             }
+            
+            didErrorOccured(aStream, handle: eventCode)
+            close(isDisconnected: true)
             break
         // 16 = 1 << 4
         case .endEncountered:
-            print("endEncountered")
-            close(isDisconnected: true, eventCode: nil)
+            //print("endEncountered")
+            close(isDisconnected: true)
         default:
-            print("endEncountered")
+            //print("endEncountered")
             break
         }
     }
