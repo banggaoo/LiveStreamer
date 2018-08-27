@@ -307,7 +307,7 @@ open class RTMPStream: NetStream {
     var audioTimestamp: Double = 0
     var videoTimestamp: Double = 0
     private(set) var muxer: RTMPMuxer = RTMPMuxer()
-    private var paused: Bool = false
+    public var paused: Bool = false
     private var sampler: MP4Sampler?
     private var frameCount: UInt16 = 0
     private var dispatcher: IEventDispatcher!

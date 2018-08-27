@@ -6,20 +6,45 @@ import Photos
 
 extension LiveViewController: LiveStreamingDelegate {
     
-    func broadcastStatusWith(code: String) {
-        print("broadcastStatusWith \(code)")
+    func broadcastStatusForUserWith(code: String) {
+        print("broadcastStatusForUserWith \(code)")
+
         switch code {
             
-        case RTMPConnection.Code.connectSuccess.rawValue,
-             RTMPStream.Code.publishStart.rawValue,
-             RTMPStream.Code.connectSuccess.rawValue:
-
+        case BroadcastStatusForUser.start.rawValue:
             DispatchQueue.main.async {
                 
                 self.publishButton?.setTitle("■", for: [])
                 
                 UIApplication.shared.isIdleTimerDisabled = true
             }
+
+        case BroadcastStatusForUser.stop.rawValue:
+
+            DispatchQueue.main.async {
+                
+                self.publishButton?.setTitle("●", for: [])
+                
+                UIApplication.shared.isIdleTimerDisabled = false
+                
+                self.publishButton?.isSelected = !((self.publishButton?.isSelected)!)
+            }
+            
+        default:
+            
+            break
+        }
+    }
+    
+    func broadcastStatusWith(code: String) {
+        print("broadcastStatusWith \(code)")
+        
+        switch code {
+            
+        case RTMPConnection.Code.connectSuccess.rawValue,
+             RTMPStream.Code.publishStart.rawValue,
+             RTMPStream.Code.connectSuccess.rawValue:
+ 
             break
             
         case RTMPConnection.Code.connectNetworkChange.rawValue:
@@ -33,16 +58,8 @@ extension LiveViewController: LiveStreamingDelegate {
              RTMPStream.Code.connectRejected.rawValue,
              RTMPStream.Code.connectFailed.rawValue,
              RTMPStream.Code.connectClosed.rawValue:
-
-            DispatchQueue.main.async {
-                
-                self.publishButton?.setTitle("●", for: [])
-                
-                UIApplication.shared.isIdleTimerDisabled = false
-                
-                self.publishButton?.isSelected = !((self.publishButton?.isSelected)!)
-            }
-            
+ 
+            break
         default:
             
             break
