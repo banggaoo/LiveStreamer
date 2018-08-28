@@ -55,7 +55,7 @@ public class LiveStreamer: NSObject {
         }
     }
     
-    public var broadcastTimeout = 50
+    public var broadcastTimeout = 150
     
     public var unableTimeCount = 0
 
@@ -385,11 +385,23 @@ public class LiveStreamer: NSObject {
     }
     
     func setBroadcastStatusForUserToFailed() {
-        
+
         if broadcastStatusForUser == .startTrying || broadcastStatusForUser == .startFailed{
             
             broadcastStatusForUser = .startFailed
-            setRetryConnectionTimer(timeInterval: TimeInterval(2))
+            setRetryConnectionTimer(timeInterval: TimeInterval(4))
+        }else{
+            
+            broadcastStatusForUser = .failed
+        }
+    }
+    
+    func setBroadcastStatusForUserToFailedTimeout() {
+
+        if broadcastStatusForUser == .startTrying || broadcastStatusForUser == .startFailed{
+            
+            broadcastStatusForUser = .startFailed
+            setRetryConnectionTimer(timeInterval: TimeInterval(4))
         }else{
             
             broadcastStatusForUser = .failedTimeout
@@ -459,15 +471,15 @@ public class LiveStreamer: NSObject {
     @objc func rtmpIOErrorHandler(_ notification: Notification) {
         //print("rtmpIOErrorHandler\(notification)")
         // Socket timeout. when timed out, reconnection is not working
-
+        
         // Close stream for reconnect
         rtmpConnection.stop()
-        
-        setBroadcastStatusForUserToFailed()
+
+        setBroadcastStatusForUserToFailedTimeout()
     }
     
     @objc func rtmpStatusHandler(_ notification: Notification) {
-        //print("rtmpStatusHandler \(notification)")
+        print("rtmpStatusHandler \(notification)")
         let e: Event = Event.from(notification)
         if let data: ASObject = e.data as? ASObject, let code: String = data["code"] as? String {
             
@@ -490,7 +502,7 @@ public class LiveStreamer: NSObject {
                 
             case RTMPConnection.Code.connectIdleTimeOut.rawValue:
 
-                 setBroadcastStatusForUserToFailed()
+                 setBroadcastStatusForUserToFailedTimeout()
                  break
 
             case RTMPConnection.Code.connectRejected.rawValue:
@@ -501,13 +513,7 @@ public class LiveStreamer: NSObject {
             case RTMPConnection.Code.connectFailed.rawValue:
                  // If handshake is failed before deinitconnect, connectFailed call. Or connectClosed call
             
-                if broadcastStatusForUser == .startTrying || broadcastStatusForUser == .startFailed{
-                    
-                    broadcastStatusForUser = .startFailed
-                }else{
-                    
-                    broadcastStatusForUser = .failed
-                }
+                setBroadcastStatusForUserToFailed()
                 break
                 
             case RTMPConnection.Code.connectClosed.rawValue:
