@@ -55,7 +55,7 @@ public class LiveStreamer: NSObject {
         }
     }
     
-    static private let BroadcastTimeout = 50
+    public var broadcastTimeout = 50
     
     public var unableTimeCount = 0
 
@@ -427,11 +427,10 @@ public class LiveStreamer: NSObject {
                         unableTimeCount = unableTimeCount + intervalInt
                     }
                     
-                    guard unableTimeCount < LiveStreamer.BroadcastTimeout else {
+                    guard unableTimeCount < broadcastTimeout else {
                         
                         unableTimeCount = 0
 
-                        // Close stream for reconnect
                         endStreaming()
 
                         broadcastStatusForUser = .terminated
@@ -502,7 +501,13 @@ public class LiveStreamer: NSObject {
             case RTMPConnection.Code.connectFailed.rawValue:
                  // If handshake is failed before deinitconnect, connectFailed call. Or connectClosed call
             
-                broadcastStatusForUser = .failed
+                if broadcastStatusForUser == .startTrying || broadcastStatusForUser == .startFailed{
+                    
+                    broadcastStatusForUser = .startFailed
+                }else{
+                    
+                    broadcastStatusForUser = .failed
+                }
                 break
                 
             case RTMPConnection.Code.connectClosed.rawValue:
