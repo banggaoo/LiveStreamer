@@ -22,7 +22,7 @@ extension VideoIOComponent {
                 device.videoZoomFactor = zoomFactor
             }
             device.unlockForConfiguration()
-        } catch let error as NSError {
+        } catch _ {
             //print("while locking device for ramp: \(error)")
         }
     }

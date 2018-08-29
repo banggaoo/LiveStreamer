@@ -137,7 +137,7 @@ class TSWriter {
         if !fileManager.fileExists(atPath: temp) {
             do {
                 try fileManager.createDirectory(atPath: temp, withIntermediateDirectories: false, attributes: nil)
-            } catch let error as NSError {
+            } catch _ as NSError {
                 //print("\(error)")
             }
         }
@@ -155,7 +155,7 @@ class TSWriter {
             let info: M3UMediaInfo = files.removeFirst()
             do {
                 try fileManager.removeItem(at: info.url as URL)
-            } catch let e as NSError {
+            } catch _ as NSError {
                 //print("\(e)")
             }
         }
@@ -197,7 +197,7 @@ class TSWriter {
         for info in files {
             do {
                 try fileManager.removeItem(at: info.url as URL)
-            } catch let e as NSError {
+            } catch _ as NSError {
                 //print("\(e)")
             }
         }

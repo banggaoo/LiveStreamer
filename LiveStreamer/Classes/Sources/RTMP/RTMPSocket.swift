@@ -167,6 +167,13 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
         //print("connection timeout")
     }
     
+    override func errorOccur() {
+        
+        let data: ASObject = RTMPConnection.Code.connectError.data("")
+
+        delegate?.dispatch(Event.RTMP_STATUS, bubbles: false, data: data)
+    }
+    
     override func retryConnection() {
         //print("retryConnection")
         

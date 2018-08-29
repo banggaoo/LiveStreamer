@@ -347,7 +347,7 @@ open class RTMPStream: NetStream {
             try session.setCategory(AVAudioSessionCategoryPlayAndRecord, with: .allowBluetooth)
             try session.setMode(AVAudioSessionModeDefault)
             try session.setActive(true)
-        } catch let error {
+        } catch _ {
             
             //print("Unexpected error: \(error).")
         }

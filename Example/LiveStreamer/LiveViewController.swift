@@ -7,7 +7,7 @@ import Photos
 extension LiveViewController: LiveStreamingDelegate {
     
     func broadcastStatusForUserWith(code: String) {
-        //print("broadcastStatusForUserWith \(code)")
+        print("broadcastStatusForUserWith \(code)")
 
         switch code {
             
@@ -87,7 +87,7 @@ extension LiveViewController: LiveRecorderDelegate {
         }, completionHandler: { (_, error) -> Void in
             do {
                 try FileManager.default.removeItem(at: writer.outputURL)
-            } catch let error {
+            } catch {
                 //print(error)
             }
         })

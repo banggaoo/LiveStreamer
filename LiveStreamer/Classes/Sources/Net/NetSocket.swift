@@ -52,7 +52,7 @@ public class NetSocket: NSObject {
                 if 0 < remain {
                     self.doOutputProcess(fileHandle.readData(ofLength: remain))
                 }
-            } catch let error as NSError {
+            } catch _ as NSError {
                 //print("\(error)")
             }
         }
@@ -179,6 +179,11 @@ public class NetSocket: NSObject {
         }
     }
     
+    func errorOccur() {
+        
+        
+    }
+    
     func retryConnection() {
         
     }
@@ -210,6 +215,8 @@ extension NetSocket: StreamDelegate {
         //  8 = 1 << 3
         case .errorOccurred:
             //print("errorOccurred"+aStream.streamError.debugDescription)
+            
+            errorOccur()
             
             if aStream.streamError.debugDescription.contains("Socket is not connected") {
                 

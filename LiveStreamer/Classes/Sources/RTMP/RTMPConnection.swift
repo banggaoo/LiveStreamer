@@ -53,7 +53,8 @@ open class RTMPConnection: EventDispatcher {
         case connectNetworkChange = "NetConnection.Connect.NetworkChange"
         case connectRejected      = "NetConnection.Connect.Rejected"
         case connectSuccess       = "NetConnection.Connect.Success"
-        
+        case connectError       = "NetConnection.Connect.Error"
+
         public var level: String {
             switch self {
             case .callBadVersion:
@@ -67,6 +68,8 @@ open class RTMPConnection: EventDispatcher {
             case .connectClosed:
                 return "status"
             case .connectFailed:
+                return "error"
+            case .connectError:
                 return "error"
             case .connectIdleTimeOut:
                 return "status"
@@ -394,7 +397,7 @@ open class RTMPConnection: EventDispatcher {
             }
         case .connectFailed?:
             //print("connectFailed")
-            if let description: String = data["description"] as? String {
+            if let _: String = data["description"] as? String {
                 //print(description)
             }
             // Have to close the connection after timed out
@@ -403,7 +406,7 @@ open class RTMPConnection: EventDispatcher {
             
         case .connectClosed?:
             //print(".connectClosed")
-            if let description: String = data["description"] as? String {
+            if let _: String = data["description"] as? String {
                 //print(description)
             }
             close(isDisconnected: true)

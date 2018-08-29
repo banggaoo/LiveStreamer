@@ -528,7 +528,7 @@ final class MP4Reader: MP4ContainerBox {
             self.url = url
             super.init()
             fileHandle = try FileHandle(forReadingFrom: url)
-        } catch let error as NSError {
+        } catch _ {
             //print("\(error)")
         }
     }

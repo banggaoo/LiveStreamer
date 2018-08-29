@@ -131,7 +131,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         
         lastResponse = Date()
         
-        if let error: Error = error {
+        if let _: Error = error {
             //print("\(error)")
             
             if let lastRequestPathComponent: String = self.lastRequestPathComponent,
@@ -197,7 +197,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     }
     
     private func didIdent2(data: Data?, response: URLResponse?, error: Error?) {
-        if let error: Error = error {
+        if let _: Error = error {
             //print("\(error)")
         }
         doRequest("/open/1", Data([0x00]), didOpen)
@@ -207,7 +207,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     }
     
     private func didOpen(data: Data?, response: URLResponse?, error: Error?) {
-        if let error: Error = error {
+        if let _: Error = error {
             //print("\(error)")
         }
         guard let data: Data = data else {
@@ -221,7 +221,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     }
     
     private func didIdle0(data: Data?, response: URLResponse?, error: Error?) {
-        if let error: Error = error {
+        if let _: Error = error {
             //print("\(error)")
         }
         connected = true
@@ -231,7 +231,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     }
     
     private func didClose(data: Data?, response: URLResponse?, error: Error?) {
-        if let error: Error = error {
+        if let _: Error = error {
             //print("\(error)")
         }
         connected = false

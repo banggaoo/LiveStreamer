@@ -39,7 +39,7 @@ final class VideoIOComponent: IOComponent {
                 device.activeVideoMinFrameDuration = data.duration
                 device.activeVideoMaxFrameDuration = data.duration
                 device.unlockForConfiguration()
-            } catch let error as NSError {
+            } catch _ {
                 //print("while locking device for fps: \(error)")
             }
         }
@@ -92,7 +92,7 @@ final class VideoIOComponent: IOComponent {
                 try device.lockForConfiguration()
                 device.focusMode = focusMode
                 device.unlockForConfiguration()
-            } catch let error as NSError {
+            } catch _ {
                 //print("while locking device for autofocus: \(error)")
             }
         }
@@ -111,7 +111,7 @@ final class VideoIOComponent: IOComponent {
                 device.focusPointOfInterest = point
                 device.focusMode = .continuousAutoFocus
                 device.unlockForConfiguration()
-            } catch let error as NSError {
+            } catch _ as NSError {
                 //print("while locking device for focusPointOfInterest: \(error)")
             }
         }
@@ -130,7 +130,7 @@ final class VideoIOComponent: IOComponent {
                 device.exposurePointOfInterest = point
                 device.exposureMode = .continuousAutoExposure
                 device.unlockForConfiguration()
-            } catch let error as NSError {
+            } catch _ as NSError {
                 //print("while locking device for exposurePointOfInterest: \(error)")
             }
         }
@@ -151,7 +151,7 @@ final class VideoIOComponent: IOComponent {
                 try device.lockForConfiguration()
                 device.exposureMode = exposureMode
                 device.unlockForConfiguration()
-            } catch let error as NSError {
+            } catch _ as NSError {
                 //print("while locking device for autoexpose: \(error)")
             }
         }
@@ -273,7 +273,7 @@ final class VideoIOComponent: IOComponent {
             try device.lockForConfiguration()
             device.torchMode = torchMode
             device.unlockForConfiguration()
-        } catch let error as NSError {
+        } catch _ as NSError {
             //print("while setting torch: \(error)")
         }
     }
