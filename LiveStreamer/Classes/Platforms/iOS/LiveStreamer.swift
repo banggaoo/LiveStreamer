@@ -384,8 +384,19 @@ public class LiveStreamer: NSObject {
         timer = Timer(timeInterval: timeInterval, target: self, selector: #selector(on(timer:)), userInfo: nil, repeats: true)
     }
     
+    func setBroadcastStatusForUserToError() {
+        
+        if broadcastStatusForUser == .startTrying || broadcastStatusForUser == .startFailed{
+            
+            broadcastStatusForUser = .startFailed
+        }else{
+            
+            broadcastStatusForUser = .failed
+        }
+    }
+    
     func setBroadcastStatusForUserToFailed() {
-
+        
         if broadcastStatusForUser == .startTrying || broadcastStatusForUser == .startFailed{
             
             broadcastStatusForUser = .startFailed
@@ -516,6 +527,12 @@ public class LiveStreamer: NSObject {
                 setBroadcastStatusForUserToFailed()
                 break
                 
+            case RTMPConnection.Code.connectError.rawValue:
+                // If handshake is failed before deinitconnect, connectFailed call. Or connectClosed call
+                
+                setBroadcastStatusForUserToError()
+                break
+
             case RTMPConnection.Code.connectClosed.rawValue:
                 // Server is closing
  
