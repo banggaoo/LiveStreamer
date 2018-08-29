@@ -1,9 +1,9 @@
 import Foundation
 
 public class NetSocket: NSObject {
-    static public let defaultTimeout: Int64 = 2 // sec
+    static public let defaultTimeout: Int64 = 3 // sec
     static public let defaultWindowSizeC: Int = Int(UInt16.max)
-
+    
     public var inputBuffer: Data = Data()
     public var timeout: Int64 = NetSocket.defaultTimeout
     public internal(set) var connected: Bool = false
@@ -12,16 +12,16 @@ public class NetSocket: NSObject {
     public var totalBytesIn: Int64 = 0
     public private(set) var totalBytesOut: Int64 = 0
     public private(set) var queueBytesOut: Int64 = 0
-
+    
     var inputStream: InputStream?
     var outputStream: OutputStream?
     var inputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.input")
-
+    
     private var buffer: UnsafeMutablePointer<UInt8>?
     private var runloop: RunLoop?
-    public let outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.output")
+    private let outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.output")
     public var timeoutHandler: (() -> Void)?
-
+    
     @discardableResult
     final public func doOutput(data: Data, locked: UnsafeMutablePointer<UInt32>? = nil) -> Int {
         OSAtomicAdd64(Int64(data.count), &queueBytesOut)
@@ -35,7 +35,7 @@ public class NetSocket: NSObject {
         }
         return data.count
     }
-
+    
     final func doOutputFromURL(_ url: URL, length: Int) {
         outputQueue.async {
             do {
@@ -57,13 +57,13 @@ public class NetSocket: NSObject {
             }
         }
     }
-
+    
     final func doOutputProcess(_ data: Data) {
         data.withUnsafeBytes { (buffer: UnsafePointer<UInt8>) -> Void in
             doOutputProcess(buffer, maxLength: data.count)
         }
     }
-
+    
     final func doOutputProcess(_ buffer: UnsafePointer<UInt8>, maxLength: Int) {
         guard let outputStream: OutputStream = outputStream else {
             return
@@ -72,7 +72,7 @@ public class NetSocket: NSObject {
         while total < maxLength {
             let length: Int = outputStream.write(buffer.advanced(by: total), maxLength: maxLength - total)
             if length <= 0 {
-                ////print("length <= 0")
+                //print("length <= 0")
                 // Socket write error
                 break
             }
@@ -81,52 +81,62 @@ public class NetSocket: NSObject {
             OSAtomicAdd64(-Int64(length), &queueBytesOut)
         }
     }
- 
-    func close(isDisconnected: Bool) {
-        //print("close: \(isDisconnected)")
-        
+    /*
+     func close(isDisconnected: Bool) {
+     
+     close(isDisconnected: isDisconnected, eventCode: nil)
+     }*/
+    
+    func close(isDisconnected: Bool, eventCode: Stream.Event?) {
+        //print("close: \(eventCode)")
         outputQueue.async {  // 아래가 바로 호출이 안되는데, sync 로 할까
             //print("outputQueue")
-
+            
             guard let runloop: RunLoop = self.runloop else { return }
             //print("runloop \(runloop)")
-
-            self.deinitConnection(isDisconnected: isDisconnected)
+            
+            if let eventCode = eventCode {
+                
+                self.deinitConnection(isDisconnected: isDisconnected, eventCode: eventCode)
+            }else{
+                self.deinitConnection(isDisconnected: isDisconnected, eventCode: nil)
+            }
             self.runloop = nil
             CFRunLoopStop(runloop.getCFRunLoop())
+            //print("isDisconnected: \(isDisconnected)")
         }
     }
-
+    
     func listen() {
     }
-
+    
     func initConnection() {
         buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: windowSizeC)
         buffer?.initialize(repeating: 0, count: windowSizeC)
-
+        
         totalBytesIn = 0
         totalBytesOut = 0
         queueBytesOut = 0
         timeoutHandler = didTimeout
         inputBuffer.removeAll(keepingCapacity: false)
-
+        
         guard let inputStream: InputStream = inputStream, let outputStream: OutputStream = outputStream else {
             return
         }
-
+        
         runloop = .current
-
+        
         inputStream.delegate = self
         inputStream.schedule(in: runloop!, forMode: .defaultRunLoopMode)
         inputStream.setProperty(securityLevel.rawValue, forKey: .socketSecurityLevelKey)
-
+        
         outputStream.delegate = self
         outputStream.schedule(in: runloop!, forMode: .defaultRunLoopMode)
         outputStream.setProperty(securityLevel.rawValue, forKey: .socketSecurityLevelKey)
-
+        
         inputStream.open()
         outputStream.open()
-
+        
         if 0 < timeout {
             outputQueue.asyncAfter(deadline: .now() + Double(timeout * Int64(NSEC_PER_SEC)) / Double(NSEC_PER_SEC)) {
                 guard let timeoutHandler: (() -> Void) = self.timeoutHandler else {
@@ -135,15 +145,12 @@ public class NetSocket: NSObject {
                 timeoutHandler()
             }
         }
-
+        
         runloop?.run()
         connected = false
     }
     
-    func deinitConnection() {
-    }
-    
-    func deinitConnection(isDisconnected: Bool) {
+    func deinitConnection(isDisconnected: Bool, eventCode: Stream.Event?) {
         inputStream?.close()
         inputStream?.remove(from: runloop!, forMode: .defaultRunLoopMode)
         inputStream?.delegate = nil
@@ -156,13 +163,10 @@ public class NetSocket: NSObject {
         buffer?.deallocate()
         buffer = nil
     }
-
+    
     func didTimeout() {
     }
-
-    func didErrorOccured(_ aStream: Stream, handle eventCode: Stream.Event) {
-    }
-
+    
     private func doInput() {
         guard let inputStream: InputStream = inputStream, let buffer: UnsafeMutablePointer<UInt8> = buffer else {
             return
@@ -188,7 +192,7 @@ extension NetSocket: StreamDelegate {
         case .openCompleted:
             guard let inputStream = inputStream, let outputStream = outputStream,
                 inputStream.streamStatus == .open && outputStream.streamStatus == .open else {
-                break
+                    break
             }
             if aStream == inputStream {
                 timeoutHandler = nil
@@ -205,21 +209,21 @@ extension NetSocket: StreamDelegate {
             break
         //  8 = 1 << 3
         case .errorOccurred:
-            //print("errorOccurred "+aStream.streamError.debugDescription)
+            //print("errorOccurred"+aStream.streamError.debugDescription)
             
             if aStream.streamError.debugDescription.contains("Socket is not connected") {
                 
+                close(isDisconnected: true, eventCode: eventCode)
+                
             }else{
                 
+                close(isDisconnected: true, eventCode: nil)
             }
-            
-            didErrorOccured(aStream, handle: eventCode)
-            close(isDisconnected: true)
             break
         // 16 = 1 << 4
         case .endEncountered:
             //print("endEncountered")
-            close(isDisconnected: true)
+            close(isDisconnected: true, eventCode: nil)
         default:
             //print("endEncountered")
             break

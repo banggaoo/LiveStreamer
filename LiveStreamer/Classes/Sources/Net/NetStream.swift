@@ -3,11 +3,11 @@ import Foundation
 import AVFoundation
 
 protocol NetStreamDrawable: class {
-#if os(iOS) || os(macOS)
+    #if os(iOS) || os(macOS)
     var orientation: AVCaptureVideoOrientation { get set }
     var position: AVCaptureDevice.Position { get set }
-#endif
-
+    #endif
+    
     func draw(image: CIImage)
     func attachStream(_ stream: NetStream?)
 }
@@ -22,14 +22,14 @@ open class NetStream: NSObject {
         queue.setSpecific(key: queueKey, value: queueValue)
         return queue
     })()
-
+    
     deinit {
         metadata.removeAll()
         NotificationCenter.default.removeObserver(self)
     }
-
+    
     open var metadata: [String: Any?] = [: ]
-
+    
     open var context: CIContext? {
         get {
             return mixer.videoIO.context
@@ -38,8 +38,8 @@ open class NetStream: NSObject {
             mixer.videoIO.context = newValue
         }
     }
-
-#if os(iOS) || os(macOS)
+    
+    #if os(iOS) || os(macOS)
     open var torch: Bool {
         get {
             var torch: Bool = false
@@ -56,7 +56,7 @@ open class NetStream: NSObject {
     }
     
     open func isTorchModeSupported() -> Bool {
-
+        
         if
             let device: AVCaptureDevice = (self.mixer.videoIO.input as? AVCaptureDeviceInput)?.device,
             device.isTorchModeSupported(.on) {
@@ -67,8 +67,8 @@ open class NetStream: NSObject {
         return false
     }
     
-#endif
-
+    #endif
+    
     #if os(iOS)
     open var syncOrientation: Bool = false {
         didSet {
@@ -83,7 +83,7 @@ open class NetStream: NSObject {
         }
     }
     #endif
-
+    
     open var audioSettings: [String: Any] {
         get {
             var audioSettings: [String: Any]!
@@ -98,7 +98,7 @@ open class NetStream: NSObject {
             }
         }
     }
-
+    
     open var videoSettings: [String: Any] {
         get {
             var videoSettings: [String: Any]!
@@ -117,7 +117,7 @@ open class NetStream: NSObject {
             }
         }
     }
-
+    
     open var captureSettings: [String: Any] {
         get {
             var captureSettings: [String: Any]!
@@ -132,7 +132,7 @@ open class NetStream: NSObject {
             }
         }
     }
-
+    
     open var recorderSettings: [AVMediaType: [String: Any]] {
         get {
             var recorderSettings: [AVMediaType: [String: Any]]!
@@ -147,8 +147,8 @@ open class NetStream: NSObject {
             }
         }
     }
-
-#if os(iOS) || os(macOS)
+    
+    #if os(iOS) || os(macOS)
     open func attachCamera(_ camera: AVCaptureDevice?, onError: ((_ error: NSError) -> Void)? = nil) {
         lockQueue.async {
             do {
@@ -158,7 +158,7 @@ open class NetStream: NSObject {
             }
         }
     }
-
+    
     open func attachAudio(_ audio: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool = false, onError: ((_ error: NSError) -> Void)? = nil) {
         lockQueue.async {
             do {
@@ -168,13 +168,13 @@ open class NetStream: NSObject {
             }
         }
     }
-
+    
     open func setPointOfInterest(_ focus: CGPoint, exposure: CGPoint) {
         mixer.videoIO.focusPointOfInterest = focus
         mixer.videoIO.exposurePointOfInterest = exposure
     }
-#endif
-
+    #endif
+    
     open func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, withType: CMSampleBufferType, options: [NSObject: AnyObject]? = nil) {
         switch withType {
         case .audio:
@@ -187,15 +187,15 @@ open class NetStream: NSObject {
             }
         }
     }
-
+    
     open func registerEffect(video effect: VisualEffect) -> Bool {
         return mixer.videoIO.registerEffect(effect)
     }
-
+    
     open func unregisterEffect(video effect: VisualEffect) -> Bool {
         return mixer.videoIO.unregisterEffect(effect)
     }
-
+    
     open func dispose() {
         lockQueue.async {
             self.mixer.dispose()
@@ -209,7 +209,7 @@ open class NetStream: NSObject {
             }
         }
     }
-
+    
     #if os(iOS)
     @objc private func on(uiDeviceOrientationDidChange: Notification) {
         if let orientation: AVCaptureVideoOrientation = DeviceUtil.videoOrientation(by: uiDeviceOrientationDidChange) {
@@ -217,7 +217,7 @@ open class NetStream: NSObject {
         }
     }
     #endif
-
+    
     func ensureLockQueue(callback: () -> Void) {
         if DispatchQueue.getSpecific(key: NetStream.queueKey) == NetStream.queueValue {
             callback()

@@ -29,7 +29,7 @@ public class LiveStreamer: NSObject {
     var currentEffect: VisualEffect?
     var liveStreamAddress: LiveStreamAddress = LiveStreamAddress(uri: "", streamName: "")
     
-    public var isUserWantConnect = false
+    var isUserWantConnect = false
     
     var broadcastStatusForUser: BroadcastStatusForUser = .initialize {
         
@@ -371,7 +371,7 @@ public class LiveStreamer: NSObject {
     
         rtmpStream.togglePause()
         
-        if rtmpStream.paused {
+        if rtmpStream.isPaused() == false {
             
             broadcastStatusForUser = .start
         }else{
@@ -479,7 +479,7 @@ public class LiveStreamer: NSObject {
     }
     
     @objc func rtmpStatusHandler(_ notification: Notification) {
-        print("rtmpStatusHandler \(notification)")
+        //print("rtmpStatusHandler \(notification)")
         let e: Event = Event.from(notification)
         if let data: ASObject = e.data as? ASObject, let code: String = data["code"] as? String {
             

@@ -1,14 +1,14 @@
 import Foundation
 
 open class NetService: NSObject {
-
+    
     open var txtData: Data? {
         return nil
     }
-
+    
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetService.lock")
     var networkQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetService.network")
-
+    
     private(set) var domain: String
     private(set) var name: String
     private(set) var port: Int32
@@ -17,14 +17,14 @@ open class NetService: NSObject {
     private(set) var clients: [NetClient] = []
     private(set) var service: Foundation.NetService!
     private var runloop: RunLoop!
-
+    
     public init(domain: String, type: String, name: String, port: Int32) {
         self.domain = domain
         self.name = name
         self.port = port
         self.type = type
     }
-
+    
     func disconnect(_ client: NetClient) {
         lockQueue.sync {
             guard let index: Int = clients.index(of: client) else {
@@ -32,16 +32,16 @@ open class NetService: NSObject {
             }
             clients.remove(at: index)
             client.delegate = nil
-            client.close(isDisconnected: true)
+            client.close(isDisconnected: true, eventCode: nil)
         }
     }
-
+    
     func willStartRunning() {
         networkQueue.async {
             self.initService()
         }
     }
-
+    
     func willStopRunning() {
         if let runloop: RunLoop = runloop {
             service.remove(from: runloop, forMode: .defaultRunLoopMode)
@@ -52,7 +52,7 @@ open class NetService: NSObject {
         service = nil
         runloop = nil
     }
-
+    
     private func initService() {
         runloop = .current
         service = Foundation.NetService(domain: domain, type: type, name: name, port: port)
@@ -95,7 +95,7 @@ extension NetService: Running {
             self.running = true
         }
     }
-
+    
     final public func stopRunning() {
         lockQueue.async {
             if !self.running {

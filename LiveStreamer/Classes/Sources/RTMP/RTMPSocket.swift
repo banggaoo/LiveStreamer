@@ -12,13 +12,12 @@ protocol RTMPSocketCompatible: class {
     var inputBuffer: Data { get set }
     var securityLevel: StreamSocketSecurityLevel { get set }
     var delegate: RTMPSocketDelegate? { get set }
-
+    
     @discardableResult
     func doOutput(chunk: RTMPChunk, locked: UnsafeMutablePointer<UInt32>?) -> Int
-    func close(isDisconnected: Bool)
+    func close(isDisconnected: Bool, eventCode: Stream.Event?)
     func connect(withName: String, port: Int)
-    func deinitConnection()
-    func deinitConnection(isDisconnected: Bool)
+    func deinitConnection(isDisconnected: Bool, eventCode: Stream.Event?)
 }
 
 // MARK: -
@@ -38,7 +37,7 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
         case closing       = 4
         case closed        = 5
     }
-
+    
     var readyState: ReadyState = .uninitialized {
         didSet {
             delegate?.didSetReadyState(readyState)
@@ -55,7 +54,7 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
             delegate?.didSetTotalBytesIn(totalBytesIn)
         }
     }
-
+    
     override var connected: Bool {
         didSet {
             if connected {
@@ -70,10 +69,10 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
             events.removeAll()
         }
     }
-
+    
     private var events: [Event] = []
     private var handshake: RTMPHandshake = RTMPHandshake()
-
+    
     @discardableResult
     func doOutput(chunk: RTMPChunk, locked: UnsafeMutablePointer<UInt32>? = nil) -> Int {
         let chunks: [Data] = chunk.split(chunkSizeS)
@@ -81,16 +80,16 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
             doOutput(data: chunks[i])
         }
         doOutput(data: chunks.last!, locked: locked)
-       /* if logger.isEnabledFor(level: .trace) {
-            //print(chunk.description)
-        }*/
+        /* if logger.isEnabledFor(level: .trace) {
+         //print(chunk.description)
+         }*/
         return chunk.message!.length
     }
-
+    
     func connect(withName: String, port: Int) {
-        ////print("connect \(inputQueue) \(self.inputStream) \(self.outputStream)")
+        //print("connect \(inputQueue) \(self.inputStream) \(self.outputStream)")
         inputQueue.async {
-
+            
             Stream.getStreamsToHost(
                 withName: withName,
                 port: port,
@@ -100,7 +99,7 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
             self.initConnection()
         }
     }
-
+    
     override func listen() {
         switch readyState {
         case .versionSent:
@@ -130,58 +129,42 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
             break
         }
     }
-
+    
     override func initConnection() {
         //print("initConnection")
-
+        
         handshake.clear()
         readyState = .uninitialized
         chunkSizeS = RTMPChunk.defaultSize
         chunkSizeC = RTMPChunk.defaultSize
         super.initConnection()
     }
-
-    override func deinitConnection() {
+    
+    override func deinitConnection(isDisconnected: Bool, eventCode: Stream.Event?) {
         //print("deinitConnection")
-        readyState = .closing
-        super.deinitConnection(isDisconnected: false)
-    }
-
-    override func deinitConnection(isDisconnected: Bool) {
-        //print("deinitConnection \(isDisconnected)")
         if isDisconnected {
             //print("isDisconnected")
             
-            let data: ASObject = RTMPConnection.Code.connectIdleTimeOut.data("")
+            let data: ASObject = (readyState == .handshakeDone) ?
+                RTMPConnection.Code.connectClosed.data("") : RTMPConnection.Code.connectFailed.data("")
+            /*
+             if let eventCode = eventCode, eventCode == .errorOccurred {
+             
+             data = RTMPConnection.Code.connectClosed.data("")
+             }*/
             
             delegate?.dispatch(Event.RTMP_STATUS, bubbles: false, data: data)
             
             //events.append(Event(type: Event.RTMP_STATUS, bubbles: false, data: data))
-        }else{
-            
-            let data: ASObject = RTMPConnection.Code.connectClosed.data("")
-            
-            delegate?.dispatch(Event.RTMP_STATUS, bubbles: false, data: data)
         }
-        
         readyState = .closing
-        super.deinitConnection(isDisconnected: isDisconnected)
-    }
-
-    override func didTimeout() {
-        deinitConnection()
-        delegate?.dispatch(Event.IO_ERROR, bubbles: false, data: nil)
-        //print("connection timeout")
+        super.deinitConnection(isDisconnected: isDisconnected, eventCode: eventCode)
     }
     
-    override func didErrorOccured(_ aStream: Stream, handle eventCode: Stream.Event) {
-        //print("didErrorOccured")
-        
-        let data = RTMPConnection.Code.connectFailed.data("")
-
-        delegate?.dispatch(Event.RTMP_STATUS, bubbles: false, data: data)
-
-        //if aStream.streamError.debugDescription.contains("Socket is not connected") { }
+    override func didTimeout() {
+        deinitConnection(isDisconnected: false, eventCode: nil)
+        delegate?.dispatch(Event.IO_ERROR, bubbles: false, data: nil)
+        //print("connection timeout")
     }
     
     override func retryConnection() {
