@@ -148,7 +148,6 @@
 		70174F872101B12500D60151 /* DeviceUtil+Extenstion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DeviceUtil+Extenstion.swift"; sourceTree = "<group>"; };
 		70174F882101B12500D60151 /* GLHKView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GLHKView.swift; sourceTree = "<group>"; };
 		70174F892101B12500D60151 /* HKView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HKView.swift; sourceTree = "<group>"; };
-		70174F8A2101B12500D60151 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../../../../LiveStreamer/Classes/Platforms/iOS/Info.plist; sourceTree = "<group>"; };
 		70174F8B2101B12500D60151 /* LiveStreamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveStreamer.h; sourceTree = "<group>"; };
 		70174F8C2101B12500D60151 /* LiveStreamer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveStreamer.swift; sourceTree = "<group>"; };
 		70174F8D2101B12500D60151 /* MTHKView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MTHKView.swift; sourceTree = "<group>"; };
@@ -236,6 +235,7 @@
 		70174FFA2101B12600D60151 /* Mutex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mutex.swift; sourceTree = "<group>"; };
 		70174FFB2101B12600D60151 /* TimerDriver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerDriver.swift; sourceTree = "<group>"; };
 		70174FFC2101B12600D60151 /* VideoGravityUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoGravityUtil.swift; sourceTree = "<group>"; };
+		7046CF302150CCF60006C4F4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7057B0D4213410C100EFBCBA /* LiveStreamer_Define.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveStreamer_Define.swift; sourceTree = "<group>"; };
 		7057B0D62134154F00EFBCBA /* LiveStreamer_Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveStreamer_Delegate.swift; sourceTree = "<group>"; };
 		7B5DC24E424FE880A8C3A724EA64EF67 /* Pods-LiveStreamer_Example-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-LiveStreamer_Example-resources.sh"; sourceTree = "<group>"; };
@@ -586,7 +586,7 @@
 		8642D8E121DC839E64023D93D5111363 /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				70174F8A2101B12500D60151 /* Info.plist */,
+				7046CF302150CCF60006C4F4 /* Info.plist */,
 				1CF71AD307B254B01DB0D8F5C03DB72E /* LiveStreamer.modulemap */,
 				B80F5E5D6B52A8B68546B8BE5C2939B8 /* LiveStreamer.xcconfig */,
 				20A2A69AE4F6F043F34C880FF14078E0 /* LiveStreamer-dummy.m */,
