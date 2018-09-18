@@ -264,7 +264,7 @@ final class LiveViewController: UIViewController {
         }
     }
     
-    open override var shouldAutorotate: Bool {
+    public override var shouldAutorotate: Bool {
         get {
             return !isStreamingStart
         }
