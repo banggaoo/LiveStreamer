@@ -7,7 +7,7 @@ import Photos
 extension LiveViewController: LiveStreamingDelegate {
     
     func broadcastStatusForUserWith(code: String) {
-        print("broadcastStatusForUserWith \(code)")
+        //print("broadcastStatusForUserWith \(code)")
 
         switch code {
             
