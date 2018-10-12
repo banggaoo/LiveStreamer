@@ -95,7 +95,8 @@ final class H264Encoder: NSObject {
             setProperty(kVTCompressionPropertyKey_DataRateLimits, dataRateLimits as CFTypeRef)
         }
     }
-    @objc var profileLevel: String = kVTProfileLevel_H264_Baseline_3_1 as String {
+    @objc var profileLevel: String = kVTProfileLevel_H264_Baseline_AutoLevel as String {
+    //    @objc var profileLevel: String = kVTProfileLevel_H264_Baseline_3_1 as String {
         didSet {
             guard profileLevel != oldValue else {
                 return
@@ -158,10 +159,10 @@ final class H264Encoder: NSObject {
 
     // @see: https://developer.apple.com/library/mac/releasenotes/General/APIDiffsMacOSX10_8/VideoToolbox.html
     private var properties: [NSString: NSObject] {
-        //let isBaseline: Bool = profileLevel.contains("Baseline")
+        let isBaseline: Bool = profileLevel.contains("Baseline")
         var properties: [NSString: NSObject] = [
             kVTCompressionPropertyKey_RealTime: kCFBooleanTrue,
-            kVTCompressionPropertyKey_ProfileLevel: kVTProfileLevel_H264_Baseline_AutoLevel,
+            kVTCompressionPropertyKey_ProfileLevel: profileLevel as NSObject,
             kVTCompressionPropertyKey_AverageBitRate: Int(bitrate) as NSObject,
             kVTCompressionPropertyKey_ExpectedFrameRate: NSNumber(value: expectedFPS),
             kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration: NSNumber(value: maxKeyFrameIntervalDuration),
@@ -182,9 +183,14 @@ final class H264Encoder: NSObject {
         if dataRateLimits != H264Encoder.defaultDataRateLimits {
             properties[kVTCompressionPropertyKey_DataRateLimits] = dataRateLimits as NSObject
         }
-        //if !isBaseline {
+        if isBaseline {
+            properties[kVTCompressionPropertyKey_H264EntropyMode] = kVTH264EntropyMode_CAVLC
+            // https://en.wikipedia.org/wiki/Context-adaptive_variable-length_coding
+        }else{
             properties[kVTCompressionPropertyKey_H264EntropyMode] = kVTH264EntropyMode_CABAC
-        //}
+            // https://en.wikipedia.org/wiki/Context-adaptive_binary_arithmetic_coding
+        }
+        
         return properties
     }
 
