@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'LiveStreamer'
-  s.version          = '0.4.9'
+  s.version          = '0.5.0'
   s.summary          = 'Live Streaming.'
 
 # This description is used to generate tags and improve search results.
@@ -30,7 +30,7 @@ Pod::Spec.new do |s|
 
   s.source_files = 'LiveStreamer/Classes/**/*'
   
-  s.swift_version = '4.1'
+  s.swift_version = '4.2'
   
   # s.resource_bundles = {
   #   'LiveStreamer' => ['LiveStreamer/Assets/*.png']
