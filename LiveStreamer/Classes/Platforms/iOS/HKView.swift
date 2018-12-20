@@ -1,14 +1,14 @@
 import UIKit
 import AVFoundation
 
-open class HKView: UIView {
+public class HKView: UIView {
     public static var defaultBackgroundColor: UIColor = .black
 
-    open override class var layerClass: AnyClass {
+    public override class var layerClass: AnyClass {
         return AVCaptureVideoPreviewLayer.self
     }
 
-    open override var layer: AVCaptureVideoPreviewLayer {
+    public override var layer: AVCaptureVideoPreviewLayer {
         return super.layer as! AVCaptureVideoPreviewLayer
     }
 
@@ -48,12 +48,12 @@ open class HKView: UIView {
         attachStream(nil)
     }
 
-    override open func awakeFromNib() {
+    override public func awakeFromNib() {
         backgroundColor = HKView.defaultBackgroundColor
         layer.backgroundColor = HKView.defaultBackgroundColor.cgColor
     }
 
-    open func attachStream(_ stream: NetStream?) {
+    public func attachStream(_ stream: NetStream?) {
         guard let stream: NetStream = stream else {
             layer.session?.stopRunning()
             layer.session = nil

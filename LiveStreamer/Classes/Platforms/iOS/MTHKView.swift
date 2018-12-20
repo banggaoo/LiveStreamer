@@ -4,7 +4,7 @@ import Foundation
 import AVFoundation
 
 @available(iOS 9.0, *)
-open class MTHKView: MTKView {
+public class MTHKView: MTKView {
     public var videoGravity: AVLayerVideoGravity = .resizeAspect
 
     var position: AVCaptureDevice.Position = .back
@@ -27,12 +27,12 @@ open class MTHKView: MTKView {
         self.device = MTLCreateSystemDefaultDevice()
     }
 
-    open override func awakeFromNib() {
+    public override func awakeFromNib() {
         delegate = self
         enableSetNeedsDisplay = true
     }
 
-    open func attachStream(_ stream: NetStream?) {
+    public func attachStream(_ stream: NetStream?) {
         if let stream: NetStream = stream {
             stream.mixer.videoIO.context = CIContext(mtlDevice: device!)
             stream.lockQueue.async {

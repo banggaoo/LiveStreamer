@@ -3,7 +3,7 @@ import Foundation
 /**
  flash.net.Responder for Swift
  */
-open class Responder: NSObject {
+public class Responder: NSObject {
     
     public typealias Handler = (_ data: [Any?]) -> Void
     
@@ -29,7 +29,7 @@ open class Responder: NSObject {
 /**
  flash.net.NetConnection for Swift
  */
-open class RTMPConnection: EventDispatcher {
+public class RTMPConnection: EventDispatcher {
     static public let defaultWindowSizeS: Int64 = 250000
     static public let supportedProtocols: Set<String> = ["rtmp", "rtmps", "rtmpt", "rtmpts"]
     static public let defaultPort: Int = 1935
@@ -151,42 +151,42 @@ open class RTMPConnection: EventDispatcher {
     }
     
     /// The URL of .swf.
-    open var swfUrl: String?
+    public var swfUrl: String?
     /// The URL of an HTTP referer.
-    open var pageUrl: String?
+    public var pageUrl: String?
     /// The time to wait for TCP/IP Handshake done.
-    open var timeout: Int64 {
+    public var timeout: Int64 {
         get { return socket.timeout }
         set { socket.timeout = newValue }
     }
     /// The name of application.
-    open var flashVer: String = RTMPConnection.defaultFlashVer
+    public var flashVer: String = RTMPConnection.defaultFlashVer
     /// The outgoing RTMPChunkSize.
-    open var chunkSize: Int = RTMPConnection.defaultChunkSizeS
+    public var chunkSize: Int = RTMPConnection.defaultChunkSizeS
     /// The URI passed to the RTMPConnection.connect() method.
-    open private(set) var uri: URL?
+    public private(set) var uri: URL?
     /// This instance connected to server(true) or not(false).
-    open private(set) var connected: Bool = false
+    public private(set) var connected: Bool = false
     /// The object encoding for this RTMPConnection instance.
-    open var objectEncoding: UInt8 = RTMPConnection.defaultObjectEncoding
+    public var objectEncoding: UInt8 = RTMPConnection.defaultObjectEncoding
     /// The statistics of total incoming bytes.
-    open var totalBytesIn: Int64 {
+    public var totalBytesIn: Int64 {
         return socket.totalBytesIn
     }
     /// The statistics of total outgoing bytes.
-    open var totalBytesOut: Int64 {
+    public var totalBytesOut: Int64 {
         return socket.totalBytesOut
     }
     /// The statistics of total RTMPStream counts.
-    open var totalStreamsCount: Int {
+    public var totalStreamsCount: Int {
         return streams.count
     }
     /// The statistics of outgoing queue bytes per second.
-    @objc dynamic open private(set) var previousQueueBytesOut: [Int64] = []
+    @objc dynamic public private(set) var previousQueueBytesOut: [Int64] = []
     /// The statistics of incoming bytes per second.
-    @objc dynamic open private(set) var currentBytesInPerSecond: Int32 = 0
+    @objc dynamic public private(set) var currentBytesInPerSecond: Int32 = 0
     /// The statistics of outgoing bytes per second.
-    @objc dynamic open private(set) var currentBytesOutPerSecond: Int32 = 0
+    @objc dynamic public private(set) var currentBytesOutPerSecond: Int32 = 0
     
     
     var socket: RTMPSocketCompatible!
@@ -214,7 +214,7 @@ open class RTMPConnection: EventDispatcher {
         didSet {
             oldValue?.invalidate()
             if let timer: Timer = timer {
-                RunLoop.main.add(timer, forMode: .commonModes)
+                RunLoop.main.add(timer, forMode: RunLoop.Mode.common)
             }
         }
     }
@@ -237,7 +237,7 @@ open class RTMPConnection: EventDispatcher {
         removeEventListener(Event.RTMP_STATUS, selector: #selector(on(status:)))
     }
     
-    open func start(_ command: String) {
+    public func start(_ command: String) {
         
         guard let uri = URL(string: command), let user: String = uri.user else {
             // If it is not a secure connect
@@ -254,11 +254,11 @@ open class RTMPConnection: EventDispatcher {
     }
     
     @available(*, unavailable)
-    open func connect(_ command: String) {
+    public func connect(_ command: String) {
         connect(command, arguments: nil)
     }
     
-    open func call(_ commandName: String, responder: Responder?, arguments: Any?...) {
+    public func call(_ commandName: String, responder: Responder?, arguments: Any?...) {
         guard connected else {
             return
         }
@@ -277,7 +277,7 @@ open class RTMPConnection: EventDispatcher {
         socket.doOutput(chunk: RTMPChunk(message: message), locked: nil)
     }
     
-    open func connect(_ command: String, arguments: Any?...) {
+    public func connect(_ command: String, arguments: Any?...) {
         //print("connect")
         
         guard
@@ -302,13 +302,13 @@ open class RTMPConnection: EventDispatcher {
         socket.connect(withName: uri.host!, port: uri.port ?? RTMPConnection.defaultPort)
     }
     
-    open func stop() {
+    public func stop() {
         
         // To not sending errorHandle, set isDisconnected to false
         close(isDisconnected: false)
     }
     
-    open func close() {
+    public func close() {
         close(isDisconnected: true)
     }
     

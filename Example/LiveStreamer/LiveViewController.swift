@@ -180,9 +180,13 @@ final class LiveViewController: UIViewController {
         }
     }
 
-    @IBAction func on(pause: UIButton) {
+    func pauseStream() {
         
-        liveStreamer.pauseStreaming()
+        liveStreamer.audioMuted = !(liveStreamer.audioMuted)
+    }
+    
+    @IBAction func on(pause: UIButton) {
+        pauseStream()
     }
 
     @IBAction func on(close: UIButton) {
@@ -191,7 +195,8 @@ final class LiveViewController: UIViewController {
     }
 
     @IBAction func on(publish: UIButton) {
-        
+        // 2018-12-20 17:11:15.428352+0900 LiveStreamer_Example[11317:2274016] [avas] AVAudioSessionPortImpl.mm:56:ValidateRequiredFields: Unknown selected data source for Port 수신기 (type: Receiver)
+
         if publish.isSelected {
 
             liveStreamer.stopStreaming()

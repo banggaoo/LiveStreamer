@@ -13,7 +13,7 @@ protocol NetStreamDrawable: class {
 }
 
 // MARK: -
-open class NetStream: NSObject {
+public class NetStream: NSObject {
     public private(set) var mixer: AVMixer = AVMixer()
     private static let queueKey = DispatchSpecificKey<UnsafeMutableRawPointer>()
     private static let queueValue = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: 1)
@@ -28,9 +28,9 @@ open class NetStream: NSObject {
         NotificationCenter.default.removeObserver(self)
     }
     
-    open var metadata: [String: Any?] = [: ]
+    public var metadata: [String: Any?] = [: ]
     
-    open var context: CIContext? {
+    public var context: CIContext? {
         get {
             return mixer.videoIO.context
         }
@@ -40,7 +40,7 @@ open class NetStream: NSObject {
     }
     
     #if os(iOS) || os(macOS)
-    open var torch: Bool {
+    public var torch: Bool {
         get {
             var torch: Bool = false
             ensureLockQueue {
@@ -55,7 +55,7 @@ open class NetStream: NSObject {
         }
     }
     
-    open func isTorchModeSupported() -> Bool {
+    public func isTorchModeSupported() -> Bool {
         
         if
             let device: AVCaptureDevice = (self.mixer.videoIO.input as? AVCaptureDeviceInput)?.device,
@@ -70,21 +70,21 @@ open class NetStream: NSObject {
     #endif
     
     #if os(iOS)
-    open var syncOrientation: Bool = false {
+    public var syncOrientation: Bool = false {
         didSet {
             guard syncOrientation != oldValue else {
                 return
             }
             if syncOrientation {
-                NotificationCenter.default.addObserver(self, selector: #selector(on), name: .UIDeviceOrientationDidChange, object: nil)
+                NotificationCenter.default.addObserver(self, selector: #selector(on), name: UIDevice.orientationDidChangeNotification, object: nil)
             } else {
-                NotificationCenter.default.removeObserver(self, name: .UIDeviceOrientationDidChange, object: nil)
+                NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
             }
         }
     }
     #endif
     
-    open var audioSettings: [String: Any] {
+    public var audioSettings: [String: Any] {
         get {
             var audioSettings: [String: Any]!
             ensureLockQueue {
@@ -99,7 +99,7 @@ open class NetStream: NSObject {
         }
     }
     
-    open var videoSettings: [String: Any] {
+    public var videoSettings: [String: Any] {
         get {
             var videoSettings: [String: Any]!
             ensureLockQueue {
@@ -118,7 +118,7 @@ open class NetStream: NSObject {
         }
     }
     
-    open var captureSettings: [String: Any] {
+    public var captureSettings: [String: Any] {
         get {
             var captureSettings: [String: Any]!
             ensureLockQueue {
@@ -133,7 +133,7 @@ open class NetStream: NSObject {
         }
     }
     
-    open var recorderSettings: [AVMediaType: [String: Any]] {
+    public var recorderSettings: [AVMediaType: [String: Any]] {
         get {
             var recorderSettings: [AVMediaType: [String: Any]]!
             ensureLockQueue {
@@ -149,7 +149,7 @@ open class NetStream: NSObject {
     }
     
     #if os(iOS) || os(macOS)
-    open func attachCamera(_ camera: AVCaptureDevice?, onError: ((_ error: NSError) -> Void)? = nil) {
+    public func attachCamera(_ camera: AVCaptureDevice?, onError: ((_ error: NSError) -> Void)? = nil) {
         lockQueue.async {
             do {
                 try self.mixer.videoIO.attachCamera(camera)
@@ -159,7 +159,7 @@ open class NetStream: NSObject {
         }
     }
     
-    open func attachAudio(_ audio: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool = false, onError: ((_ error: NSError) -> Void)? = nil) {
+    public func attachAudio(_ audio: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool = false, onError: ((_ error: NSError) -> Void)? = nil) {
         lockQueue.async {
             do {
                 try self.mixer.audioIO.attachAudio(audio, automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession)
@@ -169,13 +169,13 @@ open class NetStream: NSObject {
         }
     }
     
-    open func setPointOfInterest(_ focus: CGPoint, exposure: CGPoint) {
+    public func setPointOfInterest(_ focus: CGPoint, exposure: CGPoint) {
         mixer.videoIO.focusPointOfInterest = focus
         mixer.videoIO.exposurePointOfInterest = exposure
     }
     #endif
     
-    open func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, withType: CMSampleBufferType, options: [NSObject: AnyObject]? = nil) {
+    public func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, withType: CMSampleBufferType, options: [NSObject: AnyObject]? = nil) {
         switch withType {
         case .audio:
             mixer.audioIO.lockQueue.async {
@@ -188,15 +188,15 @@ open class NetStream: NSObject {
         }
     }
     
-    open func registerEffect(video effect: VisualEffect) -> Bool {
+    public func registerEffect(video effect: VisualEffect) -> Bool {
         return mixer.videoIO.registerEffect(effect)
     }
     
-    open func unregisterEffect(video effect: VisualEffect) -> Bool {
+    public func unregisterEffect(video effect: VisualEffect) -> Bool {
         return mixer.videoIO.unregisterEffect(effect)
     }
     
-    open func dispose() {
+    public func dispose() {
         lockQueue.async {
             self.mixer.dispose()
             

@@ -16,7 +16,7 @@ final class CurrentTimeEffect: VisualEffect {
         let now: Date = Date()
         let nowDescription: String = now.description
 
-        let textAttributes: [NSAttributedStringKey: Any] = [
+        let textAttributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 25)
         ]
 

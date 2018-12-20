@@ -161,14 +161,14 @@ extension HTTPStatusCode: CustomStringConvertible {
 }
 
 // MARK: -
-open class HTTPService: NetService {
-    open class var type: String {
+public class HTTPService: NetService {
+    public class var type: String {
         return "_http._tcp"
     }
-    open class var defaultPort: Int32 {
+    public class var defaultPort: Int32 {
         return 8080
     }
-    open class var defaultDocument: String {
+    public class var defaultDocument: String {
         return """
 <!DOCTYPE html>
 <html>
@@ -214,35 +214,35 @@ open class HTTPService: NetService {
         }
     }
 
-    open func get(_ request: HTTPRequest, client: NetClient) {
+    public func get(_ request: HTTPRequest, client: NetClient) {
         notFound(request, client: client)
     }
 
-    open func post(_ request: HTTPRequest, client: NetClient) {
+    public func post(_ request: HTTPRequest, client: NetClient) {
         notFound(request, client: client)
     }
 
-    open func put(_ request: HTTPRequest, client: NetClient) {
+    public func put(_ request: HTTPRequest, client: NetClient) {
         notFound(request, client: client)
     }
 
-    open func delete(_ request: HTTPRequest, client: NetClient) {
+    public func delete(_ request: HTTPRequest, client: NetClient) {
         notFound(request, client: client)
     }
 
-    open func head(_ request: HTTPRequest, client: NetClient) {
+    public func head(_ request: HTTPRequest, client: NetClient) {
         notFound(request, client: client)
     }
 
-    open func options(_ requst: HTTPRequest, client: NetClient) {
+    public func options(_ requst: HTTPRequest, client: NetClient) {
         notFound(requst, client: client)
     }
 
-    open func trace(_ request: HTTPRequest, client: NetClient) {
+    public func trace(_ request: HTTPRequest, client: NetClient) {
         notFound(request, client: client)
     }
 
-    open func connect(_ request: HTTPRequest, client: NetClient) {
+    public func connect(_ request: HTTPRequest, client: NetClient) {
         notFound(request, client: client)
     }
 
@@ -253,24 +253,24 @@ open class HTTPService: NetService {
     }
 }
 
-open class HLSService: HTTPService {
+public class HLSService: HTTPService {
     private(set) var streams: [HTTPStream] = []
 
-    open func addHTTPStream(_ stream: HTTPStream) {
+    public func addHTTPStream(_ stream: HTTPStream) {
         for i in 0..<streams.count where stream.name == streams[i].name {
             return
         }
         streams.append(stream)
     }
 
-    open func removeHTTPStream(_ stream: HTTPStream) {
+    public func removeHTTPStream(_ stream: HTTPStream) {
         for i in 0..<streams.count where stream.name == streams[i].name {
             streams.remove(at: i)
             return
         }
     }
 
-    open override func get(_ request: HTTPRequest, client: NetClient) {
+    public override func get(_ request: HTTPRequest, client: NetClient) {
         //print("\(request)")
         var response: HTTPResponse = [
             // #141

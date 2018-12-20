@@ -35,7 +35,7 @@ extension RTMPStreamInfo: CustomStringConvertible {
 /**
  flash.net.NetStream for Swift
  */
-open class RTMPStream: NetStream {
+public class RTMPStream: NetStream {
     /**
      NetStatusEvent#info.code for NetStream
      */
@@ -224,11 +224,11 @@ open class RTMPStream: NetStream {
     static let defaultID: UInt32 = 0
     public static let defaultAudioBitrate: UInt32 = AACEncoder.defaultBitrate
     public static let defaultVideoBitrate: UInt32 = H264Encoder.defaultBitrate
-    open var qosDelegate: RTMPStreamDelegate?
-    open internal(set) var info: RTMPStreamInfo = RTMPStreamInfo()
-    open private(set) var objectEncoding: UInt8 = RTMPConnection.defaultObjectEncoding
-    @objc open private(set) dynamic var currentFPS: UInt16 = 0
-    open var soundTransform: SoundTransform {
+    public var qosDelegate: RTMPStreamDelegate?
+    public internal(set) var info: RTMPStreamInfo = RTMPStreamInfo()
+    public private(set) var objectEncoding: UInt8 = RTMPConnection.defaultObjectEncoding
+    @objc public private(set) dynamic var currentFPS: UInt16 = 0
+    public var soundTransform: SoundTransform {
         get { return mixer.audioIO.playback.soundTransform }
         set { mixer.audioIO.playback.soundTransform = newValue }
     }
@@ -293,7 +293,7 @@ open class RTMPStream: NetStream {
         }
     }
     
-    open var recordingState: RecordingState = .notRecording {
+    public var recordingState: RecordingState = .notRecording {
         didSet {
             switch recordingState {
             case .notRecording: break
@@ -340,20 +340,36 @@ open class RTMPStream: NetStream {
     }
     
     func activeAudioSession() {
-        
+        /*
         let session: AVAudioSession = AVAudioSession.sharedInstance()
         do {
             try session.setPreferredSampleRate(sampleRate)
-            try session.setCategory(AVAudioSessionCategoryPlayAndRecord, with: .allowBluetooth)
-            try session.setMode(AVAudioSessionModeDefault)
+            try session.setCategory(convertFromAVAudioSessionCategory(AVAudioSession.Category.playAndRecord), mode: .allowBluetooth)
+            try session.setMode(AVAudioSession.Mode.default)
             try session.setActive(true)
         } catch _ {
             
             //print("Unexpected error: \(error).")
         }
+        */
+        let session: AVAudioSession = AVAudioSession.sharedInstance()
+        do {
+            try session.setPreferredSampleRate(44_100)
+            // https://stackoverflow.com/questions/51010390/avaudiosession-setcategory-swift-4-2-ios-12-play-sound-on-silent
+            if #available(iOS 10.0, *) {
+                // record, videoRecording
+                try session.setCategory(.playAndRecord, mode: .default, options: [.allowBluetooth])
+            } else {
+                session.perform(NSSelectorFromString("setCategory:withOptions:error:"), with: AVAudioSession.Category.playAndRecord, with: [AVAudioSession.CategoryOptions.allowBluetooth])
+                try? session.setMode(.default)
+            }
+            try session.setActive(true)
+        } catch {
+        }
+
     }
     
-    open func receiveAudio(_ flag: Bool) {
+    public func receiveAudio(_ flag: Bool) {
         lockQueue.async {
             
             guard self.readyState == .playing else { return }
@@ -369,7 +385,7 @@ open class RTMPStream: NetStream {
         }
     }
     
-    open func receiveVideo(_ flag: Bool) {
+    public func receiveVideo(_ flag: Bool) {
         lockQueue.async {
             
             guard self.readyState == .playing else { return }
@@ -385,7 +401,7 @@ open class RTMPStream: NetStream {
         }
     }
     
-    open func play(_ arguments: Any?...) {
+    public func play(_ arguments: Any?...) {
         lockQueue.async {
             guard let name: String = arguments.first as? String else {
                 switch self.readyState {
@@ -427,7 +443,7 @@ open class RTMPStream: NetStream {
         }
     }
     
-    open func seek(_ offset: Double) {
+    public func seek(_ offset: Double) {
         lockQueue.async {
             
             guard self.readyState == .playing else { return }
@@ -444,14 +460,14 @@ open class RTMPStream: NetStream {
     }
     
     @available(*, unavailable)
-    open func publish(_ name: String?, type: String = "live") {
+    public func publish(_ name: String?, type: String = "live") {
         guard let howToPublish: RTMPStream.HowToPublish = RTMPStream.HowToPublish(rawValue: type) else {
             return
         }
         publish(name, type: howToPublish)
     }
     
-    open func publish(_ name: String?, type: RTMPStream.HowToPublish = .live) {
+    public func publish(_ name: String?, type: RTMPStream.HowToPublish = .live) {
         lockQueue.async {
             guard let name: String = name else {
                 // stop publishing
@@ -510,7 +526,7 @@ open class RTMPStream: NetStream {
         }
     }
     
-    open func startRecording() {
+    public func startRecording() {
         
         if (self.recordingState == .notRecording) {
             
@@ -521,7 +537,7 @@ open class RTMPStream: NetStream {
         }
     }
     
-    open func stopRecording() {
+    public func stopRecording() {
         
         if (self.recordingState == .recording) {
             self.mixer.recorder.stopRunning()
@@ -529,7 +545,7 @@ open class RTMPStream: NetStream {
         }
     }
     
-    open func close() {
+    public func close() {
         //print("close")
         
         guard readyState != .closed else { return }
@@ -555,7 +571,7 @@ open class RTMPStream: NetStream {
         }
     }
     
-    open func send(handlerName: String, arguments: Any?...) {
+    public func send(handlerName: String, arguments: Any?...) {
         lockQueue.async {
             
             guard !(self.readyState == .closed) else { return }
@@ -570,12 +586,12 @@ open class RTMPStream: NetStream {
         }
     }
     
-    open func isPaused() -> Bool {
+    public func isPaused() -> Bool {
         
         return paused
     }
     
-    open func pause() {
+    public func pause() {
         lockQueue.async {
             self.paused = true
             switch self.readyState {
@@ -589,7 +605,7 @@ open class RTMPStream: NetStream {
         }
     }
     
-    open func resume() {
+    public func resume() {
         lockQueue.async {
             self.paused = false
             switch self.readyState {
@@ -602,7 +618,35 @@ open class RTMPStream: NetStream {
         }
     }
     
-    open func togglePause() {
+    public func toggleAudioPause() {
+        
+        lockQueue.async {
+            switch self.readyState {
+            case .publish, .publishing:
+                //                self.paused = !self.paused
+                self.mixer.audioIO.encoder.muted = true
+            //                self.mixer.videoIO.encoder.muted = self.paused
+            default:
+                break
+            }
+        }
+    }
+    
+    public func toggleAudioResume() {
+        
+        lockQueue.async {
+            switch self.readyState {
+            case .publish, .publishing:
+                //                self.paused = !self.paused
+                self.mixer.audioIO.encoder.muted = false
+            //                self.mixer.videoIO.encoder.muted = self.paused
+            default:
+                break
+            }
+        }
+    }
+    
+    public func togglePause() {
         lockQueue.async {
             switch self.readyState {
             case .publish, .publishing:
@@ -615,7 +659,7 @@ open class RTMPStream: NetStream {
         }
     }
     
-    open func appendFile(_ file: URL, completionHandler: MP4Sampler.Handler? = nil) {
+    public func appendFile(_ file: URL, completionHandler: MP4Sampler.Handler? = nil) {
         lockQueue.async {
             if self.sampler == nil {
                 self.sampler = MP4Sampler()
@@ -748,4 +792,9 @@ extension RTMPStream: RTMPMuxerDelegate {
         videoTimestamp = withTimestamp + (videoTimestamp - floor(videoTimestamp))
         frameCount += 1
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromAVAudioSessionCategory(_ input: AVAudioSession.Category) -> String {
+	return input.rawValue
 }

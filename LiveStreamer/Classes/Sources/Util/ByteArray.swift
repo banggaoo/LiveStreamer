@@ -61,7 +61,7 @@ protocol ByteArrayConvertible {
 }
 
 // MARK: -
-open class ByteArray: ByteArrayConvertible {
+public class ByteArray: ByteArrayConvertible {
     static let fillZero: [UInt8] = [0x00]
 
     static let sizeOfInt8: Int = 1
@@ -85,7 +85,7 @@ open class ByteArray: ByteArrayConvertible {
 
     private(set) var data = Data()
 
-    open var length: Int {
+    public var length: Int {
         get {
             return data.count
         }
@@ -101,13 +101,13 @@ open class ByteArray: ByteArrayConvertible {
         }
     }
 
-    open var position: Int = 0
+    public var position: Int = 0
 
-    open var bytesAvailable: Int {
+    public var bytesAvailable: Int {
         return data.count - position
     }
 
-    open subscript(i: Int) -> UInt8 {
+    public subscript(i: Int) -> UInt8 {
         get {
             return data[i]
         }
@@ -116,7 +116,7 @@ open class ByteArray: ByteArrayConvertible {
         }
     }
 
-    open func readUInt8() throws -> UInt8 {
+    public func readUInt8() throws -> UInt8 {
         guard ByteArray.sizeOfInt8 <= bytesAvailable else {
             throw ByteArray.Error.eof
         }
@@ -127,11 +127,11 @@ open class ByteArray: ByteArrayConvertible {
     }
 
     @discardableResult
-    open func writeUInt8(_ value: UInt8) -> Self {
+    public func writeUInt8(_ value: UInt8) -> Self {
         return writeBytes(value.data)
     }
 
-    open func readInt8() throws -> Int8 {
+    public func readInt8() throws -> Int8 {
         guard ByteArray.sizeOfInt8 <= bytesAvailable else {
             throw ByteArray.Error.eof
         }
@@ -142,11 +142,11 @@ open class ByteArray: ByteArrayConvertible {
     }
 
     @discardableResult
-    open func writeInt8(_ value: Int8) -> Self {
+    public func writeInt8(_ value: Int8) -> Self {
         return writeBytes(UInt8(bitPattern: value).data)
     }
 
-    open func readUInt16() throws -> UInt16 {
+    public func readUInt16() throws -> UInt16 {
         guard ByteArray.sizeOfInt16 <= bytesAvailable else {
             throw ByteArray.Error.eof
         }
@@ -155,11 +155,11 @@ open class ByteArray: ByteArrayConvertible {
     }
 
     @discardableResult
-    open func writeUInt16(_ value: UInt16) -> Self {
+    public func writeUInt16(_ value: UInt16) -> Self {
         return writeBytes(value.bigEndian.data)
     }
 
-    open func readInt16() throws -> Int16 {
+    public func readInt16() throws -> Int16 {
         guard ByteArray.sizeOfInt16 <= bytesAvailable else {
             throw ByteArray.Error.eof
         }
@@ -168,11 +168,11 @@ open class ByteArray: ByteArrayConvertible {
     }
 
     @discardableResult
-    open func writeInt16(_ value: Int16) -> Self {
+    public func writeInt16(_ value: Int16) -> Self {
         return writeBytes(value.bigEndian.data)
     }
 
-    open func readUInt24() throws -> UInt32 {
+    public func readUInt24() throws -> UInt32 {
         guard ByteArray.sizeOfInt24 <= bytesAvailable else {
             throw ByteArray.Error.eof
         }
@@ -181,11 +181,11 @@ open class ByteArray: ByteArrayConvertible {
     }
 
     @discardableResult
-    open func writeUInt24(_ value: UInt32) -> Self {
+    public func writeUInt24(_ value: UInt32) -> Self {
         return writeBytes(value.bigEndian.data.subdata(in: 1..<ByteArray.sizeOfInt24 + 1))
     }
 
-    open func readUInt32() throws -> UInt32 {
+    public func readUInt32() throws -> UInt32 {
         guard ByteArray.sizeOfInt32 <= bytesAvailable else {
             throw ByteArray.Error.eof
         }
@@ -194,11 +194,11 @@ open class ByteArray: ByteArrayConvertible {
     }
 
     @discardableResult
-    open func writeUInt32(_ value: UInt32) -> Self {
+    public func writeUInt32(_ value: UInt32) -> Self {
         return writeBytes(value.bigEndian.data)
     }
 
-    open func readInt32() throws -> Int32 {
+    public func readInt32() throws -> Int32 {
         guard ByteArray.sizeOfInt32 <= bytesAvailable else {
             throw ByteArray.Error.eof
         }
@@ -207,11 +207,11 @@ open class ByteArray: ByteArrayConvertible {
     }
 
     @discardableResult
-    open func writeInt32(_ value: Int32) -> Self {
+    public func writeInt32(_ value: Int32) -> Self {
         return writeBytes(value.bigEndian.data)
     }
 
-    open func readDouble() throws -> Double {
+    public func readDouble() throws -> Double {
         guard ByteArray.sizeOfDouble <= bytesAvailable else {
             throw ByteArray.Error.eof
         }
@@ -220,11 +220,11 @@ open class ByteArray: ByteArrayConvertible {
     }
 
     @discardableResult
-    open func writeDouble(_ value: Double) -> Self {
+    public func writeDouble(_ value: Double) -> Self {
         return writeBytes(Data(value.data.reversed()))
     }
 
-    open func readFloat() throws -> Float {
+    public func readFloat() throws -> Float {
         guard ByteArray.sizeOfFloat <= bytesAvailable else {
             throw ByteArray.Error.eof
         }
@@ -233,21 +233,21 @@ open class ByteArray: ByteArrayConvertible {
     }
 
     @discardableResult
-    open func writeFloat(_ value: Float) -> Self {
+    public func writeFloat(_ value: Float) -> Self {
         return writeBytes(Data(value.data.reversed()))
     }
 
-    open func readUTF8() throws -> String {
+    public func readUTF8() throws -> String {
         return try readUTF8Bytes(Int(try readUInt16()))
     }
 
     @discardableResult
-    open func writeUTF8(_ value: String) throws -> Self {
+    public func writeUTF8(_ value: String) throws -> Self {
         let utf8: Data = Data(value.utf8)
         return writeUInt16(UInt16(utf8.count)).writeBytes(utf8)
     }
 
-    open func readUTF8Bytes(_ length: Int) throws -> String {
+    public func readUTF8Bytes(_ length: Int) throws -> String {
         guard length <= bytesAvailable else {
             throw ByteArray.Error.eof
         }
@@ -260,11 +260,11 @@ open class ByteArray: ByteArrayConvertible {
     }
 
     @discardableResult
-    open func writeUTF8Bytes(_ value: String) -> Self {
+    public func writeUTF8Bytes(_ value: String) -> Self {
         return writeBytes(Data(value.utf8))
     }
 
-    open func readBytes(_ length: Int) throws -> Data {
+    public func readBytes(_ length: Int) throws -> Data {
         guard length <= bytesAvailable else {
             throw ByteArray.Error.eof
         }
@@ -273,7 +273,7 @@ open class ByteArray: ByteArrayConvertible {
     }
 
     @discardableResult
-    open func writeBytes(_ value: Data) -> Self {
+    public func writeBytes(_ value: Data) -> Self {
         if position == data.count {
             data.append(value)
             position = data.count
@@ -289,7 +289,7 @@ open class ByteArray: ByteArrayConvertible {
     }
 
     @discardableResult
-    open func clear() -> Self {
+    public func clear() -> Self {
         position = 0
         data.removeAll()
         return self

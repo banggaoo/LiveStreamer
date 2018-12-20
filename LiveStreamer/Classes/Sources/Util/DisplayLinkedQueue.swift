@@ -68,7 +68,7 @@ final class DisplayLinkedQueue: NSObject {
                 return
             }
             displayLink.frameInterval = 1
-            displayLink.add(to: .main, forMode: .commonModes)
+            displayLink.add(to: .main, forMode: RunLoop.Mode.common)
         }
     }
     private let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.DisplayLinkedQueue.lock")

@@ -51,10 +51,10 @@ struct PESOptionalHeader {
 
     mutating func setTimestamp(_ timestamp: CMTime, presentationTimeStamp: CMTime, decodeTimeStamp: CMTime) {
         let base: Double = Double(timestamp.seconds)
-        if presentationTimeStamp != kCMTimeInvalid {
+        if presentationTimeStamp != CMTime.invalid {
             PTSDTSIndicator |= 0x02
         }
-        if decodeTimeStamp != kCMTimeInvalid {
+        if decodeTimeStamp != CMTime.invalid {
             PTSDTSIndicator |= 0x01
         }
         if PTSDTSIndicator & 0x02 == 0x02 {
