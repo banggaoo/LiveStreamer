@@ -25,7 +25,7 @@ public protocol LiveRecorderDelegate: class {
 @available(iOSApplicationExtension 9.0, *)
 public class LiveStreamer: NSObject {
     var rtmpConnection: RTMPConnection = RTMPConnection()
-    var rtmpStream: RTMPStream!
+    public var rtmpStream: RTMPStream
     var currentEffect: VisualEffect?
     var liveStreamAddress: LiveStreamAddress = LiveStreamAddress(uri: "", streamName: "")
     
@@ -50,7 +50,7 @@ public class LiveStreamer: NSObject {
         didSet {
             oldValue?.invalidate()
             if let timer: Timer = timer {
-                RunLoop.main.add(timer, forMode: .commonModes)
+                RunLoop.main.add(timer, forMode: RunLoop.Mode.common)
             }
         }
     }
@@ -61,7 +61,7 @@ public class LiveStreamer: NSObject {
 
     // Changeable while recording/streaming
     var _cameraPosition: AVCaptureDevice.Position = .front
-    open var cameraPosition: AVCaptureDevice.Position {
+    public var cameraPosition: AVCaptureDevice.Position {
 
         get { return _cameraPosition }
         
@@ -83,17 +83,17 @@ public class LiveStreamer: NSObject {
         }
     }
     
-    open var videoBitrate: UInt32 = Preference.defaultBitrate { didSet { rtmpStream.videoSettings["bitrate"] = videoBitrate } }
-    open var audioBitrate: UInt32 = Preference.audioDefaultBitrate { didSet { rtmpStream.audioSettings["bitrate"] = audioBitrate } }
+    public var videoBitrate: UInt32 = Preference.defaultBitrate { didSet { rtmpStream.videoSettings["bitrate"] = videoBitrate } }
+    public var audioBitrate: UInt32 = Preference.audioDefaultBitrate { didSet { rtmpStream.audioSettings["bitrate"] = audioBitrate } }
     
-    open var maximumVideoBitrate: UInt32 = Preference.maximumBitrate { didSet { rtmpStream.maximumBitrate = maximumVideoBitrate } }
-    open var minimumVideoBitrate: UInt32 = Preference.minimumBitrate { didSet { rtmpStream.minimumBitrate = minimumVideoBitrate } }
+    public var maximumVideoBitrate: UInt32 = Preference.maximumBitrate { didSet { rtmpStream.maximumBitrate = maximumVideoBitrate } }
+    public var minimumVideoBitrate: UInt32 = Preference.minimumBitrate { didSet { rtmpStream.minimumBitrate = minimumVideoBitrate } }
     
-    open var zoomRate: Float = 1.0 { didSet { rtmpStream.setZoomFactor(CGFloat(zoomRate), ramping: true, withRate: 5.0) } }
+    public var zoomRate: Float = 1.0 { didSet { rtmpStream.setZoomFactor(CGFloat(zoomRate), ramping: true, withRate: 5.0) } }
 
-    open var torch: Bool = false { didSet { rtmpStream.torch = torch } }
+    public var torch: Bool = false { didSet { rtmpStream.torch = torch } }
 
-    open var abrOn: Bool = true {
+    public var abrOn: Bool = true {
         
         didSet {
             objc_sync_enter(self)
@@ -109,11 +109,25 @@ public class LiveStreamer: NSObject {
             }
         }
     }
+    
+    public var audioMuted: Bool = false
+    
+        {
+        didSet {
+        
+            if audioMuted == true {
+                rtmpStream.toggleAudioPause()
+                
+            }else{
+                rtmpStream.toggleAudioResume()
+            }
+        }
+    }
 
     // Unchangeable while recording/streaming
     var captureSettings: [String: Any] = [:] { didSet { rtmpStream.captureSettings = captureSettings } }
     
-    open var sampleRate: Double = Preference.sampleRate {
+    public var sampleRate: Double = Preference.sampleRate {
         
         didSet {
             rtmpStream.sampleRate = sampleRate
@@ -124,7 +138,7 @@ public class LiveStreamer: NSObject {
     }
 
     var _sessionPreset: AVCaptureSession.Preset = AVCaptureSession.Preset.hd1280x720
-    open var sessionPreset: AVCaptureSession.Preset {
+    public var sessionPreset: AVCaptureSession.Preset {
 
         get { return _sessionPreset }
         
@@ -140,7 +154,7 @@ public class LiveStreamer: NSObject {
     }
 
     var _videoSize: CGSize = CGSize(width: CGFloat(720), height: CGFloat(1280))
-    open var videoSize: CGSize {
+    public var videoSize: CGSize {
         
         get { return _videoSize }
         
@@ -153,17 +167,17 @@ public class LiveStreamer: NSObject {
         }
     }
  
-    open var recordFileName: String = "Movie" { didSet { rtmpStream.mixer.recorder.fileName = recordFileName } }
+    public var recordFileName: String = "Movie" //{ didSet { rtmpStream.mixer.recorder.fileName = recordFileName } }
     
-    open var videoFPS: Float = Preference.defaultFPS { didSet { rtmpStream.captureSettings["fps"] = videoFPS } }
+    public var videoFPS: Float = Preference.defaultFPS { didSet { rtmpStream.captureSettings["fps"] = videoFPS } }
     
     public init(view: GLHKView) {
         //print("init(view: GLHKView")
         lfView = view
         
-        super.init()
-
         rtmpStream = RTMPStream(connection: rtmpConnection)
+
+        super.init()
 
         configureBroadcast()
     }
@@ -239,12 +253,12 @@ public class LiveStreamer: NSObject {
         }
     }
 
-    open func isTorchModeSupported() -> Bool {
+    public func isTorchModeSupported() -> Bool {
         
         return rtmpStream.isTorchModeSupported()
     }
     
-    open func readyForBroadcast(isReady: Bool) {
+    public func readyForBroadcast(isReady: Bool) {
 
         if isReady {
             
@@ -287,7 +301,7 @@ public class LiveStreamer: NSObject {
         }
     }
     
-    open func registerFPSObserver() {
+    public func registerFPSObserver() {
         guard let liveStreamer: AnyObject = delegations["currentFPS"], liveStreamer is LiveStreamer else { return }
         
         delegations["currentFPS"] = self
@@ -295,7 +309,7 @@ public class LiveStreamer: NSObject {
         self.rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
     }
 
-    open func unRegisterFPSObserver() {
+    public func unRegisterFPSObserver() {
         
         if let liveStreamer: AnyObject = delegations["currentFPS"], liveStreamer is LiveStreamer {
 
@@ -305,7 +319,7 @@ public class LiveStreamer: NSObject {
         }
     }
  
-    open func startRecodring() {
+    public func startRecodring() {
         guard rtmpStream.recordingState == .notRecording else { return }
 
         readyForBroadcast(isReady: true)
@@ -313,7 +327,7 @@ public class LiveStreamer: NSObject {
         rtmpStream.startRecording()
     }
     
-    open func stopRecording() {
+    public func stopRecording() {
         guard rtmpStream.recordingState == .recording else { return }
 
         readyForBroadcast(isReady: false)
@@ -321,7 +335,7 @@ public class LiveStreamer: NSObject {
         rtmpStream.stopRecording()
     }
     
-    open func startStreaming(uri: String, streamName: String) {
+    public func startStreaming(uri: String, streamName: String) {
         guard rtmpStream.readyState == .closed || rtmpStream.readyState == .initialized else { return }
 
         liveStreamAddress.uri = uri
@@ -343,7 +357,7 @@ public class LiveStreamer: NSObject {
         // Need time to prepare service. will callback at rtmpStatusHandler()
     }
   
-    open func stopStreaming() {
+    public func stopStreaming() {
         guard isUserWantConnect else { return }
         
         isUserWantConnect = false
@@ -367,8 +381,26 @@ public class LiveStreamer: NSObject {
         
     }
     
-    open func pauseStreaming() {
+    public func muteStreaming(isMuted: Bool) {
+        print("muteStreaming")
+
+        //        audioIO
+//        muted = !muted
+        
+        if audioMuted == true {
+            audioMuted = false
+            rtmpStream.toggleAudioResume()
+
+        }else{
+            audioMuted = true
+            rtmpStream.toggleAudioPause()
+        }
+
+//        rtmpStream.mixer.audioIO.encoder.muted = !(rtmpStream.mixer.audioIO.encoder.muted)
+    }
     
+    public func pauseStreaming() {
+        print("pauseStreaming")
         rtmpStream.togglePause()
         
         if rtmpStream.isPaused() == false {
@@ -500,7 +532,7 @@ public class LiveStreamer: NSObject {
                 
             case RTMPConnection.Code.connectSuccess.rawValue:
                 
-                rtmpStream!.publish(liveStreamAddress.streamName, type:.live)
+                rtmpStream.publish(liveStreamAddress.streamName, type:.live)
                 
                 broadcastStatusForUser = .start
                 timer = nil
@@ -555,7 +587,7 @@ public class LiveStreamer: NSObject {
         }
     }
 
-    open func apply(effector: VisualEffect) {
+    public func apply(effector: VisualEffect) {
         // Kind of effector : MonochromeEffect(), PronamaEffect(), CurrentTimeEffect()
 
         removeCurrentEffector()
@@ -564,7 +596,7 @@ public class LiveStreamer: NSObject {
         currentEffect = effector
     }
     
-    open func removeCurrentEffector() {
+    public func removeCurrentEffector() {
         
         if let currentEffect: VisualEffect = currentEffect {
             _ = rtmpStream.unregisterEffect(video: currentEffect)
