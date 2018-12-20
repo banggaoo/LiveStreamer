@@ -81,7 +81,7 @@ extension RTMPSharedObjectEvent: CustomStringConvertible {
 /**
  flash.net.SharedObject for Swift
  */
-open class RTMPSharedObject: EventDispatcher {
+public class RTMPSharedObject: EventDispatcher {
 
     static private var remoteSharedObjects: [String: RTMPSharedObject] = [: ]
     static public func getRemote(withName: String, remotePath: String, persistence: Bool) -> RTMPSharedObject {
@@ -100,8 +100,8 @@ open class RTMPSharedObject: EventDispatcher {
     var persistence: Bool
     var currentVersion: UInt32 = 0
 
-    open private(set) var objectEncoding: UInt8 = RTMPConnection.defaultObjectEncoding
-    open private(set) var data: [String: Any?] = [: ]
+    public private(set) var objectEncoding: UInt8 = RTMPConnection.defaultObjectEncoding
+    public private(set) var data: [String: Any?] = [: ]
 
     private var succeeded: Bool = false {
         didSet {
@@ -114,7 +114,7 @@ open class RTMPSharedObject: EventDispatcher {
         }
     }
 
-    override open var description: String {
+    override public var description: String {
         return data.description
     }
 
@@ -127,7 +127,7 @@ open class RTMPSharedObject: EventDispatcher {
         super.init()
     }
 
-    open func setProperty(_ name: String, _ value: Any?) {
+    public func setProperty(_ name: String, _ value: Any?) {
         data[name] = value
         guard let rtmpConnection: RTMPConnection = rtmpConnection, succeeded else {
             return
@@ -137,7 +137,7 @@ open class RTMPSharedObject: EventDispatcher {
         ]), locked: nil)
     }
 
-    open func connect(_ rtmpConnection: RTMPConnection) {
+    public func connect(_ rtmpConnection: RTMPConnection) {
         if self.rtmpConnection != nil {
             close()
         }
@@ -149,12 +149,12 @@ open class RTMPSharedObject: EventDispatcher {
         }
     }
 
-    open func clear() {
+    public func clear() {
         data.removeAll(keepingCapacity: false)
         rtmpConnection?.socket.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .clear)]), locked: nil)
     }
 
-    open func close() {
+    public func close() {
         data.removeAll(keepingCapacity: false)
         rtmpConnection?.removeEventListener(Event.RTMP_STATUS, selector: #selector(rtmpStatusHandler), observer: self)
         rtmpConnection?.socket.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .release)]), locked: nil)

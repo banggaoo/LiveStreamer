@@ -25,7 +25,11 @@ final class AudioUtil {
         #if !(arch(i386) || arch(x86_64))
             let session: AVAudioSession = AVAudioSession.sharedInstance()
             do {
-                try session.setCategory(AVAudioSessionCategoryPlayback)
+                if #available(iOS 10.0, *) {
+                    try session.setCategory(.playback, mode: .default, options: [])
+                } else {
+                    session.perform(NSSelectorFromString("setCategory:withOptions:error:"), with: AVAudioSession.Category.playback, with: [])
+                }
                 try session.setActive(true)
             } catch {
             }
@@ -41,4 +45,9 @@ final class AudioUtil {
             }
         #endif
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromAVAudioSessionCategory(_ input: AVAudioSession.Category) -> String {
+	return input.rawValue
 }

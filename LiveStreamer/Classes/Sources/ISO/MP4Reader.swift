@@ -680,7 +680,7 @@ final class MP4TrakReader {
             }
             timerDriver.startRunning()
         } catch {
-            //print("file open error : \(reader.url)")
+            //print("file public error : \(reader.url)")
         }
     }
 

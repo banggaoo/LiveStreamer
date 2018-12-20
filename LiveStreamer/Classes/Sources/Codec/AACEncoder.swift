@@ -71,7 +71,7 @@ final class AACEncoder: NSObject {
     var inClassDescriptions: [AudioClassDescription] = AACEncoder.defaultInClassDescriptions
     var formatDescription: CMFormatDescription? {
         didSet {
-            if !CMFormatDescriptionEqual(formatDescription, oldValue) {
+            if !CMFormatDescriptionEqual(formatDescription, otherFormatDescription: oldValue) {
                 delegate?.didSetFormatDescription(audio: formatDescription)
             }
         }
@@ -109,7 +109,7 @@ final class AACEncoder: NSObject {
                     mReserved: 0
                 )
                 CMAudioFormatDescriptionCreate(
-                    kCFAllocatorDefault, &_inDestinationFormat!, 0, nil, 0, nil, nil, &formatDescription
+                    allocator: kCFAllocatorDefault, asbd: &_inDestinationFormat!, layoutSize: 0, layout: nil, magicCookieSize: 0, magicCookie: nil, extensions: nil, formatDescriptionOut: &formatDescription
                 )
             }
             return _inDestinationFormat!
@@ -164,13 +164,13 @@ final class AACEncoder: NSObject {
         currentBufferList = AudioBufferList.allocate(maximumBuffers: maximumBuffers)
         CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
             sampleBuffer,
-            nil,
-            currentBufferList!.unsafeMutablePointer,
-            bufferListSize,
-            kCFAllocatorDefault,
-            kCFAllocatorDefault,
-            0,
-            &blockBuffer
+            bufferListSizeNeededOut: nil,
+            bufferListOut: currentBufferList!.unsafeMutablePointer,
+            bufferListSize: bufferListSize,
+            blockBufferAllocator: kCFAllocatorDefault,
+            blockBufferMemoryAllocator: kCFAllocatorDefault,
+            flags: 0,
+            blockBufferOut: &blockBuffer
         )
 
         if blockBuffer == nil {
@@ -209,8 +209,8 @@ final class AACEncoder: NSObject {
                 var result: CMSampleBuffer?
                 var timing: CMSampleTimingInfo = CMSampleTimingInfo(sampleBuffer: sampleBuffer)
                 let numSamples: CMItemCount = sampleBuffer.numSamples
-                CMSampleBufferCreate(kCFAllocatorDefault, nil, false, nil, nil, formatDescription, numSamples, 1, &timing, 0, nil, &result)
-                CMSampleBufferSetDataBufferFromAudioBufferList(result!, kCFAllocatorDefault, kCFAllocatorDefault, 0, outOutputData.unsafePointer)
+                CMSampleBufferCreate(allocator: kCFAllocatorDefault, dataBuffer: nil, dataReady: false, makeDataReadyCallback: nil, refcon: nil, formatDescription: formatDescription, sampleCount: numSamples, sampleTimingEntryCount: 1, sampleTimingArray: &timing, sampleSizeEntryCount: 0, sampleSizeArray: nil, sampleBufferOut: &result)
+                CMSampleBufferSetDataBufferFromAudioBufferList(result!, blockBufferAllocator: kCFAllocatorDefault, blockBufferMemoryAllocator: kCFAllocatorDefault, flags: 0, bufferList: outOutputData.unsafePointer)
                 delegate?.sampleOutput(audio: result!)
             case -1:
                 finished = true

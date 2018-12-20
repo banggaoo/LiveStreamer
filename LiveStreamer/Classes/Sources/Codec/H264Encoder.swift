@@ -126,7 +126,7 @@ final class H264Encoder: NSObject {
     }
     var formatDescription: CMFormatDescription? {
         didSet {
-            guard !CMFormatDescriptionEqual(formatDescription, oldValue) else {
+            guard !CMFormatDescriptionEqual(formatDescription, otherFormatDescription: oldValue) else {
                 return
             }
             delegate?.didSetFormatDescription(video: formatDescription)
@@ -215,22 +215,22 @@ final class H264Encoder: NSObject {
         get {
             if _session == nil {
                 guard VTCompressionSessionCreate(
-                    kCFAllocatorDefault,
-                    width,
-                    height,
-                    kCMVideoCodecType_H264,
-                    nil,
-                    attributes as CFDictionary?,
-                    nil,
-                    callback,
-                    Unmanaged.passUnretained(self).toOpaque(),
-                    &_session
+                    allocator: kCFAllocatorDefault,
+                    width: width,
+                    height: height,
+                    codecType: kCMVideoCodecType_H264,
+                    encoderSpecification: nil,
+                    imageBufferAttributes: attributes as CFDictionary?,
+                    compressedDataAllocator: nil,
+                    outputCallback: callback,
+                    refcon: Unmanaged.passUnretained(self).toOpaque(),
+                    compressionSessionOut: &_session
                     ) == noErr else {
                     //print("create a VTCompressionSessionCreate")
                     return nil
                 }
                 invalidateSession = false
-                status = VTSessionSetProperties(_session!, properties as CFDictionary)
+                status = VTSessionSetProperties(_session!, propertyDictionary: properties as CFDictionary)
                 status = VTCompressionSessionPrepareToEncodeFrames(_session!)
                 supportedProperty = _session?.copySupportedPropertyDictionary()
             }
@@ -257,12 +257,12 @@ final class H264Encoder: NSObject {
         var flags: VTEncodeInfoFlags = []
         VTCompressionSessionEncodeFrame(
             session,
-            muted ? lastImageBuffer ?? imageBuffer : imageBuffer,
-            presentationTimeStamp,
-            duration,
-            nil,
-            nil,
-            &flags
+            imageBuffer: muted ? lastImageBuffer ?? imageBuffer : imageBuffer,
+            presentationTimeStamp: presentationTimeStamp,
+            duration: duration,
+            frameProperties: nil,
+            sourceFrameRefcon: nil,
+            infoFlagsOut: &flags
         )
         ////print("imageBuffer\(imageBuffer)")
         if !muted {
@@ -277,8 +277,8 @@ final class H264Encoder: NSObject {
             }
             self.status = VTSessionSetProperty(
                 session,
-                key,
-                value
+                key: key,
+                value: value
             )
         }
     }
@@ -291,7 +291,7 @@ final class H264Encoder: NSObject {
         guard
             let userInfo: [AnyHashable: Any] = notification.userInfo,
             let value: NSNumber = userInfo[AVAudioSessionInterruptionTypeKey] as? NSNumber,
-            let type: AVAudioSessionInterruptionType = AVAudioSessionInterruptionType(rawValue: value.uintValue) else {
+            let type: AVAudioSession.InterruptionType = AVAudioSession.InterruptionType(rawValue: value.uintValue) else {
             return
         }
         switch type {
@@ -313,13 +313,13 @@ extension H264Encoder: Running {
             NotificationCenter.default.addObserver(
                 self,
                 selector: #selector(self.didAudioSessionInterruption),
-                name: .AVAudioSessionInterruption,
+                name: AVAudioSession.interruptionNotification,
                 object: nil
             )
             NotificationCenter.default.addObserver(
                 self,
                 selector: #selector(self.applicationWillEnterForeground),
-                name: .UIApplicationWillEnterForeground,
+                name: UIApplication.willEnterForegroundNotification,
                 object: nil
             )
 #endif

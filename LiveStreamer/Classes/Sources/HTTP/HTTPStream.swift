@@ -1,11 +1,11 @@
 import Foundation
 import AVFoundation
 
-open class HTTPStream: NetStream {
+public class HTTPStream: NetStream {
     private(set) var name: String?
     private lazy var tsWriter: TSWriter = TSWriter()
 
-    open func publish(_ name: String?) {
+    public func publish(_ name: String?) {
         lockQueue.async {
             if name == nil {
                 self.name = name
