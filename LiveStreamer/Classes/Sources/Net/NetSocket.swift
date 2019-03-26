@@ -6,7 +6,7 @@ public class NetSocket: NSObject {
     
     public var inputBuffer: Data = Data()
     public var timeout: Int64 = NetSocket.defaultTimeout
-    public internal(set) var connected: Bool = false
+    public   var connected: Bool = false
     public var windowSizeC: Int = NetSocket.defaultWindowSizeC
     public var securityLevel: StreamSocketSecurityLevel = .none
     public var totalBytesIn: Int64 = 0

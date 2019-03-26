@@ -5,9 +5,9 @@ import AVFoundation
  flash.net.NetStreamInfo for Swift
  */
 public struct RTMPStreamInfo {
-    public internal(set) var byteCount: Int64 = 0
-    public internal(set) var resourceName: String?
-    public internal(set) var currentBytesPerSecond: Int32 = 0
+    public   var byteCount: Int64 = 0
+    public   var resourceName: String?
+    public   var currentBytesPerSecond: Int32 = 0
     
     private var previousByteCount: Int64 = 0
     
@@ -225,7 +225,7 @@ public class RTMPStream: NetStream {
     public static let defaultAudioBitrate: UInt32 = AACEncoder.defaultBitrate
     public static let defaultVideoBitrate: UInt32 = H264Encoder.defaultBitrate
     public var qosDelegate: RTMPStreamDelegate?
-    public internal(set) var info: RTMPStreamInfo = RTMPStreamInfo()
+    public   var info: RTMPStreamInfo = RTMPStreamInfo()
     public private(set) var objectEncoding: UInt8 = RTMPConnection.defaultObjectEncoding
     @objc public private(set) dynamic var currentFPS: UInt16 = 0
     public var soundTransform: SoundTransform {

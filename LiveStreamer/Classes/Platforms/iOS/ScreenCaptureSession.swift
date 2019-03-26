@@ -32,7 +32,7 @@ public class ScreenCaptureSession: NSObject {
     }
     public weak var delegate: ScreenCaptureOutputPixelBufferDelegate?
 
-    internal(set) var running: Bool = false
+      var running: Bool = false
     private var shared: UIApplication?
     private var viewToCapture: UIView?
     public var afterScreenUpdates: Bool = false
