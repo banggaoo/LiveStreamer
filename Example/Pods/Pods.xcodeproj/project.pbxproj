@@ -104,6 +104,7 @@
 		701750632101B12600D60151 /* VideoGravityUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FFC2101B12600D60151 /* VideoGravityUtil.swift */; };
 		7057B0D5213410C100EFBCBA /* LiveStreamer_Define.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7057B0D4213410C100EFBCBA /* LiveStreamer_Define.swift */; };
 		7057B0D72134154F00EFBCBA /* LiveStreamer_Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7057B0D62134154F00EFBCBA /* LiveStreamer_Delegate.swift */; };
+		70C5E3C9226D627800B6ADE9 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C5E3C8226D627800B6ADE9 /* Log.swift */; };
 		773C7809279E4441B51838B6B51C8BA8 /* LiveStreamer-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 20A2A69AE4F6F043F34C880FF14078E0 /* LiveStreamer-dummy.m */; };
 		878761E0573E1E13E293D1F8272ED746 /* Pods-LiveStreamer_Tests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 41589AB84F361C14B9460F837353E4C0 /* Pods-LiveStreamer_Tests-dummy.m */; };
 		A04F417818BC9E5F9F7D96755297B01D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A16F4CFC63FAC439D7A04994F579A03 /* Foundation.framework */; };
@@ -238,6 +239,7 @@
 		7046CF302150CCF60006C4F4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7057B0D4213410C100EFBCBA /* LiveStreamer_Define.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveStreamer_Define.swift; sourceTree = "<group>"; };
 		7057B0D62134154F00EFBCBA /* LiveStreamer_Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveStreamer_Delegate.swift; sourceTree = "<group>"; };
+		70C5E3C8226D627800B6ADE9 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		7B5DC24E424FE880A8C3A724EA64EF67 /* Pods-LiveStreamer_Example-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-LiveStreamer_Example-resources.sh"; sourceTree = "<group>"; };
 		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		B80F5E5D6B52A8B68546B8BE5C2939B8 /* LiveStreamer.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = LiveStreamer.xcconfig; sourceTree = "<group>"; };
@@ -542,6 +544,7 @@
 				70174FFA2101B12600D60151 /* Mutex.swift */,
 				70174FFB2101B12600D60151 /* TimerDriver.swift */,
 				70174FFC2101B12600D60151 /* VideoGravityUtil.swift */,
+				70C5E3C8226D627800B6ADE9 /* Log.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -752,6 +755,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				70C5E3C9226D627800B6ADE9 /* Log.swift in Sources */,
 				701750602101B12600D60151 /* MD5.swift in Sources */,
 				701750332101B12600D60151 /* AudioSpecificConfig.swift in Sources */,
 				701750142101B12600D60151 /* H264Decoder.swift in Sources */,
@@ -882,7 +886,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "Target Support Files/Pods-LiveStreamer_Tests/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "Target Support Files/Pods-LiveStreamer_Tests/Pods-LiveStreamer_Tests.modulemap";
@@ -920,7 +924,7 @@
 				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = "Target Support Files/LiveStreamer/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/LiveStreamer/LiveStreamer.modulemap";
 				PRODUCT_MODULE_NAME = LiveStreamer;
@@ -953,7 +957,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "Target Support Files/Pods-LiveStreamer_Tests/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "Target Support Files/Pods-LiveStreamer_Tests/Pods-LiveStreamer_Tests.modulemap";
@@ -1024,7 +1028,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1050,7 +1054,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "Target Support Files/Pods-LiveStreamer_Example/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "Target Support Files/Pods-LiveStreamer_Example/Pods-LiveStreamer_Example.modulemap";
@@ -1089,7 +1093,7 @@
 				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = "Target Support Files/LiveStreamer/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/LiveStreamer/LiveStreamer.modulemap";
 				PRODUCT_MODULE_NAME = LiveStreamer;
@@ -1158,7 +1162,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
@@ -1183,7 +1187,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "Target Support Files/Pods-LiveStreamer_Example/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "Target Support Files/Pods-LiveStreamer_Example/Pods-LiveStreamer_Example.modulemap";

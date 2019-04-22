@@ -18,6 +18,14 @@
 		70174EA7210183A200D60151 /* Pods_LiveStreamer_Example.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 91DA8C03D4D14B47E186EF7E /* Pods_LiveStreamer_Example.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		70174EA8210183B000D60151 /* Pods_LiveStreamer_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E0A5DE2131BA99FD7140419 /* Pods_LiveStreamer_Tests.framework */; };
 		70174EAA2101844D00D60151 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70174EA92101844D00D60151 /* UIKit.framework */; };
+		70C5E3C7226D625F00B6ADE9 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C5E3C6226D625F00B6ADE9 /* Log.swift */; };
+		70C5E3CB226D633800B6ADE9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C5E3CA226D633800B6ADE9 /* ViewController.swift */; };
+		70C5E3CD226D63DF00B6ADE9 /* LiveViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 70C5E3CC226D63DF00B6ADE9 /* LiveViewController.xib */; };
+		70C5E3CF226D648500B6ADE9 /* LiveViewController_Recorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C5E3CE226D648500B6ADE9 /* LiveViewController_Recorder.swift */; };
+		70C5E3D1226D672400B6ADE9 /* CollectionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C5E3D0226D672400B6ADE9 /* CollectionExtension.swift */; };
+		70C5E3D3226D7BC900B6ADE9 /* NSObjectExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C5E3D2226D7BC900B6ADE9 /* NSObjectExtension.swift */; };
+		70C5E3D5226D82FD00B6ADE9 /* LiveViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C5E3D4226D82FD00B6ADE9 /* LiveViewModel.swift */; };
+		70D86D702265A1BE0089760B /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D86D6F2265A1BE0089760B /* Preference.swift */; };
 		F278DE87DD6F758698FEC6C6 /* Pods_LiveStreamer_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E0A5DE2131BA99FD7140419 /* Pods_LiveStreamer_Tests.framework */; };
 /* End PBXBuildFile section */
 
@@ -46,10 +54,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		00E4DAA57DC3F66769987831 /* LiveStreamer.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LiveStreamer.podspec; path = ../LiveStreamer.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		0B9F6FE0F8B06F9CEFA2AA09 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		429D3042521180B9A6B7A290 /* Pods-LiveStreamer_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LiveStreamer_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-LiveStreamer_Tests/Pods-LiveStreamer_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		454AC4FA5A1A06E0DB6195BC /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		4E0A5DE2131BA99FD7140419 /* Pods_LiveStreamer_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LiveStreamer_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD01AFB9204008FA782 /* LiveStreamer_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiveStreamer_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -65,6 +70,14 @@
 		70174E94210180BD00D60151 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		70174EA62101827500D60151 /* LiveStreamer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LiveStreamer.framework; path = "../../../../Library/Developer/Xcode/DerivedData/LiveStreamer-bfpnbnovcbsqxaezrxsepyvvwmhz/Build/Products/Debug-iphoneos/LiveStreamer.framework"; sourceTree = "<group>"; };
 		70174EA92101844D00D60151 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		70C5E3C6226D625F00B6ADE9 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		70C5E3CA226D633800B6ADE9 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		70C5E3CC226D63DF00B6ADE9 /* LiveViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LiveViewController.xib; sourceTree = "<group>"; };
+		70C5E3CE226D648500B6ADE9 /* LiveViewController_Recorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveViewController_Recorder.swift; sourceTree = "<group>"; };
+		70C5E3D0226D672400B6ADE9 /* CollectionExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionExtension.swift; sourceTree = "<group>"; };
+		70C5E3D2226D7BC900B6ADE9 /* NSObjectExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSObjectExtension.swift; sourceTree = "<group>"; };
+		70C5E3D4226D82FD00B6ADE9 /* LiveViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveViewModel.swift; sourceTree = "<group>"; };
+		70D86D6F2265A1BE0089760B /* Preference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preference.swift; sourceTree = "<group>"; };
 		7CC989FFA976C144D46B4B0E /* Pods-LiveStreamer_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LiveStreamer_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LiveStreamer_Example/Pods-LiveStreamer_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		91DA8C03D4D14B47E186EF7E /* Pods_LiveStreamer_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LiveStreamer_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		92F7AA7C09180A367B85DAF5 /* Pods-LiveStreamer_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LiveStreamer_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-LiveStreamer_Example/Pods-LiveStreamer_Example.release.xcconfig"; sourceTree = "<group>"; };
@@ -95,7 +108,6 @@
 		607FACC71AFB9204008FA782 = {
 			isa = PBXGroup;
 			children = (
-				607FACF51AFB993E008FA782 /* Podspec Metadata */,
 				607FACD21AFB9204008FA782 /* Example for LiveStreamer */,
 				607FACE81AFB9204008FA782 /* Tests */,
 				607FACD11AFB9204008FA782 /* Products */,
@@ -117,13 +129,21 @@
 			isa = PBXGroup;
 			children = (
 				70174E8E210180BC00D60151 /* AppDelegate.swift */,
+				70C5E3CA226D633800B6ADE9 /* ViewController.swift */,
+				70C5E3D4226D82FD00B6ADE9 /* LiveViewModel.swift */,
 				70174E8F210180BD00D60151 /* LiveViewController.swift */,
+				70C5E3CE226D648500B6ADE9 /* LiveViewController_Recorder.swift */,
+				70C5E3CC226D63DF00B6ADE9 /* LiveViewController.xib */,
+				70D86D6F2265A1BE0089760B /* Preference.swift */,
 				70174E91210180BD00D60151 /* Logo.png */,
 				70174E94210180BD00D60151 /* Main.storyboard */,
 				70174E90210180BD00D60151 /* VisualEffect.swift */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
+				70C5E3C6226D625F00B6ADE9 /* Log.swift */,
+				70C5E3D0226D672400B6ADE9 /* CollectionExtension.swift */,
+				70C5E3D2226D7BC900B6ADE9 /* NSObjectExtension.swift */,
 			);
 			name = "Example for LiveStreamer";
 			path = LiveStreamer;
@@ -153,16 +173,6 @@
 				607FACEA1AFB9204008FA782 /* Info.plist */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		607FACF51AFB993E008FA782 /* Podspec Metadata */ = {
-			isa = PBXGroup;
-			children = (
-				00E4DAA57DC3F66769987831 /* LiveStreamer.podspec */,
-				454AC4FA5A1A06E0DB6195BC /* README.md */,
-				0B9F6FE0F8B06F9CEFA2AA09 /* LICENSE */,
-			);
-			name = "Podspec Metadata";
 			sourceTree = "<group>";
 		};
 		8BF58338E5A65A2CA5DBBF0D /* Frameworks */ = {
@@ -278,6 +288,7 @@
 				70174E98210180BD00D60151 /* Logo.png in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
+				70C5E3CD226D63DF00B6ADE9 /* LiveViewController.xib in Resources */,
 				70174E9B210180BD00D60151 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -353,9 +364,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				70C5E3CB226D633800B6ADE9 /* ViewController.swift in Sources */,
 				70174E97210180BD00D60151 /* VisualEffect.swift in Sources */,
+				70C5E3D5226D82FD00B6ADE9 /* LiveViewModel.swift in Sources */,
 				70174E96210180BD00D60151 /* LiveViewController.swift in Sources */,
+				70C5E3C7226D625F00B6ADE9 /* Log.swift in Sources */,
+				70D86D702265A1BE0089760B /* Preference.swift in Sources */,
+				70C5E3D1226D672400B6ADE9 /* CollectionExtension.swift in Sources */,
 				70174E95210180BD00D60151 /* AppDelegate.swift in Sources */,
+				70C5E3D3226D7BC900B6ADE9 /* NSObjectExtension.swift in Sources */,
+				70C5E3CF226D648500B6ADE9 /* LiveViewController_Recorder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -436,7 +454,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -484,7 +502,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -500,7 +518,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = B23RT9FP44;
 				INFOPLIST_FILE = LiveStreamer/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
@@ -519,7 +537,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = B23RT9FP44;
 				INFOPLIST_FILE = LiveStreamer/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
@@ -544,6 +562,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Tests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -568,6 +587,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Tests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",

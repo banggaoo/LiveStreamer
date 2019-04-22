@@ -1,5 +1,5 @@
 import XCTest
-import LiveStreamer
+@testable import LiveStreamer
 
 class Tests: XCTestCase {
     
