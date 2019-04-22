@@ -13,17 +13,19 @@ final class LiveViewController: UIViewController {
         super.init(nibName: LiveViewController.className, bundle: nil)
     }
     
+    // MARK: Lifecycle
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // MARK: Lifecycle
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         // It is better to run startCapturing method after view is appeared
+        setCameraPosition(.front)
         liveStreamer.startCapturing()
+        printLog("viewDidAppear")
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -33,12 +35,12 @@ final class LiveViewController: UIViewController {
         liveStreamer.stopRecording()
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-    }
-    
     public override var shouldAutorotate: Bool {
         get { return (viewModel.isStreamingStart == false) }
+    }
+    
+    deinit {
+        printLog("deinit")
     }
     
     // MARK: Preview
@@ -62,6 +64,7 @@ final class LiveViewController: UIViewController {
     // MARK: UI
     
     @IBOutlet private weak var currentFPSLabel: UILabel!
+    @IBOutlet private weak var torchButton: UIButton!
     @IBOutlet private weak var fpsControl: UISegmentedControl!
     @IBOutlet private weak var effectSegmentControl: UISegmentedControl!
     
@@ -77,9 +80,17 @@ final class LiveViewController: UIViewController {
     @IBOutlet private weak var audioBitrateLabel: UILabel!
     @IBOutlet private weak var audioBitrateSlider: UISlider!
 
+    @IBAction private func on(close: UIButton) {
+        dismiss(animated: true, completion: nil)
+    }
+
     @IBAction private func rotateCamera(_ sender: UIButton) {
         let position: AVCaptureDevice.Position = liveStreamer.cameraPosition == .back ? .front : .back
+        setCameraPosition(position)
+    }
+    private func setCameraPosition(_ position: AVCaptureDevice.Position) {
         liveStreamer.cameraPosition = position
+        torchButton.isEnabled = (position == .back)
     }
 
     @IBAction private func toggleTorch(_ sender: UIButton) {
@@ -116,10 +127,6 @@ final class LiveViewController: UIViewController {
         pause.isSelected = (pause.isSelected == false)
     }
 
-    @IBAction private func on(close: UIButton) {
-        dismiss(animated: true, completion: nil)
-    }
-
     @IBAction private func on(publish: UIButton) {
 
         if publish.isSelected == true {
@@ -148,7 +155,7 @@ final class LiveViewController: UIViewController {
             UIApplication.shared.isIdleTimerDisabled = true
             liveStreamer.startRecodring()
         }
-        record.isSelected = !record.isSelected
+        record.isSelected = (record.isSelected == false)
     }
  
     enum FPS: Float, CaseIterable {
