@@ -113,10 +113,7 @@ final class LiveViewController: UIViewController {
             viewModel.isStreamingStart = false
             
         } else {
-            let liveStreamUri = Preference.Stream.uri
-            let liveStreamName = Preference.Stream.streamName
-            
-            liveStreamer.startStreaming(uri: liveStreamUri, streamName:liveStreamName)
+            liveStreamer.startStreaming(uri: viewModel.uri, streamName: viewModel.streamName)
             
             viewModel.isStreamingStart = true
         }
