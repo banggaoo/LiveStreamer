@@ -198,7 +198,7 @@ class AudioStreamPlayback {
     }
 
     final func onOutputForQueue(_ inAQ: AudioQueueRef, _ inBuffer: AudioQueueBufferRef) {
-        guard let i: Int = buffers.index(of: inBuffer) else {
+        guard let i: Int = buffers.firstIndex(of: inBuffer) else {
             return
         }
         objc_sync_enter(inuse)

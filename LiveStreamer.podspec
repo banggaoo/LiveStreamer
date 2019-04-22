@@ -20,23 +20,15 @@ Pod::Spec.new do |s|
   s.description      = 'Live Streaming for iOS.'
 
   s.homepage         = 'https://github.com/banggaoo/LiveStreamer'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'banggaoo' => 'banggaoo@naver.com' }
   s.source           = { :git => 'https://github.com/banggaoo/LiveStreamer.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.ios.deployment_target = '9.0'
+  s.ios.deployment_target = '10.0'
 
   s.source_files = 'LiveStreamer/Classes/**/*'
   
-  s.swift_version = '4.2'
-  
-  # s.resource_bundles = {
-  #   'LiveStreamer' => ['LiveStreamer/Assets/*.png']
-  # }
+  # s.swift_version = '4.2'
+  # s.swift_versions = ['3.2', '4.0', '4.2']
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
 end

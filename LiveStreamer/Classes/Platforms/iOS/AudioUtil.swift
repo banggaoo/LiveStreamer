@@ -23,14 +23,9 @@ final class AudioUtil {
 
     static func startRunning() {
         #if !(arch(i386) || arch(x86_64))
-            let session: AVAudioSession = AVAudioSession.sharedInstance()
             do {
-                if #available(iOS 10.0, *) {
-                    try session.setCategory(.playback, mode: .default, options: [])
-                } else {
-                    session.perform(NSSelectorFromString("setCategory:withOptions:error:"), with: AVAudioSession.Category.playback, with: [])
-                }
-                try session.setActive(true)
+                try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
+                try AVAudioSession.sharedInstance().setActive(true)
             } catch {
             }
         #endif

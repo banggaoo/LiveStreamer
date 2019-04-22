@@ -1,135 +1,31 @@
-import LiveStreamer
 import UIKit
 import AVFoundation
-import Photos
-
-
-extension LiveViewController: LiveStreamingDelegate {
-    
-    func broadcastStatusForUserWith(code: String) {
-        //print("broadcastStatusForUserWith \(code)")
-
-        switch code {
-            
-        case BroadcastStatusForUser.start.rawValue:
-            DispatchQueue.main.async {
-                
-                self.publishButton?.setTitle("■", for: [])
-                
-                UIApplication.shared.isIdleTimerDisabled = true
-            }
-
-        case BroadcastStatusForUser.stop.rawValue:
-
-            DispatchQueue.main.async {
-                
-                self.publishButton?.setTitle("●", for: [])
-                
-                UIApplication.shared.isIdleTimerDisabled = false
-                
-                self.publishButton?.isSelected = !((self.publishButton?.isSelected)!)
-            }
-            
-        default:
-            
-            break
-        }
-    }
-    
-    func broadcastStatusWith(code: String) {
-        //print("broadcastStatusWith \(code)")
-        
-        switch code {
-            
-        case RTMPConnection.Code.connectSuccess.rawValue,
-             RTMPStream.Code.publishStart.rawValue,
-             RTMPStream.Code.connectSuccess.rawValue:
- 
-            break
-            
-        case RTMPConnection.Code.connectNetworkChange.rawValue:
-            
-            break
-            
-        case RTMPConnection.Code.connectClosed.rawValue,
-             RTMPConnection.Code.connectFailed.rawValue,
-             RTMPConnection.Code.connectIdleTimeOut.rawValue,
-             RTMPConnection.Code.connectInvalidApp.rawValue,
-             RTMPStream.Code.connectRejected.rawValue,
-             RTMPStream.Code.connectFailed.rawValue,
-             RTMPStream.Code.connectClosed.rawValue:
- 
-            break
-        default:
-            
-            break
-        }
-    }
-    
-    func fpsChanged(fps: Float) {
-        
-        if Thread.isMainThread {
-            
-            currentFPSLabel?.text = "FPS : \(fps)"
-        }
-    }
-}
-
-extension LiveViewController: LiveRecorderDelegate {
-
-    public func didFinishWriting(_ recorder: AVMixerRecorder) {
-        
-        guard let writer: AVAssetWriter = recorder.writer else { return }
-        
-        // Store local video to photo library and remove from document folder
-        PHPhotoLibrary.shared().performChanges({() -> Void in
-            PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: writer.outputURL)
-        }, completionHandler: { (_, error) -> Void in
-            do {
-                try FileManager.default.removeItem(at: writer.outputURL)
-            } catch {
-                //print(error)
-            }
-        })
-    }
-    
-    public func didStartRunning(_ recorder: AVMixerRecorder) {
-        
-    }
-}
+import LiveStreamer
 
 final class LiveViewController: UIViewController {
+    private let viewModel: LiveViewModel
     
-    var liveStreamer: LiveStreamer!
-    
-    @IBOutlet var lfView: GLHKView!  // camera
-    
-    @IBOutlet var currentFPSLabel: UILabel?
-    @IBOutlet var publishButton: UIButton?
-    @IBOutlet var pauseButton: UIButton?
-    @IBOutlet var videoBitrateLabel: UILabel?
-    @IBOutlet var videoBitrateSlider: UISlider?
-    @IBOutlet var audioBitrateLabel: UILabel?
-    @IBOutlet var zoomSlider: UISlider?
-    @IBOutlet var audioBitrateSlider: UISlider?
-    @IBOutlet var fpsControl: UISegmentedControl?
-    @IBOutlet var effectSegmentControl: UISegmentedControl?
-    
-    var cameraOrientation: UIDeviceOrientation = .portrait
-    var isStreamingStart = false
+    @IBOutlet private weak var lfView: GLHKView!
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        liveStreamer = LiveStreamer(view: lfView)
-
-        liveStreamer.delegate = self
-        liveStreamer.recorderDelegate = self
-
-        // Please be sure your device`s camera support resolution with front/back camera both. If you set higher resolution, camera doesn't work properly
-        liveStreamer.sessionPreset = AVCaptureSession.Preset.hd1280x720
+    lazy private var liveStreamer: LiveStreamer = {
+        let streamer = LiveStreamer(view: lfView)
+        streamer.delegate = self
+        streamer.recorderDelegate = self
         
-        liveStreamer.videoSize = CGSize(width: 720, height: 1280)
+        // Please be sure your device`s camera support resolution with front/back camera both. If you set higher resolution, camera doesn't work properly
+        streamer.sessionPreset = AVCaptureSession.Preset.hd1280x720
+        streamer.videoSize = CGSize(width: 720, height: 1280)
+        return streamer
+    }()
+    
+    init(with uri: String, _ streamName: String) {
+        viewModel = LiveViewModel(with: uri, streamName)
+        
+        super.init(nibName: LiveViewController.className, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -139,11 +35,6 @@ final class LiveViewController: UIViewController {
         liveStreamer.startCapturing()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
- 
-    }
-    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
@@ -154,125 +45,190 @@ final class LiveViewController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
     }
- 
-    @IBAction func rotateCamera(_ sender: UIButton) {
- 
+    
+    public override var shouldAutorotate: Bool {
+        get { return (viewModel.isStreamingStart == false) }
+    }
+    
+    @IBOutlet private weak var currentFPSLabel: UILabel!
+    @IBOutlet private weak var fpsControl: UISegmentedControl!
+    @IBOutlet private weak var effectSegmentControl: UISegmentedControl!
+    
+    @IBOutlet private weak var stateLabel: UILabel!
+    @IBOutlet private weak var recordButton: UIButton!
+    @IBOutlet private weak var publishButton: UIButton!
+    @IBOutlet private weak var pauseButton: UIButton!
+    
+    @IBOutlet private weak var zoomSlider: UISlider!
+    @IBOutlet private weak var videoBitrateLabel: UILabel!
+    @IBOutlet private weak var videoBitrateSlider: UISlider!
+    @IBOutlet private weak var audioBitrateLabel: UILabel!
+    @IBOutlet private weak var audioBitrateSlider: UISlider!
+
+    @IBAction private func rotateCamera(_ sender: UIButton) {
         let position: AVCaptureDevice.Position = liveStreamer.cameraPosition == .back ? .front : .back
         liveStreamer.cameraPosition = position
     }
 
-    @IBAction func toggleTorch(_ sender: UIButton) {
-        
-        liveStreamer.torch = !(liveStreamer.torch)
+    @IBAction private func toggleTorch(_ sender: UIButton) {
+        liveStreamer.torch = (liveStreamer.torch == false)
     }
 
-    @IBAction func on(slider: UISlider) {
-        if slider == audioBitrateSlider {
-            audioBitrateLabel?.text = "audio \(Int(slider.value))/kbps"
-            liveStreamer.audioBitrate = UInt32(slider.value * 1024)
-        }
-        if slider == videoBitrateSlider {
-            videoBitrateLabel?.text = "video \(Int(slider.value))/kbps"
-            liveStreamer.videoBitrate = UInt32(slider.value * 1024)
-        }
-        if slider == zoomSlider {
-            liveStreamer.zoomRate = Float(slider.value)
-        }
+    @IBAction private func on(slider: UISlider) {
+        updateAudioBitrateIfCan(with: slider)
+        updateVideoBitrateIfCan(with: slider)
+        updateZoomRateIfCan(with: slider)
+    }
+    private func updateAudioBitrateIfCan(with slider: UISlider) {
+        guard slider == audioBitrateSlider else { return }
+        audioBitrateLabel?.text = "audio \(Int(slider.value))/kbps"
+        liveStreamer.audioBitrate = UInt32(slider.value * 1024)
+    }
+    private func updateVideoBitrateIfCan(with slider: UISlider) {
+        guard slider == videoBitrateSlider else { return }
+        videoBitrateLabel?.text = "video \(Int(slider.value))/kbps"
+        liveStreamer.videoBitrate = UInt32(slider.value * 1024)
+    }
+    private func updateZoomRateIfCan(with slider: UISlider) {
+        guard slider == zoomSlider else { return }
+        liveStreamer.zoomRate = Float(slider.value)
     }
 
-    func pauseStream() {
-        
+    private func pauseStream() {
         liveStreamer.audioMuted = !(liveStreamer.audioMuted)
     }
     
-    @IBAction func on(pause: UIButton) {
+    @IBAction private func on(pause: UIButton) {
         pauseStream()
     }
 
-    @IBAction func on(close: UIButton) {
-        
-        self.dismiss(animated: true, completion: nil)
+    @IBAction private func on(close: UIButton) {
+        dismiss(animated: true, completion: nil)
     }
 
-    @IBAction func on(publish: UIButton) {
-        // 2018-12-20 17:11:15.428352+0900 LiveStreamer_Example[11317:2274016] [avas] AVAudioSessionPortImpl.mm:56:ValidateRequiredFields: Unknown selected data source for Port 수신기 (type: Receiver)
+    @IBAction private func on(publish: UIButton) {
 
         if publish.isSelected {
-
             liveStreamer.stopStreaming()
-            publish.setTitle("●", for: [])
-            isStreamingStart = false
+            viewModel.isStreamingStart = false
             
         } else {
+            let liveStreamUri = Preference.Stream.uri
+            let liveStreamName = Preference.Stream.streamName
             
-            let liveStreamUri: String = "rtmp://client33541:5a28110e@8392e6.entrypoint.cloud.wowza.com/app-9fe9"
-            let liveStreamName: String = "cfdacb3b"
-
             liveStreamer.startStreaming(uri: liveStreamUri, streamName:liveStreamName)
             
-            isStreamingStart = true
-            cameraOrientation = UIDevice.current.orientation
-            
-            //print("cameraOrientation \(cameraOrientation)")
+            viewModel.isStreamingStart = true
         }
-        
-        publish.isSelected = !publish.isSelected
+        publish.isSelected = (publish.isSelected == false)
     }
     
-    @IBAction func on(record: UIButton) {
+    @IBAction private func on(record: UIButton) {
         
         if record.isSelected {
-            
             UIApplication.shared.isIdleTimerDisabled = false
 
             liveStreamer.stopRecording()
-            record.setTitle("●", for: [])
+            record.isSelected = false
             
         } else {
-            
             UIApplication.shared.isIdleTimerDisabled = true
 
             liveStreamer.startRecodring()
-            record.setTitle("■", for: [])
+            record.isSelected = true
         }
-        
         record.isSelected = !record.isSelected
     }
  
-    @IBAction func onFPSValueChanged(_ segment: UISegmentedControl) {
-        switch segment.selectedSegmentIndex {
-        case 0:
-            liveStreamer.videoFPS = 15.0
-        case 1:
-            liveStreamer.videoFPS = 30.0
-        case 2:
-            liveStreamer.videoFPS = 60.0
-        default:
-            break
-        }
+    enum FPS: Float, CaseIterable {
+        case low = 15.0
+        case medium = 30.0
+        case high = 60.0
+    }
+    
+    @IBAction private func onFPSValueChanged(_ segment: UISegmentedControl) {
+        guard let fpsCase = FPS.allCases[safe: segment.selectedSegmentIndex] else { return }
+        liveStreamer.videoFPS = fpsCase.rawValue
+    }
+    
+    enum Effect: CaseIterable {
+        case none, mono, pronama, time, blur
     }
 
-    @IBAction func onEffectValueChanged(_ segment: UISegmentedControl) {
-        switch segment.selectedSegmentIndex {
-        case 0:
+    @IBAction private func onEffectValueChanged(_ segment: UISegmentedControl) {
+        guard let effectType = Effect.allCases[safe: segment.selectedSegmentIndex] else { return }
+
+        switch effectType {
+        case .none:
             liveStreamer.removeCurrentEffector()
-        case 1:
+        case .mono:
             liveStreamer.apply(effector: MonochromeEffect())
-        case 2:
+        case .pronama:
             liveStreamer.apply(effector: PronamaEffect())
-        case 3:
+        case .time:
             liveStreamer.apply(effector: CurrentTimeEffect())
-        case 4:
+        case .blur:
             liveStreamer.apply(effector: BlurEffect())
+        }
+    }
+}
+
+extension LiveViewController: LiveStreamingDelegate {
+    
+    func broadcastStatusForUserWith(code: String) {
+        
+        switch code {
+            
+        case BroadcastStatusForUser.start.rawValue:
+            DispatchQueue.main.async {
+                self.publishButton?.isSelected = true
+                UIApplication.shared.isIdleTimerDisabled = true
+            }
+            
+        case BroadcastStatusForUser.stop.rawValue:
+            DispatchQueue.main.async {
+                self.publishButton?.isSelected = false
+                UIApplication.shared.isIdleTimerDisabled = false
+                self.publishButton?.isSelected = !((self.publishButton?.isSelected)!)
+            }
+            
         default:
             break
         }
     }
     
-    public override var shouldAutorotate: Bool {
-        get {
-            return !isStreamingStart
+    func broadcastStatusWith(code: String) {
+        DispatchQueue.main.async {
+            self.stateLabel.text = code
+        }
+        
+        switch code {
+            
+        case RTMPConnection.Code.connectSuccess.rawValue,
+             RTMPStream.Code.publishStart.rawValue,
+             RTMPStream.Code.connectSuccess.rawValue:
+            break
+            
+        case RTMPConnection.Code.connectNetworkChange.rawValue:
+            break
+            
+        case RTMPConnection.Code.connectClosed.rawValue,
+             RTMPConnection.Code.connectFailed.rawValue,
+             RTMPConnection.Code.connectIdleTimeOut.rawValue,
+             RTMPConnection.Code.connectInvalidApp.rawValue,
+             RTMPStream.Code.connectRejected.rawValue,
+             RTMPStream.Code.connectFailed.rawValue,
+             RTMPStream.Code.connectClosed.rawValue:
+            break
+            
+        default:
+            break
         }
     }
- 
+    
+    func fpsChanged(fps: Float) {
+        DispatchQueue.main.async {
+            self.currentFPSLabel?.text = "FPS : \(fps)"
+        }
+    }
 }

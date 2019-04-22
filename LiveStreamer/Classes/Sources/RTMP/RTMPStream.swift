@@ -340,33 +340,12 @@ public class RTMPStream: NetStream {
     }
     
     func activeAudioSession() {
-        /*
-        let session: AVAudioSession = AVAudioSession.sharedInstance()
         do {
-            try session.setPreferredSampleRate(sampleRate)
-            try session.setCategory(convertFromAVAudioSessionCategory(AVAudioSession.Category.playAndRecord), mode: .allowBluetooth)
-            try session.setMode(AVAudioSession.Mode.default)
-            try session.setActive(true)
-        } catch _ {
-            
-            //print("Unexpected error: \(error).")
-        }
-        */
-        let session: AVAudioSession = AVAudioSession.sharedInstance()
-        do {
-            try session.setPreferredSampleRate(44_100)
-            // https://stackoverflow.com/questions/51010390/avaudiosession-setcategory-swift-4-2-ios-12-play-sound-on-silent
-            if #available(iOS 10.0, *) {
-                // record, videoRecording
-                try session.setCategory(.playAndRecord, mode: .default, options: [.allowBluetooth])
-            } else {
-                session.perform(NSSelectorFromString("setCategory:withOptions:error:"), with: AVAudioSession.Category.playAndRecord, with: [AVAudioSession.CategoryOptions.allowBluetooth])
-                try? session.setMode(.default)
-            }
-            try session.setActive(true)
+            try AVAudioSession.sharedInstance().setPreferredSampleRate(44_100)
+            try AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .default, options: [.allowBluetooth])
+            try AVAudioSession.sharedInstance().setActive(true)
         } catch {
         }
-
     }
     
     public func receiveAudio(_ flag: Bool) {
