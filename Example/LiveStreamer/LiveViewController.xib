@@ -18,6 +18,7 @@
                 <outlet property="effectSegmentControl" destination="hDi-N2-6vj" id="O86-OQ-a5k"/>
                 <outlet property="fpsControl" destination="W3N-le-yK8" id="sHL-tL-zdf"/>
                 <outlet property="lfView" destination="HYx-op-bMY" id="OQn-NL-R33"/>
+                <outlet property="muteButton" destination="tQj-la-LQj" id="Ou7-N9-TRX"/>
                 <outlet property="pauseButton" destination="hvm-5R-3Hk" id="QVv-iw-jvQ"/>
                 <outlet property="publishButton" destination="5t6-e7-2ZR" id="6el-jZ-EdG"/>
                 <outlet property="recordButton" destination="Guf-pj-ncM" id="ltI-HP-TLu"/>
@@ -128,12 +129,22 @@
                     </connections>
                 </slider>
                 <label opaque="NO" userInteractionEnabled="NO" alpha="0.90000000000000002" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="State" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YMn-RK-sRl">
-                    <rect key="frame" x="358.5" y="687" width="40.5" height="21"/>
+                    <rect key="frame" x="358.5" y="647" width="40.5" height="21"/>
                     <color key="backgroundColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tQj-la-LQj">
+                    <rect key="frame" x="364" y="688" width="35" height="30"/>
+                    <color key="backgroundColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                    <state key="normal" title="Mute"/>
+                    <state key="selected" title="Muted"/>
+                    <connections>
+                        <action selector="onMute:" destination="-1" eventType="touchUpInside" id="acj-tm-fum"/>
+                    </connections>
+                </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Guf-pj-ncM" userLabel="Record Button">
                     <rect key="frame" x="350" y="728" width="49" height="30"/>
                     <color key="backgroundColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -167,10 +178,11 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
+                <constraint firstItem="Guf-pj-ncM" firstAttribute="top" secondItem="tQj-la-LQj" secondAttribute="bottom" constant="10" id="2UK-VW-Tuu"/>
                 <constraint firstAttribute="trailing" secondItem="nIg-7n-Eba" secondAttribute="trailing" id="3mW-h3-sh4"/>
                 <constraint firstAttribute="trailing" secondItem="Guf-pj-ncM" secondAttribute="trailing" constant="15" id="4u2-zt-r8v"/>
                 <constraint firstItem="fVG-MN-Mqu" firstAttribute="top" secondItem="FxZ-Bb-8vn" secondAttribute="top" id="621-kS-p8m"/>
-                <constraint firstItem="Guf-pj-ncM" firstAttribute="top" secondItem="YMn-RK-sRl" secondAttribute="bottom" constant="20" id="Bje-lU-XfM"/>
+                <constraint firstItem="tQj-la-LQj" firstAttribute="top" secondItem="YMn-RK-sRl" secondAttribute="bottom" constant="20" id="Bje-lU-XfM"/>
                 <constraint firstItem="6Oa-F3-4H8" firstAttribute="leading" secondItem="8Eo-dv-Bos" secondAttribute="leading" constant="16" id="DzI-IO-e9Z"/>
                 <constraint firstItem="HYx-op-bMY" firstAttribute="top" secondItem="8Eo-dv-Bos" secondAttribute="top" id="EFM-BP-UGV"/>
                 <constraint firstItem="FxZ-Bb-8vn" firstAttribute="trailing" secondItem="8pq-Ts-IVu" secondAttribute="trailing" constant="100" id="F9i-E5-T8j"/>
@@ -188,6 +200,7 @@
                 <constraint firstAttribute="trailing" secondItem="HYx-op-bMY" secondAttribute="trailing" id="ggu-ke-hjF"/>
                 <constraint firstAttribute="bottom" secondItem="HYx-op-bMY" secondAttribute="bottom" id="k4I-q7-v3q"/>
                 <constraint firstItem="YMn-RK-sRl" firstAttribute="trailing" secondItem="Guf-pj-ncM" secondAttribute="trailing" id="mGC-ZW-w0U"/>
+                <constraint firstItem="tQj-la-LQj" firstAttribute="trailing" secondItem="Guf-pj-ncM" secondAttribute="trailing" id="mOV-i6-X2V"/>
                 <constraint firstItem="8pq-Ts-IVu" firstAttribute="top" secondItem="6Oa-F3-4H8" secondAttribute="bottom" constant="8" id="nDU-PA-xxA"/>
                 <constraint firstItem="8pq-Ts-IVu" firstAttribute="top" secondItem="IjL-We-Lkp" secondAttribute="bottom" constant="-16" id="p0C-gS-lnv"/>
                 <constraint firstItem="FxZ-Bb-8vn" firstAttribute="trailing" secondItem="6Oa-F3-4H8" secondAttribute="trailing" constant="100" id="p0v-3y-QsO"/>

@@ -5,18 +5,7 @@ import LiveStreamer
 final class LiveViewController: UIViewController {
     private let viewModel: LiveViewModel
     
-    @IBOutlet private weak var lfView: GLHKView!
-
-    lazy private var liveStreamer: LiveStreamer = {
-        let streamer = LiveStreamer(view: lfView)
-        streamer.delegate = self
-        streamer.recorderDelegate = self
-        
-        // Please be sure your device`s camera support resolution with front/back camera both. If you set higher resolution, camera doesn't work properly
-        streamer.sessionPreset = AVCaptureSession.Preset.hd1280x720
-        streamer.videoSize = CGSize(width: 720, height: 1280)
-        return streamer
-    }()
+    // MARK: Interface
     
     init(with uri: String, _ streamName: String) {
         viewModel = LiveViewModel(with: uri, streamName)
@@ -27,6 +16,8 @@ final class LiveViewController: UIViewController {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // MARK: Lifecycle
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -50,11 +41,32 @@ final class LiveViewController: UIViewController {
         get { return (viewModel.isStreamingStart == false) }
     }
     
+    // MARK: Preview
+    
+    static private let sessionPreset = AVCaptureSession.Preset.hd1280x720
+    static private let videoSize = CGSize(width: 720, height: 1280)
+    
+    @IBOutlet private weak var lfView: GLHKView!
+    
+    lazy private var liveStreamer: LiveStreamer = {
+        let streamer = LiveStreamer(view: lfView)
+        streamer.delegate = self
+        streamer.recorderDelegate = self
+        
+        // Please be sure your device`s camera support resolution with front/back camera both. If you set higher resolution, camera doesn't work properly
+        streamer.sessionPreset = LiveViewController.sessionPreset
+        streamer.videoSize = LiveViewController.videoSize
+        return streamer
+    }()
+    
+    // MARK: UI
+    
     @IBOutlet private weak var currentFPSLabel: UILabel!
     @IBOutlet private weak var fpsControl: UISegmentedControl!
     @IBOutlet private weak var effectSegmentControl: UISegmentedControl!
     
     @IBOutlet private weak var stateLabel: UILabel!
+    @IBOutlet private weak var muteButton: UIButton!
     @IBOutlet private weak var recordButton: UIButton!
     @IBOutlet private weak var publishButton: UIButton!
     @IBOutlet private weak var pauseButton: UIButton!
@@ -93,13 +105,15 @@ final class LiveViewController: UIViewController {
         guard slider == zoomSlider else { return }
         liveStreamer.zoomRate = Float(slider.value)
     }
-
-    private func pauseStream() {
-        liveStreamer.audioMuted = !(liveStreamer.audioMuted)
+ 
+    @IBAction private func on(mute: UIButton) {
+        liveStreamer.audioMuted = (liveStreamer.audioMuted == false)
+        mute.isSelected = liveStreamer.audioMuted
     }
     
     @IBAction private func on(pause: UIButton) {
-        pauseStream()
+        liveStreamer.pauseStreaming()
+        pause.isSelected = (pause.isSelected == false)
     }
 
     @IBAction private func on(close: UIButton) {
@@ -108,31 +122,31 @@ final class LiveViewController: UIViewController {
 
     @IBAction private func on(publish: UIButton) {
 
-        if publish.isSelected {
-            liveStreamer.stopStreaming()
-            viewModel.isStreamingStart = false
-            
+        if publish.isSelected == true {
+            stopStreaming()
         } else {
-            liveStreamer.startStreaming(uri: viewModel.uri, streamName: viewModel.streamName)
-            
-            viewModel.isStreamingStart = true
+            startStreaming()
         }
         publish.isSelected = (publish.isSelected == false)
+    }
+    private func startStreaming() {
+        liveStreamer.startStreaming(uri: viewModel.uri, streamName: viewModel.streamName)
+        viewModel.isStreamingStart = true
+    }
+    private func stopStreaming() {
+        liveStreamer.stopStreaming()
+        viewModel.isStreamingStart = false
     }
     
     @IBAction private func on(record: UIButton) {
         
-        if record.isSelected {
+        if record.isSelected == true {
             UIApplication.shared.isIdleTimerDisabled = false
-
             liveStreamer.stopRecording()
-            record.isSelected = false
             
         } else {
             UIApplication.shared.isIdleTimerDisabled = true
-
             liveStreamer.startRecodring()
-            record.isSelected = true
         }
         record.isSelected = !record.isSelected
     }
@@ -186,7 +200,6 @@ extension LiveViewController: LiveStreamingDelegate {
             DispatchQueue.main.async {
                 self.publishButton?.isSelected = false
                 UIApplication.shared.isIdleTimerDisabled = false
-                self.publishButton?.isSelected = !((self.publishButton?.isSelected)!)
             }
             
         default:
