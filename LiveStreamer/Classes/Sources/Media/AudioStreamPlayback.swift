@@ -153,7 +153,7 @@ class AudioStreamPlayback {
             buffer,
             UInt32(packetDescriptions.count),
             &packetDescriptions) == noErr else {
-            //print("AudioQueueEnqueueBuffer")
+            printLog("AudioQueueEnqueueBuffer")
             return
         }
     }
@@ -230,7 +230,7 @@ class AudioStreamPlayback {
         var status: OSStatus = noErr
         status = AudioQueueSetProperty(queue, kAudioQueueProperty_MagicCookie, inData, UInt32(inData.count))
         guard status == noErr else {
-            //print("status \(status)")
+            printLog("status \(status)")
             return false
         }
         return true
@@ -243,7 +243,7 @@ class AudioStreamPlayback {
         var data: AudioStreamBasicDescription = AudioStreamBasicDescription()
         var size: UInt32 = UInt32(MemoryLayout<AudioStreamBasicDescription>.size)
         guard AudioFileStreamGetProperty(fileStreamID, kAudioFileStreamProperty_DataFormat, &size, &data) == noErr else {
-            //print("kAudioFileStreamProperty_DataFormat")
+            printLog("kAudioFileStreamProperty_DataFormat")
             return nil
         }
         return data
@@ -256,12 +256,12 @@ class AudioStreamPlayback {
         var size: UInt32 = 0
         var writable: DarwinBoolean = true
         guard AudioFileStreamGetPropertyInfo(fileStreamID, kAudioFileStreamProperty_MagicCookieData, &size, &writable) == noErr else {
-            //print("info kAudioFileStreamProperty_MagicCookieData")
+            printLog("info kAudioFileStreamProperty_MagicCookieData")
             return nil
         }
         var data: [UInt8] = [UInt8](repeating: 0, count: Int(size))
         guard AudioFileStreamGetProperty(fileStreamID, kAudioFileStreamProperty_MagicCookieData, &size, &data) == noErr else {
-            //print("kAudioFileStreamProperty_MagicCookieData")
+            printLog("kAudioFileStreamProperty_MagicCookieData")
             return nil
         }
         return data

@@ -72,9 +72,7 @@ public class NetStream: NSObject {
     #if os(iOS)
     public var syncOrientation: Bool = false {
         didSet {
-            guard syncOrientation != oldValue else {
-                return
-            }
+            guard syncOrientation != oldValue else { return }
             if syncOrientation {
                 NotificationCenter.default.addObserver(self, selector: #selector(on), name: UIDevice.orientationDidChangeNotification, object: nil)
             } else {
@@ -205,7 +203,7 @@ public class NetStream: NSObject {
                 try session.setActive(false)
             } catch {
                 
-                //print("Unexpected error: \(error).")
+                printLog("Unexpected error: \(error).")
             }
         }
     }

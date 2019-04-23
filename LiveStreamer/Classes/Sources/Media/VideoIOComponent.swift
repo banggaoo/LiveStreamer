@@ -32,15 +32,15 @@ final class VideoIOComponent: IOComponent {
 
             fps = data.fps
             encoder.expectedFPS = data.fps
-            //print("\(data)")
+            printLog("\(data)")
 
             do {
                 try device.lockForConfiguration()
                 device.activeVideoMinFrameDuration = data.duration
                 device.activeVideoMaxFrameDuration = data.duration
                 device.unlockForConfiguration()
-            } catch _ {
-                //print("while locking device for fps: \(error)")
+            } catch let error {
+                printLog("while locking device for fps: \(error)")
             }
         }
     }
@@ -85,15 +85,15 @@ final class VideoIOComponent: IOComponent {
             let focusMode: AVCaptureDevice.FocusMode = continuousAutofocus ? .continuousAutoFocus : .autoFocus
             guard let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
                 device.isFocusModeSupported(focusMode) else {
-                //print("focusMode(\(focusMode.rawValue)) is not supported")
+                printLog("focusMode(\(focusMode.rawValue)) is not supported")
                 return
             }
             do {
                 try device.lockForConfiguration()
                 device.focusMode = focusMode
                 device.unlockForConfiguration()
-            } catch _ {
-                //print("while locking device for autofocus: \(error)")
+            } catch let error {
+                printLog("while locking device for autofocus: \(error)")
             }
         }
     }
@@ -111,8 +111,8 @@ final class VideoIOComponent: IOComponent {
                 device.focusPointOfInterest = point
                 device.focusMode = .continuousAutoFocus
                 device.unlockForConfiguration()
-            } catch _ as NSError {
-                //print("while locking device for focusPointOfInterest: \(error)")
+            } catch let error {
+                printLog("while locking device for focusPointOfInterest: \(error)")
             }
         }
     }
@@ -130,8 +130,8 @@ final class VideoIOComponent: IOComponent {
                 device.exposurePointOfInterest = point
                 device.exposureMode = .continuousAutoExposure
                 device.unlockForConfiguration()
-            } catch _ as NSError {
-                //print("while locking device for exposurePointOfInterest: \(error)")
+            } catch let error {
+                printLog("while locking device for exposurePointOfInterest: \(error)")
             }
         }
     }
@@ -144,15 +144,15 @@ final class VideoIOComponent: IOComponent {
             let exposureMode: AVCaptureDevice.ExposureMode = continuousExposure ? .continuousAutoExposure : .autoExpose
             guard let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
                 device.isExposureModeSupported(exposureMode) else {
-                //print("exposureMode(\(exposureMode.rawValue)) is not supported")
+                printLog("exposureMode(\(exposureMode.rawValue)) is not supported")
                 return
             }
             do {
                 try device.lockForConfiguration()
                 device.exposureMode = exposureMode
                 device.unlockForConfiguration()
-            } catch _ as NSError {
-                //print("while locking device for autoexpose: \(error)")
+            } catch let error {
+                printLog("while locking device for autoexpose: \(error)")
             }
         }
     }
@@ -223,9 +223,7 @@ final class VideoIOComponent: IOComponent {
 
 #if os(iOS) || os(macOS)
     func attachCamera(_ camera: AVCaptureDevice?) throws {
-        guard let mixer: AVMixer = mixer else {
-            return
-        }
+        guard let mixer: AVMixer = mixer else { return }
 
         mixer.session.beginConfiguration()
         defer {
@@ -266,15 +264,15 @@ final class VideoIOComponent: IOComponent {
 
     func setTorchMode(_ torchMode: AVCaptureDevice.TorchMode) {
         guard let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device, device.isTorchModeSupported(torchMode) else {
-            //print("torchMode(\(torchMode)) is not supported")
+            printLog("torchMode(\(torchMode)) is not supported")
             return
         }
         do {
             try device.lockForConfiguration()
             device.torchMode = torchMode
             device.unlockForConfiguration()
-        } catch _ as NSError {
-            //print("while setting torch: \(error)")
+        } catch let error as NSError {
+            printLog("while setting torch: \(error)")
         }
     }
     func dispose() {
@@ -326,7 +324,7 @@ final class VideoIOComponent: IOComponent {
             presentationTimeStamp: sampleBuffer.presentationTimeStamp,
             duration: sampleBuffer.duration
         )
-        ////print("buffer\(buffer)sampleBuffer.presentationTimeStamp\(sampleBuffer.presentationTimeStamp)sampleBuffer.duration\(sampleBuffer.duration)")
+        //printLog("buffer\(buffer)sampleBuffer.presentationTimeStamp\(sampleBuffer.presentationTimeStamp)sampleBuffer.duration\(sampleBuffer.duration)")
         
         mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: .video)
         

@@ -52,8 +52,8 @@ public class NetSocket: NSObject {
                 if 0 < remain {
                     self.doOutputProcess(fileHandle.readData(ofLength: remain))
                 }
-            } catch _ as NSError {
-                //print("\(error)")
+            } catch let error {
+                printLog("\(error)")
             }
         }
     }
@@ -72,7 +72,7 @@ public class NetSocket: NSObject {
         while total < maxLength {
             let length: Int = outputStream.write(buffer.advanced(by: total), maxLength: maxLength - total)
             if length <= 0 {
-                //print("length <= 0")
+                printLog("length <= 0")
                 // Socket write error
                 break
             }
@@ -88,12 +88,12 @@ public class NetSocket: NSObject {
      }*/
     
     func close(isDisconnected: Bool, eventCode: Stream.Event?) {
-        //print("close: \(eventCode)")
+        printLog("close: \(eventCode)")
         outputQueue.async {  // 아래가 바로 호출이 안되는데, sync 로 할까
-            //print("outputQueue")
+            printLog("outputQueue")
             
             guard let runloop: RunLoop = self.runloop else { return }
-            //print("runloop \(runloop)")
+            printLog("runloop \(runloop)")
             
             if let eventCode = eventCode {
                 
@@ -103,7 +103,7 @@ public class NetSocket: NSObject {
             }
             self.runloop = nil
             CFRunLoopStop(runloop.getCFRunLoop())
-            //print("isDisconnected: \(isDisconnected)")
+            printLog("isDisconnected: \(isDisconnected)")
         }
     }
     
@@ -214,7 +214,7 @@ extension NetSocket: StreamDelegate {
             break
         //  8 = 1 << 3
         case .errorOccurred:
-            //print("errorOccurred"+aStream.streamError.debugDescription)
+            printLog("errorOccurred"+aStream.streamError.debugDescription)
             
             errorOccur()
             
@@ -229,10 +229,10 @@ extension NetSocket: StreamDelegate {
             break
         // 16 = 1 << 4
         case .endEncountered:
-            //print("endEncountered")
+            printLog("endEncountered")
             close(isDisconnected: true, eventCode: nil)
         default:
-            //print("endEncountered")
+            printLog("endEncountered")
             break
         }
     }

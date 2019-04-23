@@ -101,7 +101,7 @@ class TSWriter {
             self.currentFileHandle?.write(bytes)
         }, { exception in
             self.currentFileHandle?.write(bytes)
-            //print("\(exception)")
+            printLog("\(exception)")
         })
     }
 
@@ -137,8 +137,8 @@ class TSWriter {
         if !fileManager.fileExists(atPath: temp) {
             do {
                 try fileManager.createDirectory(atPath: temp, withIntermediateDirectories: false, attributes: nil)
-            } catch _ as NSError {
-                //print("\(error)")
+            } catch let error {
+                printLog("\(error)")
             }
         }
 
@@ -155,8 +155,8 @@ class TSWriter {
             let info: M3UMediaInfo = files.removeFirst()
             do {
                 try fileManager.removeItem(at: info.url as URL)
-            } catch _ as NSError {
-                //print("\(e)")
+            } catch let error {
+                printLog("\(error)")
             }
         }
         currentFileURL = url
@@ -167,7 +167,7 @@ class TSWriter {
         nstry({
             self.currentFileHandle?.synchronizeFile()
         }, { exeption in
-            //print("\(exeption)")
+            printLog("\(exeption)")
         })
 
         currentFileHandle?.closeFile()
@@ -185,7 +185,7 @@ class TSWriter {
         nstry({
             self.currentFileHandle?.write(bytes)
         }, { exception in
-            //print("\(exception)")
+            printLog("\(exception)")
         })
         rotatedTimestamp = timestamp
 
@@ -197,8 +197,8 @@ class TSWriter {
         for info in files {
             do {
                 try fileManager.removeItem(at: info.url as URL)
-            } catch _ as NSError {
-                //print("\(e)")
+            } catch let error {
+                printLog("\(error)")
             }
         }
         files.removeAll()
