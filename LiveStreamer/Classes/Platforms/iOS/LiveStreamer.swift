@@ -86,7 +86,7 @@ open class LiveStreamer: NSObject, LiveStreamerControlInterface, LiveStreamerCon
         return true
     }
     public func removeCurrentEffectorIfCan() -> Bool {
-        guard let currentEffect: VisualEffect = currentEffect else { return false }
+        guard let currentEffect: VisualEffect = currentEffect else { return true }
         return rtmpStream.unregisterEffect(video: currentEffect)
     }
     
