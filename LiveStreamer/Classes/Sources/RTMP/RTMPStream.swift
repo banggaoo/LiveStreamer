@@ -555,33 +555,39 @@ public class RTMPStream: NetStream {
     }
     
     public func toggleAudioPause() {
-        
-        lockQueue.async {
-            switch self.readyState {
-            case .publish, .publishing:
-                //                self.paused = !self.paused
-                self.mixer.audioIO.encoder.muted = true
-            //                self.mixer.videoIO.encoder.muted = self.paused
-            default:
-                break
-            }
-        }
+        toggleAudio(muted: true)
     }
-    
     public func toggleAudioResume() {
-        
+        toggleAudio(muted: false)
+    }
+    private func toggleAudio(muted: Bool) {
         lockQueue.async {
             switch self.readyState {
             case .publish, .publishing:
-                //                self.paused = !self.paused
-                self.mixer.audioIO.encoder.muted = false
-            //                self.mixer.videoIO.encoder.muted = self.paused
+                self.mixer.audioIO.encoder.muted = muted
             default:
                 break
             }
         }
     }
     
+    public func toggleVideoPause() {
+        toggleAudio(muted: true)
+    }
+    public func toggleVideoResume() {
+        toggleAudio(muted: false)
+    }
+    private func toggleVideo(muted: Bool) {
+        lockQueue.async {
+            switch self.readyState {
+            case .publish, .publishing:
+                self.mixer.videoIO.encoder.muted = muted
+            default:
+                break
+            }
+        }
+    }
+
     public func togglePause() {
         lockQueue.async {
             switch self.readyState {

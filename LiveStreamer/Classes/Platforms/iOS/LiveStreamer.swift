@@ -119,10 +119,13 @@ open class LiveStreamer: NSObject, LiveStreamerControlInterface, LiveStreamerCon
         }
     }
     
+    public var videoMuted: Bool = false {
+        didSet { (videoMuted == true) ? rtmpStream.toggleVideoPause() : rtmpStream.toggleVideoResume() }
+    }
     public var audioMuted: Bool = false {
         didSet { (audioMuted == true) ? rtmpStream.toggleAudioPause() : rtmpStream.toggleAudioResume() }
     }
-    
+
     public var videoBitrate: UInt32 = Preference.videoDefaultBitrate {
         didSet { rtmpStream.videoSettings["bitrate"] = videoBitrate }
     }
