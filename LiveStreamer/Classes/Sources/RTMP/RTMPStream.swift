@@ -572,10 +572,10 @@ public class RTMPStream: NetStream {
     }
     
     public func toggleVideoPause() {
-        toggleAudio(muted: true)
+        toggleVideo(muted: true)
     }
     public func toggleVideoResume() {
-        toggleAudio(muted: false)
+        toggleVideo(muted: false)
     }
     private func toggleVideo(muted: Bool) {
         lockQueue.async {

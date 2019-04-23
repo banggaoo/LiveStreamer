@@ -209,9 +209,8 @@ open class LiveStreamer: NSObject, LiveStreamerControlInterface, LiveStreamerCon
         zoomRate = 1.0
         abrOn = true
         torch = false
-        
         rtmpStream.syncOrientation = true
-        
+
         registerFPSObserver()
     }
     private func configureRecorder() {
@@ -220,8 +219,6 @@ open class LiveStreamer: NSObject, LiveStreamerControlInterface, LiveStreamerCon
     }
     
     private func setScreenRatio(with size: CGSize) {
-        rtmpStream.syncOrientation = false
-        
         var longerSize: CGFloat = 0.0
         var shorterSize: CGFloat = 0.0
         
@@ -290,6 +287,8 @@ open class LiveStreamer: NSObject, LiveStreamerControlInterface, LiveStreamerCon
         startRetryConnectionTimer(timeInterval: retryConnectInterval)
         
         setScreenRatio(with: videoSize)
+        // Prevent rotation while recording
+        rtmpStream.syncOrientation = false
 
         addRTMPObserver()
         startRTMPConnection(with: liveStreamAddress?.uri)
@@ -298,7 +297,6 @@ open class LiveStreamer: NSObject, LiveStreamerControlInterface, LiveStreamerCon
     private func stopStreaming() {
         stopRetryConnectionTimer()
         
-        // Prevent rotation while recording
         rtmpStream.syncOrientation = true
 
         stopRTMPConnection()
