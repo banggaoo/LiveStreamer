@@ -114,7 +114,7 @@ extension PESOptionalHeader: DataConvertible {
                 PESHeaderLength = bytes[2]
                 optionalFields = try buffer.readBytes(Int(PESHeaderLength))
             } catch {
-                //print("\(buffer)")
+                printLog("\(buffer)")
             }
         }
     }
@@ -172,7 +172,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
                 }
                 data = try buffer.readBytes(buffer.bytesAvailable)
             } catch {
-                //print("\(buffer)")
+                printLog("\(buffer)")
             }
         }
     }

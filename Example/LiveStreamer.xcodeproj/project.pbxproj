@@ -25,6 +25,7 @@
 		70C5E3D1226D672400B6ADE9 /* CollectionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C5E3D0226D672400B6ADE9 /* CollectionExtension.swift */; };
 		70C5E3D3226D7BC900B6ADE9 /* NSObjectExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C5E3D2226D7BC900B6ADE9 /* NSObjectExtension.swift */; };
 		70C5E3D5226D82FD00B6ADE9 /* LiveViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C5E3D4226D82FD00B6ADE9 /* LiveViewModel.swift */; };
+		70C5E3DC226DC51000B6ADE9 /* StreamInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C5E3DB226DC51000B6ADE9 /* StreamInfoModel.swift */; };
 		F278DE87DD6F758698FEC6C6 /* Pods_LiveStreamer_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E0A5DE2131BA99FD7140419 /* Pods_LiveStreamer_Tests.framework */; };
 /* End PBXBuildFile section */
 
@@ -76,6 +77,7 @@
 		70C5E3D0226D672400B6ADE9 /* CollectionExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionExtension.swift; sourceTree = "<group>"; };
 		70C5E3D2226D7BC900B6ADE9 /* NSObjectExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSObjectExtension.swift; sourceTree = "<group>"; };
 		70C5E3D4226D82FD00B6ADE9 /* LiveViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveViewModel.swift; sourceTree = "<group>"; };
+		70C5E3DB226DC51000B6ADE9 /* StreamInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamInfoModel.swift; sourceTree = "<group>"; };
 		7CC989FFA976C144D46B4B0E /* Pods-LiveStreamer_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LiveStreamer_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LiveStreamer_Example/Pods-LiveStreamer_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		91DA8C03D4D14B47E186EF7E /* Pods_LiveStreamer_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LiveStreamer_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		92F7AA7C09180A367B85DAF5 /* Pods-LiveStreamer_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LiveStreamer_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-LiveStreamer_Example/Pods-LiveStreamer_Example.release.xcconfig"; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 				70174E8E210180BC00D60151 /* AppDelegate.swift */,
 				70C5E3CA226D633800B6ADE9 /* ViewController.swift */,
 				70C5E3D6226D9BBB00B6ADE9 /* Live */,
+				70C5E3DA226DC4FF00B6ADE9 /* Model */,
 				70C5E3D7226D9BE300B6ADE9 /* Extension */,
 				70C5E3D8226D9BF700B6ADE9 /* Filter */,
 				70C5E3D9226D9C0000B6ADE9 /* Util */,
@@ -202,6 +205,14 @@
 				70C5E3C6226D625F00B6ADE9 /* Log.swift */,
 			);
 			name = Util;
+			sourceTree = "<group>";
+		};
+		70C5E3DA226DC4FF00B6ADE9 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				70C5E3DB226DC51000B6ADE9 /* StreamInfoModel.swift */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 		8BF58338E5A65A2CA5DBBF0D /* Frameworks */ = {
@@ -396,6 +407,7 @@
 				70C5E3CB226D633800B6ADE9 /* ViewController.swift in Sources */,
 				70174E97210180BD00D60151 /* VisualEffect.swift in Sources */,
 				70C5E3D5226D82FD00B6ADE9 /* LiveViewModel.swift in Sources */,
+				70C5E3DC226DC51000B6ADE9 /* StreamInfoModel.swift in Sources */,
 				70174E96210180BD00D60151 /* LiveViewController.swift in Sources */,
 				70C5E3C7226D625F00B6ADE9 /* Log.swift in Sources */,
 				70C5E3D1226D672400B6ADE9 /* CollectionExtension.swift in Sources */,

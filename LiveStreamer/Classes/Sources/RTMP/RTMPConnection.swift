@@ -248,7 +248,7 @@ public class RTMPConnection: EventDispatcher {
         
         let query: String = uri.query ?? ""
         let command: String = uri.absoluteString + (query == "" ? "?" : "&") + "authmod=adobe&user=\(user)"
-        //print("start command"+command)
+        printLog("start command"+command)
         
         connect(command)
     }
@@ -278,14 +278,14 @@ public class RTMPConnection: EventDispatcher {
     }
     
     public func connect(_ command: String, arguments: Any?...) {
-        //print("connect")
+        printLog("connect")
         
         guard
             let uri = URL(string: command), let scheme: String = uri.scheme,
             !connected && RTMPConnection.supportedProtocols.contains(scheme)
             else { return }
         
-        //print("uri\(uri)")
+        printLog("uri\(uri)")
         
         self.uri = uri
         self.arguments = arguments
@@ -358,7 +358,7 @@ public class RTMPConnection: EventDispatcher {
                 message: RTMPSetChunkSizeMessage(UInt32(socket.chunkSizeS))
             ), locked: nil)
         case .connectRejected?:
-            //print("connectRejected")
+            printLog("connectRejected")
             guard
                 let uri: URL = uri,
                 let user: String = uri.user,
@@ -373,19 +373,19 @@ public class RTMPConnection: EventDispatcher {
             case description.contains("reason=authfailed"):
                 break
             case description.contains("reason=needauth"):
-                //print("description.contains reason=needauth")
+                printLog("description.contains reason=needauth")
                 let command: String = RTMPConnection.createSanJoseAuthCommand(uri, description: description)
-                //print("command"+command)
+                printLog("command"+command)
                 connect(command, arguments: arguments)
             case description.contains("authmod=adobe"):
-                //print("description.contains authmod=adobe")
+                printLog("description.contains authmod=adobe")
                 if user == "" || password == "" {
                     close(isDisconnected: true)
                     break
                 }
                 let query: String = uri.query ?? ""
                 let command: String = uri.absoluteString + (query == "" ? "?" : "&") + "authmod=adobe&user=\(user)"
-                //print("command"+command)
+                printLog("command"+command)
                 connect(command, arguments: arguments)
                 
             case description.contains("is missing"):
@@ -396,18 +396,18 @@ public class RTMPConnection: EventDispatcher {
                 break
             }
         case .connectFailed?:
-            //print("connectFailed")
+            printLog("connectFailed")
             if let _: String = data["description"] as? String {
-                //print(description)
+                printLog(description)
             }
             // Have to close the connection after timed out
             close(isDisconnected: true)
             break
             
         case .connectClosed?:
-            //print(".connectClosed")
+            printLog(".connectClosed")
             if let _: String = data["description"] as? String {
-                //print(description)
+                printLog(description)
             }
             close(isDisconnected: true)
             
@@ -464,13 +464,13 @@ public class RTMPConnection: EventDispatcher {
         for (_, stream) in streams {
             stream.on(timer: timer)
         }
-        //print("previousQueueBytesOut.count"+String(previousQueueBytesOut.count))
+        printLog("previousQueueBytesOut.count"+String(previousQueueBytesOut.count))
         if measureInterval <= previousQueueBytesOut.count {
             var count: Int = 0
             for i in 0..<previousQueueBytesOut.count - 1 where previousQueueBytesOut[i] < previousQueueBytesOut[i + 1] {
                 count += 1
             }
-            //print("count"+String(count))
+            printLog("count"+String(count))
             
             if count == measureInterval - 1 {
                 for (_, stream) in streams {
@@ -547,7 +547,7 @@ extension RTMPConnection: RTMPSocketDelegate {
         
         if let message: RTMPMessage = chunk.message, chunk.ready {
             /*  if logger.isEnabledFor(level: .trace) {
-             //print(chunk.description)
+             printLog(chunk.description)
              }*/
             switch chunk.type {
             case .zero:

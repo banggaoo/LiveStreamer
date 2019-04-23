@@ -105,6 +105,7 @@
 		7057B0D5213410C100EFBCBA /* LiveStreamer_Define.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7057B0D4213410C100EFBCBA /* LiveStreamer_Define.swift */; };
 		7057B0D72134154F00EFBCBA /* LiveStreamer_Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7057B0D62134154F00EFBCBA /* LiveStreamer_Delegate.swift */; };
 		70C5E3C9226D627800B6ADE9 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C5E3C8226D627800B6ADE9 /* Log.swift */; };
+		70C5E3DE226F13B400B6ADE9 /* LiveStreamer_Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C5E3DD226F13B400B6ADE9 /* LiveStreamer_Protocol.swift */; };
 		773C7809279E4441B51838B6B51C8BA8 /* LiveStreamer-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 20A2A69AE4F6F043F34C880FF14078E0 /* LiveStreamer-dummy.m */; };
 		878761E0573E1E13E293D1F8272ED746 /* Pods-LiveStreamer_Tests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 41589AB84F361C14B9460F837353E4C0 /* Pods-LiveStreamer_Tests-dummy.m */; };
 		A04F417818BC9E5F9F7D96755297B01D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A16F4CFC63FAC439D7A04994F579A03 /* Foundation.framework */; };
@@ -240,6 +241,7 @@
 		7057B0D4213410C100EFBCBA /* LiveStreamer_Define.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveStreamer_Define.swift; sourceTree = "<group>"; };
 		7057B0D62134154F00EFBCBA /* LiveStreamer_Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveStreamer_Delegate.swift; sourceTree = "<group>"; };
 		70C5E3C8226D627800B6ADE9 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		70C5E3DD226F13B400B6ADE9 /* LiveStreamer_Protocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveStreamer_Protocol.swift; sourceTree = "<group>"; };
 		7B5DC24E424FE880A8C3A724EA64EF67 /* Pods-LiveStreamer_Example-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-LiveStreamer_Example-resources.sh"; sourceTree = "<group>"; };
 		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		B80F5E5D6B52A8B68546B8BE5C2939B8 /* LiveStreamer.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = LiveStreamer.xcconfig; sourceTree = "<group>"; };
@@ -370,6 +372,7 @@
 				70174F892101B12500D60151 /* HKView.swift */,
 				70174F8B2101B12500D60151 /* LiveStreamer.h */,
 				70174F8C2101B12500D60151 /* LiveStreamer.swift */,
+				70C5E3DD226F13B400B6ADE9 /* LiveStreamer_Protocol.swift */,
 				7057B0D62134154F00EFBCBA /* LiveStreamer_Delegate.swift */,
 				7057B0D4213410C100EFBCBA /* LiveStreamer_Define.swift */,
 				70174F8D2101B12500D60151 /* MTHKView.swift */,
@@ -793,6 +796,7 @@
 				7017501C2101B12600D60151 /* CMSampleTimingInfo+Extension.swift in Sources */,
 				701750002101B12600D60151 /* HKView.swift in Sources */,
 				7017503D2101B12600D60151 /* AudioIOComponent.swift in Sources */,
+				70C5E3DE226F13B400B6ADE9 /* LiveStreamer_Protocol.swift in Sources */,
 				701750052101B12600D60151 /* ScreenCaptureSession.swift in Sources */,
 				701750542101B12600D60151 /* RTMPSharedObject.swift in Sources */,
 				7017505B2101B12600D60151 /* CRC32.swift in Sources */,

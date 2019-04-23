@@ -528,8 +528,8 @@ final class MP4Reader: MP4ContainerBox {
             self.url = url
             super.init()
             fileHandle = try FileHandle(forReadingFrom: url)
-        } catch _ {
-            //print("\(error)")
+        } catch let error {
+            printLog("\(error)")
         }
     }
 
@@ -680,7 +680,7 @@ final class MP4TrakReader {
             }
             timerDriver.startRunning()
         } catch {
-            //print("file public error : \(reader.url)")
+            printLog("file public error : \(reader.url)")
         }
     }
 

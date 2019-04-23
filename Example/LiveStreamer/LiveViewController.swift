@@ -24,15 +24,15 @@ final class LiveViewController: UIViewController {
 
         // It is better to run startCapturing method after view is appeared
         setCameraPosition(.front)
-        liveStreamer.startCapturing()
+        _ = liveStreamer.startCapturingIfCan()
         printLog("viewDidAppear")
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        liveStreamer.stopStreaming()
-        liveStreamer.stopRecording()
+        stopStreaming()
+        stopRecording()
     }
     
     public override var shouldAutorotate: Bool {
@@ -51,7 +51,7 @@ final class LiveViewController: UIViewController {
     @IBOutlet private weak var lfView: GLHKView!
     
     lazy private var liveStreamer: LiveStreamer = {
-        let streamer = LiveStreamer(view: lfView)
+        let streamer = LiveStreamer(with: lfView)
         streamer.delegate = self
         streamer.recorderDelegate = self
         
@@ -61,6 +61,30 @@ final class LiveViewController: UIViewController {
         return streamer
     }()
     
+    // MARK: Control
+    
+    private func startStreaming() {
+        guard liveStreamer.startStreamingIfCan(with: viewModel.uri, viewModel.streamName) == true else { return }
+        viewModel.isStreamingStart = true
+    }
+    private func stopStreaming() {
+        guard liveStreamer.stopStreamingIfCan() == true else { return }
+        viewModel.isStreamingStart = false
+    }
+    private func pauseStreaming() {
+        liveStreamer.pauseStreaming()
+        pauseButton.isSelected = (pauseButton.isSelected == false)
+    }
+    
+    private func startRecoding() {
+        UIApplication.shared.isIdleTimerDisabled = true
+        liveStreamer.startRecording()
+    }
+    private func stopRecording() {
+        UIApplication.shared.isIdleTimerDisabled = false
+        liveStreamer.stopRecording()
+    }
+ 
     // MARK: UI
     
     @IBOutlet private weak var currentFPSLabel: UILabel!
@@ -85,7 +109,7 @@ final class LiveViewController: UIViewController {
     }
 
     @IBAction private func rotateCamera(_ sender: UIButton) {
-        let position: AVCaptureDevice.Position = liveStreamer.cameraPosition == .back ? .front : .back
+        let position: AVCaptureDevice.Position = (liveStreamer.cameraPosition == .back) ? .front : .back
         setCameraPosition(position)
     }
     private func setCameraPosition(_ position: AVCaptureDevice.Position) {
@@ -121,43 +145,18 @@ final class LiveViewController: UIViewController {
         liveStreamer.audioMuted = (liveStreamer.audioMuted == false)
         mute.isSelected = liveStreamer.audioMuted
     }
-    
     @IBAction private func on(pause: UIButton) {
-        liveStreamer.pauseStreaming()
-        pause.isSelected = (pause.isSelected == false)
+        pauseStreaming()
     }
-
     @IBAction private func on(publish: UIButton) {
-
-        if publish.isSelected == true {
-            stopStreaming()
-        } else {
-            startStreaming()
-        }
+        (publish.isSelected == true) ? stopStreaming() : startStreaming()
         publish.isSelected = (publish.isSelected == false)
     }
-    private func startStreaming() {
-        liveStreamer.startStreaming(uri: viewModel.uri, streamName: viewModel.streamName)
-        viewModel.isStreamingStart = true
-    }
-    private func stopStreaming() {
-        liveStreamer.stopStreaming()
-        viewModel.isStreamingStart = false
-    }
-    
     @IBAction private func on(record: UIButton) {
-        
-        if record.isSelected == true {
-            UIApplication.shared.isIdleTimerDisabled = false
-            liveStreamer.stopRecording()
-            
-        } else {
-            UIApplication.shared.isIdleTimerDisabled = true
-            liveStreamer.startRecodring()
-        }
+        (record.isSelected == true) ? stopRecording() : startRecoding()
         record.isSelected = (record.isSelected == false)
     }
- 
+    
     enum FPS: Float, CaseIterable {
         case low = 15.0
         case medium = 30.0
@@ -178,15 +177,15 @@ final class LiveViewController: UIViewController {
 
         switch effectType {
         case .none:
-            liveStreamer.removeCurrentEffector()
+            _ = liveStreamer.removeCurrentEffectorIfCan()
         case .mono:
-            liveStreamer.apply(effector: MonochromeEffect())
+            _ = liveStreamer.applyEffectorIfCan(MonochromeEffect())
         case .pronama:
-            liveStreamer.apply(effector: PronamaEffect())
+            _ = liveStreamer.applyEffectorIfCan(PronamaEffect())
         case .time:
-            liveStreamer.apply(effector: CurrentTimeEffect())
+            _ = liveStreamer.applyEffectorIfCan(CurrentTimeEffect())
         case .blur:
-            liveStreamer.apply(effector: BlurEffect())
+            _ = liveStreamer.applyEffectorIfCan(BlurEffect())
         }
     }
 }

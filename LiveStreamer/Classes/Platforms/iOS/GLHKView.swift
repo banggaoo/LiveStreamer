@@ -15,20 +15,11 @@ public class GLHKView: GLKView {
 
     private var displayImage: CIImage?
     private weak var currentStream: NetStream? {
-        didSet {
-            oldValue?.mixer.videoIO.drawable = nil
-        }
+        didSet { oldValue?.mixer.videoIO.drawable = nil }
     }
     
     public var streamLoaded: Bool {
-        
-        get {
-            
-            if let _: NetStream = currentStream {
-                return true
-            }
-            return false
-        }
+        get { return (currentStream != nil) }
     }
 
     public override init(frame: CGRect) {
@@ -38,7 +29,7 @@ public class GLHKView: GLKView {
 
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        self.context = EAGLContext(api: .openGLES2)!
+        context = EAGLContext(api: .openGLES2)!
     }
 
     public override func awakeFromNib() {
@@ -49,40 +40,36 @@ public class GLHKView: GLKView {
     }
 
     public func attachStream(_ stream: NetStream?) {
-        if let stream: NetStream = stream {
-            stream.mixer.videoIO.context = CIContext(eaglContext: context, options: convertToOptionalCIContextOptionDictionary(GLHKView.defaultOptions))
-            stream.lockQueue.async {
-                self.position = stream.mixer.videoIO.position
-                stream.mixer.videoIO.drawable = self
-                stream.mixer.startRunning()
-            }
-        }
+        runMixerIfCan(stream)
         currentStream = stream
-    } 
+    }
+    private func runMixerIfCan(_ stream: NetStream?) {
+        guard let stream = stream else { return }
+        
+        stream.mixer.videoIO.context = CIContext(eaglContext: context, options: convertToOptionalCIContextOptionDictionary(GLHKView.defaultOptions))
+        stream.lockQueue.async {
+            self.position = stream.mixer.videoIO.position
+            stream.mixer.videoIO.drawable = self
+            stream.mixer.startRunning()
+        }
+    }
 }
 
 extension GLHKView: GLKViewDelegate {
-    // MARK: GLKViewDelegate
+
     public func glkView(_ view: GLKView, drawIn rect: CGRect) {
         glClear(GLbitfield(GL_COLOR_BUFFER_BIT))
-        guard let displayImage: CIImage = displayImage else {
-            return
-        }
+        
+        guard let displayImage: CIImage = displayImage else { return }
         var inRect: CGRect = CGRect(x: 0, y: 0, width: CGFloat(drawableWidth), height: CGFloat(drawableHeight))
         var fromRect: CGRect = displayImage.extent
         VideoGravityUtil.calculate(videoGravity, inRect: &inRect, fromRect: &fromRect)
-        // Mirroring
-      /*  if position == .front {
-            currentStream?.mixer.videoIO.context?.draw(displayImage.oriented(forExifOrientation: 2), in: inRect, from: fromRect)
-        } else {
-            currentStream?.mixer.videoIO.context?.draw(displayImage, in: inRect, from: fromRect)
-        }*/
         currentStream?.mixer.videoIO.context?.draw(displayImage, in: inRect, from: fromRect)
     }
 }
 
 extension GLHKView: NetStreamDrawable {
-    // MARK: NetStreamDrawable
+
     func draw(image: CIImage) {
         DispatchQueue.main.async {
             self.displayImage = image

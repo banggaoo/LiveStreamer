@@ -6,31 +6,33 @@
 //
 
 import Foundation
+import AVFoundation
 
 struct LiveStreamAddress {
-    // If you want to use singleton
-    //static var defaultInstance: Preference = Preference()
-    
-    // uri is like "rtmp://test:test@192.168.11.15/live",  "rtmp://1b6cf5.entrypoint.cloud.wowza.com/app-6f91"
-    public var uri: String
-    public var streamName: String  // ex : "188e39fc"
+    let uri: String
+    let streamName: String
 }
 
 public struct Preference {
     
-    static public let defaultFPS: Float = 24.0
+    static let defaultFPS: Float = 24.0
     
-    static public let defaultBitrate: UInt32 = 1024 * 1024 * 1
-    static public let minimumBitrate: UInt32 = 512 * 1024 * 1
-    static public let maximumBitrate: UInt32 = 1024 * 1024 * 3
+    static let videoDefaultBitrate: UInt32 = 1024 * 1024 * 1
+    static let videoMinimumBitrate: UInt32 = 512 * 1024 * 1
+    static let videoMaximumBitrate: UInt32 = 1024 * 1024 * 3
     
-    static public let audioDefaultBitrate: UInt32 = 192 * 1024
-    static public let audioMinimumBitrate: UInt32 = 96 * 1024
-    static public let audioMaximumBitrate: UInt32 = 192 * 1024
+    static let audioDefaultBitrate: UInt32 = 192 * 1024
+    static let audioMinimumBitrate: UInt32 = 96 * 1024
+    static let audioMaximumBitrate: UInt32 = 192 * 1024
     
-    static public let sampleRate: Double = 44_100
+    static let sampleRate: Double = 44_100
     
-    static public let incrementBitrate: UInt32 = 512 * 1024
+    static let incrementBitrate: UInt32 = 512 * 1024
+    
+    static let videoSize: CGSize = CGSize(width: 1280, height: 720)
+    static let sessionPreset: AVCaptureSession.Preset = .hd1280x720
+    
+    static let recordFileName = "Movie"
 }
 
 public enum BroadcastStatusForUser: String {

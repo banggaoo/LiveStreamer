@@ -15,8 +15,8 @@ public class FLVReader {
             fileHandle = try FileHandle(forReadingFrom: url)
             fileHandle?.seek(toFileOffset: 13)
             currentOffSet = 13
-        } catch _ {
-            //print("\(error)")
+        } catch let error {
+            printLog("\(error)")
         }
     }
 

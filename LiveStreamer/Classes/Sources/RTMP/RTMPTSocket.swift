@@ -132,7 +132,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         lastResponse = Date()
         
         if let _: Error = error {
-            //print("\(error)")
+            printLog("\(error)")
             
             if let lastRequestPathComponent: String = self.lastRequestPathComponent,
                 let lastRequestData: Data = self.lastRequestData, !isRetryingRequest {
@@ -198,17 +198,17 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     
     private func didIdent2(data: Data?, response: URLResponse?, error: Error?) {
         if let _: Error = error {
-            //print("\(error)")
+            printLog("\(error)")
         }
         doRequest("/open/1", Data([0x00]), didOpen)
         /* if logger.isEnabledFor(level: .trace) {
-         //print("\(String(describing: data?.bytes)): \(String(describing: response))")
+         printLog("\(String(describing: data?.bytes)): \(String(describing: response))")
          }*/
     }
     
     private func didOpen(data: Data?, response: URLResponse?, error: Error?) {
         if let _: Error = error {
-            //print("\(error)")
+            printLog("\(error)")
         }
         guard let data: Data = data else {
             return
@@ -216,27 +216,27 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         connectionID = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
         doRequest("/idle/\(connectionID!)/0", Data([0x00]), didIdle0)
         /*  if logger.isEnabledFor(level: .trace) {
-         //print("\(data.bytes): \(String(describing: response))")
+         printLog("\(data.bytes): \(String(describing: response))")
          }*/
     }
     
     private func didIdle0(data: Data?, response: URLResponse?, error: Error?) {
         if let _: Error = error {
-            //print("\(error)")
+            printLog("\(error)")
         }
         connected = true
         /*  if logger.isEnabledFor(level: .trace) {
-         //print("\(String(describing: data?.bytes)): \(String(describing: response))")
+         printLog("\(String(describing: data?.bytes)): \(String(describing: response))")
          }*/
     }
     
     private func didClose(data: Data?, response: URLResponse?, error: Error?) {
         if let _: Error = error {
-            //print("\(error)")
+            printLog("\(error)")
         }
         connected = false
         /*  if logger.isEnabledFor(level: .trace) {
-         //print("\(String(describing: data?.bytes)): \(String(describing: response))")
+         printLog("\(String(describing: data?.bytes)): \(String(describing: response))")
          }*/
     }
     
@@ -280,7 +280,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         request.httpMethod = "POST"
         session.uploadTask(with: request, from: data, completionHandler: completionHandler).resume()
         /*  if logger.isEnabledFor(level: .trace) {
-         //print("\(self.request)")
+         printLog("\(self.request)")
          }*/
     }
 }

@@ -45,8 +45,3 @@ final class ViewController: UIViewController {
         uriTextField.text = streamInfo.uri
     }
 }
-
-public struct StreamInfoModel: Codable {
-    let uri: String
-    let streamName: String
-}
