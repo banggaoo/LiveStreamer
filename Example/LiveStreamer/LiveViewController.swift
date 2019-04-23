@@ -21,11 +21,11 @@ final class LiveViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        printLog("viewDidAppear")
 
         // It is better to run startCapturing method after view is appeared
         setCameraPosition(.front)
         _ = liveStreamer.startCapturingIfCan()
-        printLog("viewDidAppear")
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -93,7 +93,8 @@ final class LiveViewController: UIViewController {
     @IBOutlet private weak var effectSegmentControl: UISegmentedControl!
     
     @IBOutlet private weak var stateLabel: UILabel!
-    @IBOutlet private weak var muteButton: UIButton!
+    @IBOutlet private weak var videoMuteButton: UIButton!
+    @IBOutlet private weak var audioMuteButton: UIButton!
     @IBOutlet private weak var recordButton: UIButton!
     @IBOutlet private weak var publishButton: UIButton!
     @IBOutlet private weak var pauseButton: UIButton!
@@ -142,8 +143,13 @@ final class LiveViewController: UIViewController {
     }
  
     @IBAction private func on(mute: UIButton) {
-        liveStreamer.audioMuted = (liveStreamer.audioMuted == false)
-        mute.isSelected = liveStreamer.audioMuted
+        if mute == videoMuteButton {
+            liveStreamer.videoMuted = (liveStreamer.videoMuted == false)
+            mute.isSelected = liveStreamer.videoMuted
+        } else if mute == audioMuteButton {
+            liveStreamer.audioMuted = (liveStreamer.audioMuted == false)
+            mute.isSelected = liveStreamer.audioMuted
+        }
     }
     @IBAction private func on(pause: UIButton) {
         pauseStreaming()
