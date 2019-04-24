@@ -42,8 +42,13 @@ public class AVMixerRecorder: NSObject {
     public var pixelBufferAdaptor: AVAssetWriterInputPixelBufferAdaptor?
     public let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AVMixerRecorder.lock")
     private(set) var running: Bool = false
-    fileprivate(set) var sourceTime: CMTime = CMTime.zero
-
+    fileprivate(set) var sourceTime: CMTime {
+        didSet {
+            startTime = CMTimeAdd(sourceTime, CMTimeMakeWithSeconds(0.5, preferredTimescale: 1000000000))
+        }
+    }
+    private var startTime: CMTime = CMTime.zero
+    
     var isReadyForStartWriting: Bool {
         guard let writer: AVAssetWriter = writer else { return false }
         return outputSettings.count == writer.inputs.count
@@ -51,6 +56,7 @@ public class AVMixerRecorder: NSObject {
 
     public override init() {
         recorderDelegate = DefaultAVMixerRecorderDelegate()
+        sourceTime = CMTime.zero
         super.init()
         delegate = recorderDelegate
     }
@@ -66,18 +72,16 @@ public class AVMixerRecorder: NSObject {
             guard
                 let writer: AVAssetWriter = self.writer,
                 let input: AVAssetWriterInput = delegate.getWriterInput(self, mediaType: mediaType, sourceFormatHint: sampleBuffer.formatDescription),
-                self.isReadyForStartWriting else {
-                return
-            }
+                self.isReadyForStartWriting else { return }
 
             switch writer.status {
             case .unknown:
                 writer.startWriting()
                 
                 // For remove black screen in the beginning
-                let startTimeToUse : CMTime = CMTimeAdd(self.sourceTime, CMTimeMakeWithSeconds(0.5, preferredTimescale: 1000000000))
+//                let startTimeToUse : CMTime = CMTimeAdd(self.sourceTime, CMTimeMakeWithSeconds(0.5, preferredTimescale: 1000000000))
                 
-                writer.startSession(atSourceTime: startTimeToUse)
+                writer.startSession(atSourceTime: self.startTime)
 
             default:
                 break
@@ -98,17 +102,15 @@ public class AVMixerRecorder: NSObject {
                 let writer = self.writer,
                 let input = delegate.getWriterInput(self, mediaType: .video, sourceFormatHint: CMVideoFormatDescription.create(pixelBuffer: pixelBuffer)),
                 let adaptor = delegate.getPixelBufferAdaptor(self, withWriterInput: input),
-                self.isReadyForStartWriting else {
-                return
-            }
+                self.isReadyForStartWriting else { return }
 
             switch writer.status {
             case .unknown:
                 writer.startWriting()
                 
-                let startTimeToUse : CMTime = CMTimeAdd(self.sourceTime, CMTimeMakeWithSeconds(0.5, preferredTimescale: 1000000000))
+//                let startTimeToUse : CMTime = CMTimeAdd(self.sourceTime, CMTimeMakeWithSeconds(0.5, preferredTimescale: 1000000000))
 
-                writer.startSession(atSourceTime: startTimeToUse)
+                writer.startSession(atSourceTime: self.startTime)
             default:
                 break
             }
@@ -138,9 +140,7 @@ extension AVMixerRecorder: Running {
     // MARK: Running
     final func startRunning() {
         lockQueue.async {
-            guard !self.running else {
-                return
-            }
+            guard !self.running else { return }
             self.running = true
             self.outerDelegate?.didStartRunning(self)
         }
@@ -148,9 +148,7 @@ extension AVMixerRecorder: Running {
 
     final func stopRunning() {
         lockQueue.async {
-            guard self.running else {
-                return
-            }
+            guard self.running else { return }
             self.finishWriting()
             self.running = false
             self.delegate?.didStopRunning(self)
@@ -183,11 +181,9 @@ public class DefaultAVMixerRecorderDelegate: NSObject {
 }
 
 extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
-    // MARK: AVMixerRecorderDelegate
+
     public func rotateFile(_ recorder: AVMixerRecorder, withPresentationTimeStamp: CMTime, mediaType: AVMediaType) {
-        guard clockReference == mediaType && rotateTime.value < withPresentationTimeStamp.value else {
-            return
-        }
+        guard clockReference == mediaType && rotateTime.value < withPresentationTimeStamp.value else { return }
         if recorder.writer != nil {
             recorder.finishWriting()
         }
@@ -277,8 +273,8 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
         guard let fileName: String = fileName else { return nil }
         let url: URL = moviesDirectory.appendingPathComponent(fileName + ".mp4")
 
+        try? FileManager.default.removeItem(at: url)
         do {
-            try FileManager.default.removeItem(at: url)
             let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
             return writer
         } catch {
