@@ -1,17 +1,10 @@
 import Foundation
 
-protocol HTTPResponseCompatible: CustomStringConvertible {
+protocol HTTPResponseCompatible {
     var version: String { get set }
     var statusCode: String { get set }
     var headerFields: [String: String] { get set }
     var body: Data? { get set }
-}
-
-extension HTTPResponseCompatible {
-    // MARK: CustomStringConvertible
-    public var description: String {
-        return Mirror(reflecting: self).description
-    }
 }
 
 extension HTTPResponseCompatible {
@@ -36,15 +29,11 @@ extension HTTPResponseCompatible {
             let bytes: [Data.SubSequence] = newValue.split(separator: HTTPRequest.separator)
             for i in 0..<bytes.count {
                 count += bytes[i].count + 1
-                guard let line = String(bytes: Array(bytes[i]), encoding: .utf8), line != "\r" else {
-                    break
-                }
+                guard let line = String(bytes: Array(bytes[i]), encoding: .utf8), line != "\r" else { break }
                 lines.append(line.trimmingCharacters(in: .newlines))
             }
 
-            guard let first: [String] = lines.first?.components(separatedBy: " ") else {
-                return
-            }
+            guard let first: [String] = lines.first?.components(separatedBy: " ") else { return }
 
             version = first[0]
             statusCode = first[1]
@@ -59,7 +48,6 @@ extension HTTPResponseCompatible {
     }
 }
 
-// MARK: -
 public struct HTTPResponse: HTTPResponseCompatible, ExpressibleByDictionaryLiteral {
     public typealias Key = String
     public typealias Value = String

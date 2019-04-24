@@ -9,7 +9,6 @@ import Foundation
 
 class LiveStreamerRTMPStreamQoSDelegate: RTMPStreamDelegate {
     
-    // detect upload insufficent BandWidth
     func didPublishInsufficientBW(_ stream: RTMPStream, withConnection: RTMPConnection) {
         guard var videoBitrate = stream.videoSettings["bitrate"] as? UInt32 else { return }
         printLog("didPublishInsufficientBW \(videoBitrate)")
@@ -35,7 +34,6 @@ class LiveStreamerRTMPStreamQoSDelegate: RTMPStreamDelegate {
     func clear(_ stream: RTMPStream) {
     }
 }
-
 
 extension LiveStreamer: AVMixerRecorderOuterDelegate {
     

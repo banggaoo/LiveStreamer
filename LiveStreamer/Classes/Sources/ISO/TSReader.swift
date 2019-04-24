@@ -10,9 +10,7 @@ class TSReader {
 
     private(set) var PAT: ProgramAssociationSpecific? {
         didSet {
-            guard let PAT: ProgramAssociationSpecific = PAT else {
-                return
-            }
+            guard let PAT: ProgramAssociationSpecific = PAT else { return }
             for (channel, PID) in PAT.programs {
                 dictionaryForPrograms[PID] = channel
             }
@@ -77,20 +75,11 @@ class TSReader {
 extension TSReader: IteratorProtocol {
     // MARK: IteratorProtocol
     func next() -> TSPacket? {
-        guard let fileHandle = fileHandle, UInt64(cursor * TSPacket.size) < eof else {
-            return nil
-        }
+        guard let fileHandle = fileHandle, UInt64(cursor * TSPacket.size) < eof else { return nil }
         defer {
             cursor += 1
         }
         fileHandle.seek(toFileOffset: UInt64(cursor * TSPacket.size))
         return TSPacket(data: fileHandle.readData(ofLength: TSPacket.size))
-    }
-}
-
-extension TSReader: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
-        return Mirror(reflecting: self).description
     }
 }

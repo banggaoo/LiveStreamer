@@ -2,18 +2,13 @@ import CoreMedia
 
 extension CMSampleBuffer {
     var dependsOnOthers: Bool {
-        guard
-            let attachments = CMSampleBufferGetSampleAttachmentsArray(self, createIfNecessary: false) else {
-                return false
-        }
+        guard let attachments = CMSampleBufferGetSampleAttachmentsArray(self, createIfNecessary: false) else { return false }
         let attachment: [NSObject: AnyObject] = unsafeBitCast(CFArrayGetValueAtIndex(attachments, 0), to: CFDictionary.self) as [NSObject: AnyObject]
         return attachment["DependsOnOthers" as NSObject] as! Bool
     }
     var dataBuffer: CMBlockBuffer? {
-        get {
-            return CMSampleBufferGetDataBuffer(self)
-        }
-        set {
+        get { return CMSampleBufferGetDataBuffer(self) }
+        set (newValue) {
             _ = newValue.map {
                 CMSampleBufferSetDataBuffer(self, newValue: $0)
             }

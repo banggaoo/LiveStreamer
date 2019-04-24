@@ -4,9 +4,7 @@ import AVFoundation
 
 extension VideoIOComponent {
     var zoomFactor: CGFloat {
-        guard let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device else {
-            return 0
-        }
+        guard let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device else { return 0 }
         return device.videoZoomFactor
     }
 
@@ -35,7 +33,7 @@ extension VideoIOComponent {
         }
         input = nil
         output = nil
-        if useScreenSize {
+        if useScreenSize == true {
             encoder.setValuesForKeys([
                 "width": screen.attributes["Width"]!,
                 "height": screen.attributes["Height"]!
@@ -46,7 +44,7 @@ extension VideoIOComponent {
 }
 
 extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
-    // MARK: ScreenCaptureOutputPixelBufferDelegate
+
     func didSet(size: CGSize) {
         lockQueue.async {
             self.encoder.width = Int32(size.width)
@@ -54,7 +52,7 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
         }
     }
     func output(pixelBuffer: CVPixelBuffer, withPresentationTime: CMTime) {
-        if !effects.isEmpty {
+        if effects.isEmpty == false {
             context?.render(effect(pixelBuffer), to: pixelBuffer)
         }
         encoder.encodeImageBuffer(

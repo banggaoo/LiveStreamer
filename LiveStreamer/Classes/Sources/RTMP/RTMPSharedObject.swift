@@ -70,13 +70,6 @@ struct RTMPSharedObjectEvent {
     }
 }
 
-extension RTMPSharedObjectEvent: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
-        return Mirror(reflecting: self).description
-    }
-}
-
 // MARK: -
 /**
  flash.net.SharedObject for Swift
@@ -105,17 +98,11 @@ public class RTMPSharedObject: EventDispatcher {
 
     private var succeeded: Bool = false {
         didSet {
-            guard succeeded else {
-                return
-            }
+            guard succeeded else { return }
             for (key, value) in data {
                 setProperty(key, value)
             }
         }
-    }
-
-    override public var description: String {
-        return data.description
     }
 
     private var rtmpConnection: RTMPConnection?
@@ -129,9 +116,7 @@ public class RTMPSharedObject: EventDispatcher {
 
     public func setProperty(_ name: String, _ value: Any?) {
         data[name] = value
-        guard let rtmpConnection: RTMPConnection = rtmpConnection, succeeded else {
-            return
-        }
+        guard let rtmpConnection: RTMPConnection = rtmpConnection, succeeded else { return }
         rtmpConnection.socket.doOutput(chunk: createChunk([
             RTMPSharedObjectEvent(type: .requestChange, name: name, data: value)
         ]), locked: nil)

@@ -9,9 +9,7 @@ final class AudioIOComponent: IOComponent {
 #if os(iOS) || os(macOS)
     var input: AVCaptureDeviceInput? {
         didSet {
-            guard let mixer: AVMixer = mixer, oldValue != input else {
-                return
-            }
+            guard let mixer: AVMixer = mixer, oldValue != input else { return }
             if let oldValue: AVCaptureDeviceInput = oldValue {
                 mixer.session.removeInput(oldValue)
             }
@@ -30,9 +28,7 @@ final class AudioIOComponent: IOComponent {
             return _output
         }
         set {
-            if _output == newValue {
-                return
-            }
+            if _output == newValue { return }
             if let output: AVCaptureAudioDataOutput = _output {
                 output.setSampleBufferDelegate(nil, queue: nil)
                 mixer?.session.removeOutput(output)
@@ -54,9 +50,7 @@ final class AudioIOComponent: IOComponent {
 
 #if os(iOS) || os(macOS)
     func attachAudio(_ audio: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool) throws {
-        guard let mixer: AVMixer = mixer else {
-            return
-        }
+        guard let mixer: AVMixer = mixer else { return }
 
         mixer.session.beginConfiguration()
         defer {

@@ -61,9 +61,7 @@ public class SoundSpliter: NSObject {
     }
 
     func split() {
-        guard frameSize < self.minimumByteSize else {
-            return
-        }
+        guard frameSize < self.minimumByteSize else { return }
 
         let minimumByteSize: Int = self.minimumByteSize
         let remain: Int = minimumByteSize % frameSize

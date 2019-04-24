@@ -15,9 +15,7 @@ class AudioStreamPlayback {
 
     var soundTransform: SoundTransform = SoundTransform() {
         didSet {
-            guard let queue: AudioQueueRef = queue, running else {
-                return
-            }
+            guard let queue: AudioQueueRef = queue, running else { return }
             soundTransform.setParameter(queue)
         }
     }
@@ -26,9 +24,7 @@ class AudioStreamPlayback {
     var formatDescription: AudioStreamBasicDescription?
     var fileTypeHint: AudioFileTypeID? {
         didSet {
-            guard let fileTypeHint: AudioFileTypeID = fileTypeHint, fileTypeHint != oldValue else {
-                return
-            }
+            guard let fileTypeHint: AudioFileTypeID = fileTypeHint, fileTypeHint != oldValue else { return }
             var fileStreamID: OpaquePointer?
             if AudioFileStreamOpen(
                 unsafeBitCast(self, to: UnsafeMutableRawPointer.self),
@@ -94,9 +90,7 @@ class AudioStreamPlayback {
     }
 
     func parseBytes(_ data: Data) {
-        guard let fileStreamID: AudioFileStreamID = fileStreamID, running else {
-            return
-        }
+        guard let fileStreamID: AudioFileStreamID = fileStreamID, running else { return }
         data.withUnsafeBytes { (bytes: UnsafePointer<UInt8>) -> Void in
             AudioFileStreamParseBytes(
                 fileStreamID,
@@ -142,9 +136,7 @@ class AudioStreamPlayback {
     }
 
     func enqueueBuffer() {
-        guard let queue: AudioQueueRef = queue, running else {
-            return
-        }
+        guard let queue: AudioQueueRef = queue, running else { return }
         inuse[current] = true
         let buffer: AudioQueueBufferRef = buffers[current]
         buffer.pointee.mAudioDataByteSize = filledBytes
@@ -159,18 +151,14 @@ class AudioStreamPlayback {
     }
 
     func startQueueIfNeed() {
-        guard let queue: AudioQueueRef = queue, !started else {
-            return
-        }
+        guard let queue: AudioQueueRef = queue, !started else { return }
         started = true
         AudioQueuePrime(queue, 0, nil)
         AudioQueueStart(queue, nil)
     }
 
     func initializeForAudioQueue() {
-        guard formatDescription != nil && self.queue == nil else {
-            return
-        }
+        guard formatDescription != nil && self.queue == nil else { return }
         var queue: AudioQueueRef? = nil
         DispatchQueue.global(qos: .background).sync {
             self.runloop = CFRunLoopGetCurrent()
@@ -198,9 +186,7 @@ class AudioStreamPlayback {
     }
 
     final func onOutputForQueue(_ inAQ: AudioQueueRef, _ inBuffer: AudioQueueBufferRef) {
-        guard let i: Int = buffers.firstIndex(of: inBuffer) else {
-            return
-        }
+        guard let i: Int = buffers.firstIndex(of: inBuffer) else { return }
         objc_sync_enter(inuse)
         inuse[i] = false
         objc_sync_exit(inuse)
@@ -224,9 +210,7 @@ class AudioStreamPlayback {
     }
 
     func setMagicCookieForQueue(_ inData: [UInt8]) -> Bool {
-        guard let queue: AudioQueueRef = queue else {
-            return false
-        }
+        guard let queue: AudioQueueRef = queue else { return false }
         var status: OSStatus = noErr
         status = AudioQueueSetProperty(queue, kAudioQueueProperty_MagicCookie, inData, UInt32(inData.count))
         guard status == noErr else {
@@ -237,9 +221,7 @@ class AudioStreamPlayback {
     }
 
     func getFormatDescriptionForFileStream() -> AudioStreamBasicDescription? {
-        guard let fileStreamID: AudioFileStreamID = fileStreamID else {
-            return nil
-        }
+        guard let fileStreamID: AudioFileStreamID = fileStreamID else { return nil }
         var data: AudioStreamBasicDescription = AudioStreamBasicDescription()
         var size: UInt32 = UInt32(MemoryLayout<AudioStreamBasicDescription>.size)
         guard AudioFileStreamGetProperty(fileStreamID, kAudioFileStreamProperty_DataFormat, &size, &data) == noErr else {
@@ -272,9 +254,7 @@ extension AudioStreamPlayback: Running {
     // MARK: Running
     func startRunning() {
         lockQueue.async {
-            guard !self.running else {
-                return
-            }
+            guard self.running == false else { return }
             self.inuse = [Bool](repeating: false, count: self.numberOfBuffers)
             self.started = false
             self.current = 0
@@ -288,9 +268,7 @@ extension AudioStreamPlayback: Running {
 
     func stopRunning() {
         lockQueue.async {
-            guard self.running else {
-                return
-            }
+            guard self.running == true else { return }
             self.queue = nil
             if let runloop: CFRunLoop = self.runloop {
                 CFRunLoopStop(runloop)

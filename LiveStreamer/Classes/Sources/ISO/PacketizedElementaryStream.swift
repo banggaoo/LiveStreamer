@@ -12,7 +12,6 @@ protocol PESPacketHeader {
     var data: Data { get set }
 }
 
-// MARK: -
 enum PESPTSDTSIndicator: UInt8 {
     case none        = 0
     case onlyPTS     = 1
@@ -20,7 +19,6 @@ enum PESPTSDTSIndicator: UInt8 {
     case bothPresent = 3
 }
 
-// MARK: -
 struct PESOptionalHeader {
     static let fixedSectionSize: Int = 3
     static let defaultMarkerBits: UInt8 = 2
@@ -120,14 +118,6 @@ extension PESOptionalHeader: DataConvertible {
     }
 }
 
-extension PESOptionalHeader: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
-        return Mirror(reflecting: self).description
-    }
-}
-
-// MARK: -
 struct PacketizedElementaryStream: PESPacketHeader {
     static let untilPacketLengthSize: Int = 6
     static let startCode: Data = Data([0x00, 0x00, 0x01])
@@ -293,12 +283,5 @@ struct PacketizedElementaryStream: PESPacketHeader {
     mutating func append(_ data: Data) -> Int {
         self.data.append(data)
         return data.count
-    }
-}
-
-extension PacketizedElementaryStream: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
-        return Mirror(reflecting: self).description
     }
 }

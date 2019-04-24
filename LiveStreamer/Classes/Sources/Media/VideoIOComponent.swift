@@ -26,9 +26,7 @@ final class VideoIOComponent: IOComponent {
         didSet {
             guard
                 let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
-                let data = device.actualFPS(fps) else {
-                return
-            }
+                let data = device.actualFPS(fps) else { return }
 
             fps = data.fps
             encoder.expectedFPS = data.fps
@@ -55,9 +53,7 @@ final class VideoIOComponent: IOComponent {
 
     var orientation: AVCaptureVideoOrientation = .portrait {
         didSet {
-            guard orientation != oldValue else {
-                return
-            }
+            guard orientation != oldValue else { return }
             for connection in output.connections where connection.isVideoOrientationSupported {
                 connection.videoOrientation = orientation
                 if torch {
@@ -70,18 +66,14 @@ final class VideoIOComponent: IOComponent {
 
     var torch: Bool = false {
         didSet {
-            guard torch != oldValue else {
-                return
-            }
+            guard torch != oldValue else { return }
             setTorchMode(torch ? .on : .off)
         }
     }
 
     var continuousAutofocus: Bool = false {
         didSet {
-            guard continuousAutofocus != oldValue else {
-                return
-            }
+            guard continuousAutofocus != oldValue else { return }
             let focusMode: AVCaptureDevice.FocusMode = continuousAutofocus ? .continuousAutoFocus : .autoFocus
             guard let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
                 device.isFocusModeSupported(focusMode) else {
@@ -103,9 +95,7 @@ final class VideoIOComponent: IOComponent {
             guard
                 let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
                 let point: CGPoint = focusPointOfInterest,
-                device.isFocusPointOfInterestSupported else {
-                return
-            }
+                device.isFocusPointOfInterestSupported else { return }
             do {
                 try device.lockForConfiguration()
                 device.focusPointOfInterest = point
@@ -122,9 +112,7 @@ final class VideoIOComponent: IOComponent {
             guard
                 let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
                 let point: CGPoint = exposurePointOfInterest,
-                device.isExposurePointOfInterestSupported else {
-                return
-            }
+                device.isExposurePointOfInterestSupported else { return }
             do {
                 try device.lockForConfiguration()
                 device.exposurePointOfInterest = point
@@ -138,9 +126,7 @@ final class VideoIOComponent: IOComponent {
 
     var continuousExposure: Bool = false {
         didSet {
-            guard continuousExposure != oldValue else {
-                return
-            }
+            guard continuousExposure != oldValue else { return }
             let exposureMode: AVCaptureDevice.ExposureMode = continuousExposure ? .continuousAutoExposure : .autoExpose
             guard let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
                 device.isExposureModeSupported(exposureMode) else {
@@ -168,9 +154,7 @@ final class VideoIOComponent: IOComponent {
             return _output!
         }
         set {
-            if _output == newValue {
-                return
-            }
+            if _output == newValue { return }
             if let output: AVCaptureVideoDataOutput = _output {
                 output.setSampleBufferDelegate(nil, queue: nil)
                 mixer?.session.removeOutput(output)
@@ -181,9 +165,7 @@ final class VideoIOComponent: IOComponent {
 
     var input: AVCaptureInput? = nil {
         didSet {
-            guard let mixer: AVMixer = mixer, oldValue != input else {
-                return
-            }
+            guard let mixer: AVMixer = mixer, oldValue != input else { return }
             if let oldValue: AVCaptureInput = oldValue {
                 mixer.session.removeInput(oldValue)
             }
@@ -197,9 +179,7 @@ final class VideoIOComponent: IOComponent {
     #if os(iOS)
     var screen: ScreenCaptureSession? = nil {
         didSet {
-            guard oldValue != screen else {
-                return
-            }
+            guard oldValue != screen else { return }
             if let oldValue: ScreenCaptureSession = oldValue {
                 oldValue.delegate = nil
             }
@@ -300,9 +280,7 @@ final class VideoIOComponent: IOComponent {
 #endif
 
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
-        guard var buffer: CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
-            return
-        }
+        guard var buffer: CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         
         CVPixelBufferLockBaseAddress(buffer, .readOnly)
         defer { CVPixelBufferUnlockBaseAddress(buffer, .readOnly) }

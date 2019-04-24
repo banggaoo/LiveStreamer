@@ -65,9 +65,7 @@ public class NetSocket: NSObject {
     }
     
     final func doOutputProcess(_ buffer: UnsafePointer<UInt8>, maxLength: Int) {
-        guard let outputStream: OutputStream = outputStream else {
-            return
-        }
+        guard let outputStream: OutputStream = outputStream else { return }
         var total: Int = 0
         while total < maxLength {
             let length: Int = outputStream.write(buffer.advanced(by: total), maxLength: maxLength - total)
@@ -120,9 +118,7 @@ public class NetSocket: NSObject {
         timeoutHandler = didTimeout
         inputBuffer.removeAll(keepingCapacity: false)
         
-        guard let inputStream: InputStream = inputStream, let outputStream: OutputStream = outputStream else {
-            return
-        }
+        guard let inputStream: InputStream = inputStream, let outputStream: OutputStream = outputStream else { return }
         
         runloop = .current
         
@@ -168,9 +164,7 @@ public class NetSocket: NSObject {
     }
     
     private func doInput() {
-        guard let inputStream: InputStream = inputStream, let buffer: UnsafeMutablePointer<UInt8> = buffer else {
-            return
-        }
+        guard let inputStream: InputStream = inputStream, let buffer: UnsafeMutablePointer<UInt8> = buffer else { return }
         let length: Int = inputStream.read(buffer, maxLength: windowSizeC)
         if 0 < length {
             totalBytesIn += Int64(length)

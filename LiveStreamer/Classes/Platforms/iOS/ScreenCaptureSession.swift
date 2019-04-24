@@ -46,9 +46,7 @@ public class ScreenCaptureSession: NSObject {
 
     private var size: CGSize = .zero {
         didSet {
-            guard size != oldValue else {
-                return
-            }
+            guard size != oldValue else { return }
             delegate?.didSet(size: CGSize(width: size.width * scale, height: size.height * scale))
             pixelBufferPool = nil
         }
@@ -86,9 +84,7 @@ public class ScreenCaptureSession: NSObject {
     }
 
     @objc public func onScreen(_ displayLink: CADisplayLink) {
-        guard semaphore.wait(timeout: .now()) == .success else {
-            return
-        }
+        guard semaphore.wait(timeout: .now()) == .success else { return }
 
         if let shared = self.shared {
             size = shared.delegate!.window!!.bounds.size
@@ -142,9 +138,7 @@ extension ScreenCaptureSession: Running {
     // MARK: Running
     public func startRunning() {
         lockQueue.sync {
-            guard !self.running else {
-                return
-            }
+            guard !self.running else { return }
             self.running = true
             self.pixelBufferPool = nil
             self.colorSpace = CGColorSpaceCreateDeviceRGB()
@@ -156,9 +150,7 @@ extension ScreenCaptureSession: Running {
 
     public func stopRunning() {
         lockQueue.sync {
-            guard self.running else {
-                return
-            }
+            guard self.running else { return }
             self.displayLink.remove(from: .main, forMode: RunLoop.Mode.common)
             self.displayLink.invalidate()
             self.colorSpace = nil

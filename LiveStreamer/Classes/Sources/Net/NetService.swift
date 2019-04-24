@@ -27,9 +27,7 @@ public class NetService: NSObject {
     
     func disconnect(_ client: NetClient) {
         lockQueue.sync {
-            guard let index: Int = clients.firstIndex(of: client) else {
-                return
-            }
+            guard let index: Int = clients.firstIndex(of: client) else { return }
             clients.remove(at: index)
             client.delegate = nil
             client.close(isDisconnected: true, eventCode: nil)
@@ -88,9 +86,7 @@ extension NetService: Running {
     // MARK: Runnbale
     final public func startRunning() {
         lockQueue.async {
-            if self.running {
-                return
-            }
+            if self.running { return }
             self.willStartRunning()
             self.running = true
         }
@@ -98,9 +94,7 @@ extension NetService: Running {
     
     final public func stopRunning() {
         lockQueue.async {
-            if !self.running {
-                return
-            }
+            if !self.running { return }
             self.willStopRunning()
             self.running = false
         }

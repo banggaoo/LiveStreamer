@@ -108,9 +108,7 @@ final class MD5 {
         message.sequence(64) {
             let x: [UInt32] = $0.toUInt32()
 
-            guard x.count == 16 else {
-                return
-            }
+            guard x.count == 16 else { return }
 
             var ctx: Context = Context()
             ctx.a = context.a

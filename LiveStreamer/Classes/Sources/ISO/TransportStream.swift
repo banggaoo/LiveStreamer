@@ -34,13 +34,9 @@ struct TSPacket {
     }
 
     init?(data: Data) {
-        guard TSPacket.size == data.count else {
-            return nil
-        }
+        guard TSPacket.size == data.count else { return nil }
         self.data = data
-        if syncByte != TSPacket.defaultSyncByte {
-            return nil
-        }
+        if syncByte != TSPacket.defaultSyncByte { return nil }
     }
 
     mutating func fill(_ data: Data?, useAdaptationField: Bool) -> Int {
@@ -54,7 +50,7 @@ struct TSPacket {
         if remain == 0 {
             return length
         }
-        if useAdaptationField {
+        if useAdaptationField == true {
             adaptationFieldFlag = true
             if adaptationField == nil {
                 adaptationField = TSAdaptationField()
@@ -101,12 +97,12 @@ extension TSPacket: DataConvertible {
                 adaptationFieldFlag = data[3] & 0x20 == 0x20
                 payloadFlag = data[3] & 0x10 == 0x10
                 continuityCounter = UInt8(data[3] & 0xf)
-                if adaptationFieldFlag {
+                if adaptationFieldFlag == true {
                     let length: Int = Int(try buffer.readUInt8())
                     buffer.position -= 1
                     adaptationField = TSAdaptationField(data: try buffer.readBytes(length + 1))
                 }
-                if payloadFlag {
+                if payloadFlag == true {
                     payload = try buffer.readBytes(buffer.bytesAvailable)
                 }
             } catch {
@@ -178,13 +174,6 @@ struct TSProgramClockReference {
         }
         data[5] = UInt8(truncatingIfNeeded: e)
         return data
-    }
-}
-
-extension TSPacket: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
-        return Mirror(reflecting: self).description
     }
 }
 
@@ -307,13 +296,6 @@ extension TSAdaptationField: DataConvertible {
     }
 }
 
-extension TSAdaptationField: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
-        return Mirror(reflecting: self).description
-    }
-}
-
 // MARK: -
 struct TSAdaptationExtensionField {
     var length: UInt8 = 0
@@ -380,12 +362,5 @@ extension TSAdaptationExtensionField: DataConvertible {
                 printLog("\(buffer)")
             }
         }
-    }
-}
-
-extension TSAdaptationExtensionField: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
-        return Mirror(reflecting: self).description
     }
 }

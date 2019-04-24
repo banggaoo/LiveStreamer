@@ -43,9 +43,8 @@ final class H264Decoder {
     private var minimumGroupOfPictures: Int = 12
     private(set) var status: OSStatus = noErr {
         didSet {
-            if status != noErr {
-                printLog("\(self.status)")
-            }
+            guard status != noErr else { return }
+            printLog("\(self.status)")
         }
     }
     private var invalidateSession: Bool = true
@@ -65,9 +64,7 @@ final class H264Decoder {
     private var session: VTDecompressionSession! {
         get {
             if _session == nil {
-                guard let formatDescription: CMFormatDescription = formatDescription else {
-                    return nil
-                }
+                guard let formatDescription: CMFormatDescription = formatDescription else { return nil }
                 var record: VTDecompressionOutputCallbackRecord = VTDecompressionOutputCallbackRecord(
                     decompressionOutputCallback: callback,
                     decompressionOutputRefCon: Unmanaged.passUnretained(self).toOpaque()
@@ -94,9 +91,7 @@ final class H264Decoder {
     }
 
     func decodeSampleBuffer(_ sampleBuffer: CMSampleBuffer) -> OSStatus {
-        guard let session: VTDecompressionSession = session else {
-            return kVTInvalidSessionErr
-        }
+        guard let session: VTDecompressionSession = session else { return kVTInvalidSessionErr }
         var flagsOut: VTDecodeInfoFlags = []
         let decodeFlags: VTDecodeFrameFlags = [._EnableAsynchronousDecompression,
                                                ._EnableTemporalProcessing]
@@ -104,9 +99,7 @@ final class H264Decoder {
     }
 
     func didOutputForSession(_ status: OSStatus, infoFlags: VTDecodeInfoFlags, imageBuffer: CVImageBuffer?, presentationTimeStamp: CMTime, duration: CMTime) {
-        guard let imageBuffer: CVImageBuffer = imageBuffer, status == noErr else {
-            return
-        }
+        guard let imageBuffer: CVImageBuffer = imageBuffer, status == noErr else { return }
 
         var timingInfo: CMSampleTimingInfo = CMSampleTimingInfo(
             duration: duration,
@@ -133,11 +126,9 @@ final class H264Decoder {
             sampleBufferOut: &sampleBuffer
         )
 
-        guard let buffer: CMSampleBuffer = sampleBuffer else {
-            return
-        }
+        guard let buffer: CMSampleBuffer = sampleBuffer else { return }
 
-        if isBaseline {
+        if isBaseline == true {
             delegate?.sampleOutput(video: buffer)
         } else {
             buffers.append(buffer)

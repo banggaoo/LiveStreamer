@@ -31,12 +31,8 @@ public class NetStream: NSObject {
     public var metadata: [String: Any?] = [: ]
     
     public var context: CIContext? {
-        get {
-            return mixer.videoIO.context
-        }
-        set {
-            mixer.videoIO.context = newValue
-        }
+        get { return mixer.videoIO.context }
+        set { mixer.videoIO.context = newValue }
     }
     
     #if os(iOS) || os(macOS)
@@ -56,15 +52,8 @@ public class NetStream: NSObject {
     }
     
     public func isTorchModeSupported() -> Bool {
-        
-        if
-            let device: AVCaptureDevice = (self.mixer.videoIO.input as? AVCaptureDeviceInput)?.device,
-            device.isTorchModeSupported(.on) {
-            
-            return true
-        }
-        
-        return false
+        guard let device: AVCaptureDevice = (mixer.videoIO.input as? AVCaptureDeviceInput)?.device else { return false }
+        return device.isTorchModeSupported(.on) 
     }
     
     #endif
@@ -73,7 +62,7 @@ public class NetStream: NSObject {
     public var syncOrientation: Bool = false {
         didSet {
             guard syncOrientation != oldValue else { return }
-            if syncOrientation {
+            if syncOrientation == true {
                 NotificationCenter.default.addObserver(self, selector: #selector(on), name: UIDevice.orientationDidChangeNotification, object: nil)
             } else {
                 NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
@@ -88,7 +77,7 @@ public class NetStream: NSObject {
             ensureLockQueue {
                 audioSettings = self.mixer.audioIO.encoder.dictionaryWithValues(forKeys: AACEncoder.supportedSettingsKeys)
             }
-            return  audioSettings
+            return audioSettings
         }
         set {
             ensureLockQueue {
@@ -107,7 +96,7 @@ public class NetStream: NSObject {
         }
         set {
             if DispatchQueue.getSpecific(key: NetStream.queueKey) == NetStream.queueValue {
-                self.mixer.videoIO.encoder.setValuesForKeys(newValue)
+                mixer.videoIO.encoder.setValuesForKeys(newValue)
             } else {
                 ensureLockQueue {
                     self.mixer.videoIO.encoder.setValuesForKeys(newValue)
@@ -173,7 +162,7 @@ public class NetStream: NSObject {
     }
     #endif
     
-    public func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, withType: CMSampleBufferType, options: [NSObject: AnyObject]? = nil) {
+    public func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, withType: AVMediaType, options: [NSObject: AnyObject]? = nil) {
         switch withType {
         case .audio:
             mixer.audioIO.lockQueue.async {
@@ -183,6 +172,8 @@ public class NetStream: NSObject {
             mixer.videoIO.lockQueue.async {
                 self.mixer.videoIO.appendSampleBuffer(sampleBuffer)
             }
+        default:
+            break
         }
     }
     
@@ -202,7 +193,6 @@ public class NetStream: NSObject {
             do {
                 try session.setActive(false)
             } catch {
-                
                 printLog("Unexpected error: \(error).")
             }
         }
@@ -210,9 +200,8 @@ public class NetStream: NSObject {
     
     #if os(iOS)
     @objc private func on(uiDeviceOrientationDidChange: Notification) {
-        if let orientation: AVCaptureVideoOrientation = DeviceUtil.videoOrientation(by: uiDeviceOrientationDidChange) {
-            self.orientation = orientation
-        }
+        guard let orientation: AVCaptureVideoOrientation = DeviceUtil.videoOrientation(by: uiDeviceOrientationDidChange) else { return }
+        self.orientation = orientation
     }
     #endif
     

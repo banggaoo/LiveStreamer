@@ -39,9 +39,7 @@ final public class AVMixer: NSObject {
 
     @objc var sessionPreset: AVCaptureSession.Preset = .default {
         didSet {
-            guard sessionPreset != oldValue else {
-                return
-            }
+            guard sessionPreset != oldValue else { return }
             session.beginConfiguration()
             session.sessionPreset = sessionPreset
             session.commitConfiguration()
@@ -121,18 +119,14 @@ extension AVMixer: Running {
     }
 
     final func startRunning() {
-        guard !running else {
-            return
-        }
+        guard running == false else { return }
         DispatchQueue.global(qos: .userInteractive).async {
             self.session.startRunning()
         }
     }
 
     final func stopRunning() {
-        guard running else {
-            return
-        }
+        guard running == true else { return }
         session.stopRunning()
     }
 }

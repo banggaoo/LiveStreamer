@@ -52,9 +52,7 @@ public class MP4Sampler {
     }
 
     private func run() {
-        if files.isEmpty {
-            return
-        }
+        guard files.isEmpty == false else { return }
         let url: URL = files.first!
         let handler: Handler? = handlers[url]!
         files.remove(at: 0)

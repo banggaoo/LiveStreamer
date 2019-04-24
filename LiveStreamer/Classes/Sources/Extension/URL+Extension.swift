@@ -16,17 +16,13 @@ extension URL {
     }
 
     var absoluteWithoutQueryString: String {
-        guard let query: String = self.query else {
-            return self.absoluteString
-        }
+        guard let query: String = query else { return absoluteString }
         return absoluteString.replacingOccurrences(of: "?" + query, with: "")
     }
 
     func dictionaryFromQuery() -> [String: String] {
         var result: [String: String] = [:]
-        guard let query = URLComponents(string: absoluteString)?.queryItems else {
-            return result
-        }
+        guard let query = URLComponents(string: absoluteString)?.queryItems else { return result }
         for item in query {
             if let value: String = item.value {
                 result[item.name] = value

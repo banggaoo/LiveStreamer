@@ -61,9 +61,7 @@ final class RTMPChunk {
     var streamId: UInt16 = RTMPChunk.StreamID.command.rawValue
 
     var ready: Bool {
-        guard let message: RTMPMessage = message else {
-            return false
-        }
+        guard let message: RTMPMessage = message else { return false }
         return message.length == message.payload.count
     }
 
@@ -125,9 +123,7 @@ final class RTMPChunk {
             return data
         }
         set {
-            if _data == newValue {
-                return
-            }
+            if _data == newValue { return }
 
             var pos: Int = 0
             switch newValue[0] & 0b00111111 {
@@ -144,9 +140,7 @@ final class RTMPChunk {
 
             _data.append(newValue[0..<headerSize])
 
-            if type == .two || type == .three {
-                return
-            }
+            if type == .two || type == .three { return }
 
             guard let message: RTMPMessage = RTMPMessage.create(newValue[pos + 6]) else {
                 printLog(newValue.description)
@@ -268,12 +262,5 @@ final class RTMPChunk {
             chunks.append(chunk)
         }
         return chunks
-    }
-}
-
-extension RTMPChunk: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
-        return Mirror(reflecting: self).description
     }
 }
