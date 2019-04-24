@@ -51,11 +51,8 @@ class ProgramSpecific: PSIPointer, PSITableHeader, PSITableSyntax {
     var sectionNumber: UInt8 = 0
     var lastSectionNumber: UInt8 = 0
     var tableData: Data {
-        get {
-            return Data()
-        }
-        set {
-        }
+        get { return Data() }
+        set { }
     }
     var crc32: UInt32 = 0
 
@@ -125,13 +122,6 @@ extension ProgramSpecific: DataConvertible {
                 printLog("\(buffer)")
             }
         }
-    }
-}
-
-extension ProgramSpecific: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
-        return Mirror(reflecting: self).description
     }
 }
 
@@ -277,12 +267,5 @@ extension ElementaryStreamSpecificData: DataConvertible {
                 printLog("\(buffer)")
             }
         }
-    }
-}
-
-extension ElementaryStreamSpecificData: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
-        return Mirror(reflecting: self).description
     }
 }

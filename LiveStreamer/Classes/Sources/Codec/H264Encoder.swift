@@ -43,51 +43,39 @@ final class H264Encoder: NSObject {
     @objc var muted: Bool = false
     @objc var scalingMode: String = H264Encoder.defaultScalingMode {
         didSet {
-            guard scalingMode != oldValue else {
-                return
-            }
+            guard scalingMode != oldValue else { return }
             invalidateSession = true
         }
     }
 
     @objc var width: Int32 = H264Encoder.defaultWidth {
         didSet {
-            guard width != oldValue else {
-                return
-            }
+            guard width != oldValue else { return }
             invalidateSession = true
         }
     }
     @objc var height: Int32 = H264Encoder.defaultHeight {
         didSet {
-            guard height != oldValue else {
-                return
-            }
+            guard height != oldValue else { return }
             invalidateSession = true
         }
     }
     @objc var enabledHardwareEncoder: Bool = true {
         didSet {
-            guard enabledHardwareEncoder != oldValue else {
-                return
-            }
+            guard enabledHardwareEncoder != oldValue else { return }
             invalidateSession = true
         }
     }
     @objc var bitrate: UInt32 = H264Encoder.defaultBitrate {
         didSet {
-            guard bitrate != oldValue else {
-                return
-            }
+            guard bitrate != oldValue else { return }
             setProperty(kVTCompressionPropertyKey_AverageBitRate, Int(bitrate) as CFTypeRef)
         }
     }
 
     @objc var dataRateLimits: [Int] = H264Encoder.defaultDataRateLimits {
         didSet {
-            guard dataRateLimits != oldValue else {
-                return
-            }
+            guard dataRateLimits != oldValue else { return }
             if dataRateLimits == H264Encoder.defaultDataRateLimits {
                 invalidateSession = true
                 return
@@ -96,19 +84,14 @@ final class H264Encoder: NSObject {
         }
     }
     @objc var profileLevel: String = kVTProfileLevel_H264_Baseline_AutoLevel as String {
-    //    @objc var profileLevel: String = kVTProfileLevel_H264_Baseline_3_1 as String {
         didSet {
-            guard profileLevel != oldValue else {
-                return
-            }
+            guard profileLevel != oldValue else { return }
             invalidateSession = true
         }
     }
     @objc var maxKeyFrameIntervalDuration: Double = 2.0 {
         didSet {
-            guard maxKeyFrameIntervalDuration != oldValue else {
-                return
-            }
+            guard maxKeyFrameIntervalDuration != oldValue else { return }
             setProperty(kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration, NSNumber(value: maxKeyFrameIntervalDuration))
         }
     }
@@ -117,18 +100,14 @@ final class H264Encoder: NSObject {
     var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.H264Encoder.lock")
     var expectedFPS: Float64 = AVMixer.defaultFPS {
         didSet {
-            guard expectedFPS != oldValue else {
-                return
-            }
+            guard expectedFPS != oldValue else { return }
             setProperty(kVTCompressionPropertyKey_ExpectedFrameRate, NSNumber(value: expectedFPS))
             setProperty(kVTCompressionPropertyKey_MaxKeyFrameInterval, NSNumber(value: expectedFPS))
         }
     }
     var formatDescription: CMFormatDescription? {
         didSet {
-            guard !CMFormatDescriptionEqual(formatDescription, otherFormatDescription: oldValue) else {
-                return
-            }
+            guard !CMFormatDescriptionEqual(formatDescription, otherFormatDescription: oldValue) else { return }
             delegate?.didSetFormatDescription(video: formatDescription)
         }
     }
@@ -137,9 +116,6 @@ final class H264Encoder: NSObject {
       var running: Bool = false
     private var supportedProperty: [AnyHashable: Any]? = nil {
         didSet {
-           /* guard logger.isEnabledFor(level: .info) else {
-                return
-            }*/
             var keys: [String] = []
             for (key, _) in supportedProperty ?? [:] {
                 keys.append(key.description)
@@ -183,14 +159,13 @@ final class H264Encoder: NSObject {
         if dataRateLimits != H264Encoder.defaultDataRateLimits {
             properties[kVTCompressionPropertyKey_DataRateLimits] = dataRateLimits as NSObject
         }
-        if isBaseline {
+        if isBaseline == true {
             properties[kVTCompressionPropertyKey_H264EntropyMode] = kVTH264EntropyMode_CAVLC
             // https://en.wikipedia.org/wiki/Context-adaptive_variable-length_coding
         }else{
             properties[kVTCompressionPropertyKey_H264EntropyMode] = kVTH264EntropyMode_CABAC
             // https://en.wikipedia.org/wiki/Context-adaptive_binary_arithmetic_coding
         }
-        
         return properties
     }
 
@@ -202,9 +177,7 @@ final class H264Encoder: NSObject {
         sampleBuffer: CMSampleBuffer?) in
         guard
             let refcon: UnsafeMutableRawPointer = outputCallbackRefCon,
-            let sampleBuffer: CMSampleBuffer = sampleBuffer, status == noErr else {
-            return
-        }
+            let sampleBuffer: CMSampleBuffer = sampleBuffer, status == noErr else { return }
         let encoder: H264Encoder = Unmanaged<H264Encoder>.fromOpaque(refcon).takeUnretainedValue()
         encoder.formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer)
         encoder.delegate?.sampleOutput(video: sampleBuffer)
@@ -245,15 +218,10 @@ final class H264Encoder: NSObject {
     }
 
     func encodeImageBuffer(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime) {
-        guard running && locked == 0 else {
-            return
-        }
-        if invalidateSession {
-            session = nil
-        }
-        guard let session: VTCompressionSession = session else {
-            return
-        }
+        guard running && locked == 0 else { return }
+        guard invalidateSession == false else { return }
+        guard let session: VTCompressionSession = session else { return }
+        
         var flags: VTEncodeInfoFlags = []
         VTCompressionSessionEncodeFrame(
             session,
@@ -264,17 +232,14 @@ final class H264Encoder: NSObject {
             sourceFrameRefcon: nil,
             infoFlagsOut: &flags
         )
-        //printLog("imageBuffer\(imageBuffer)")
-        if !muted {
+        if muted == false {
             lastImageBuffer = imageBuffer
         }
     }
 
     private func setProperty(_ key: CFString, _ value: CFTypeRef?) {
         lockQueue.async {
-            guard let session: VTCompressionSession = self._session else {
-                return
-            }
+            guard let session: VTCompressionSession = self._session else { return }
             self.status = VTSessionSetProperty(
                 session,
                 key: key,
@@ -291,9 +256,7 @@ final class H264Encoder: NSObject {
         guard
             let userInfo: [AnyHashable: Any] = notification.userInfo,
             let value: NSNumber = userInfo[AVAudioSessionInterruptionTypeKey] as? NSNumber,
-            let type: AVAudioSession.InterruptionType = AVAudioSession.InterruptionType(rawValue: value.uintValue) else {
-            return
-        }
+            let type: AVAudioSession.InterruptionType = AVAudioSession.InterruptionType(rawValue: value.uintValue) else { return }
         switch type {
         case .ended:
             invalidateSession = true

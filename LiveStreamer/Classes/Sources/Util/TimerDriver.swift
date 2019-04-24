@@ -22,19 +22,13 @@ public class TimerDriver: NSObject {
         }
     }
 
-    public override var description: String {
-        return Mirror(reflecting: self).description
-    }
-
     public func setDelegate(_ delegate: TimerDriverDelegate, withQueue: DispatchQueue? = nil) {
         self.delegate = delegate
         self.queue = withQueue
     }
 
     @objc func on(timer: Timer) {
-        guard nextFire <= mach_absolute_time() else {
-            return
-        }
+        guard nextFire <= mach_absolute_time() else { return }
         if let queue: DispatchQueue = queue {
             queue.sync {
                 self.delegate?.tick(self)
@@ -54,9 +48,7 @@ extension TimerDriver: Running {
 
     final public func startRunning() {
         DispatchQueue.global(qos: .userInteractive).async {
-            guard self.runloop == nil else {
-                return
-            }
+            guard self.runloop == nil else { return }
             self.timer = Timer(
                 timeInterval: 0.0001, target: self, selector: #selector(self.on), userInfo: nil, repeats: true
             )
@@ -68,9 +60,7 @@ extension TimerDriver: Running {
     }
 
     final public func stopRunning() {
-        guard let runloop: RunLoop = runloop else {
-            return
-        }
+        guard let runloop: RunLoop = runloop else { return }
         timer = nil
         CFRunLoopStop(runloop.getCFRunLoop())
         self.runloop = nil

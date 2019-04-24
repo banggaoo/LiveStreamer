@@ -24,8 +24,6 @@
 		701750132101B12600D60151 /* AACEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FA32101B12500D60151 /* AACEncoder.swift */; };
 		701750142101B12600D60151 /* H264Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FA42101B12500D60151 /* H264Decoder.swift */; };
 		701750152101B12600D60151 /* H264Encoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FA52101B12500D60151 /* H264Encoder.swift */; };
-		701750162101B12600D60151 /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FA72101B12500D60151 /* Constant.swift */; };
-		701750172101B12600D60151 /* Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FA82101B12500D60151 /* Protocol.swift */; };
 		701750182101B12600D60151 /* CMAudioFormatDescription+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FAA2101B12500D60151 /* CMAudioFormatDescription+Extension.swift */; };
 		701750192101B12600D60151 /* CMBlockBuffer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FAB2101B12500D60151 /* CMBlockBuffer+Extension.swift */; };
 		7017501A2101B12600D60151 /* CMFormatDescription+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FAC2101B12500D60151 /* CMFormatDescription+Extension.swift */; };
@@ -35,7 +33,6 @@
 		7017501E2101B12600D60151 /* CVPixelBuffer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FB02101B12500D60151 /* CVPixelBuffer+Extension.swift */; };
 		7017501F2101B12600D60151 /* Data+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FB12101B12500D60151 /* Data+Extension.swift */; };
 		701750202101B12600D60151 /* ExpressibleByIntegerLiteral+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FB22101B12500D60151 /* ExpressibleByIntegerLiteral+Extension.swift */; };
-		701750212101B12600D60151 /* Mirror+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FB32101B12500D60151 /* Mirror+Extension.swift */; };
 		701750222101B12600D60151 /* URL+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FB42101B12500D60151 /* URL+Extension.swift */; };
 		701750232101B12600D60151 /* VTSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FB52101B12500D60151 /* VTSession+Extension.swift */; };
 		701750242101B12600D60151 /* FLVAACPacket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174FB72101B12600D60151 /* FLVAACPacket.swift */; };
@@ -106,6 +103,8 @@
 		7057B0D72134154F00EFBCBA /* LiveStreamer_Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7057B0D62134154F00EFBCBA /* LiveStreamer_Delegate.swift */; };
 		70C5E3C9226D627800B6ADE9 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C5E3C8226D627800B6ADE9 /* Log.swift */; };
 		70C5E3DE226F13B400B6ADE9 /* LiveStreamer_Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C5E3DD226F13B400B6ADE9 /* LiveStreamer_Protocol.swift */; };
+		70C5E3E22270234500B6ADE9 /* Running.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C5E3E12270234500B6ADE9 /* Running.swift */; };
+		70C5E3E42270236500B6ADE9 /* DataConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C5E3E32270236500B6ADE9 /* DataConvertible.swift */; };
 		773C7809279E4441B51838B6B51C8BA8 /* LiveStreamer-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 20A2A69AE4F6F043F34C880FF14078E0 /* LiveStreamer-dummy.m */; };
 		878761E0573E1E13E293D1F8272ED746 /* Pods-LiveStreamer_Tests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 41589AB84F361C14B9460F837353E4C0 /* Pods-LiveStreamer_Tests-dummy.m */; };
 		A04F417818BC9E5F9F7D96755297B01D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A16F4CFC63FAC439D7A04994F579A03 /* Foundation.framework */; };
@@ -159,8 +158,6 @@
 		70174FA32101B12500D60151 /* AACEncoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AACEncoder.swift; sourceTree = "<group>"; };
 		70174FA42101B12500D60151 /* H264Decoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = H264Decoder.swift; sourceTree = "<group>"; };
 		70174FA52101B12500D60151 /* H264Encoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = H264Encoder.swift; sourceTree = "<group>"; };
-		70174FA72101B12500D60151 /* Constant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
-		70174FA82101B12500D60151 /* Protocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Protocol.swift; sourceTree = "<group>"; };
 		70174FAA2101B12500D60151 /* CMAudioFormatDescription+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CMAudioFormatDescription+Extension.swift"; sourceTree = "<group>"; };
 		70174FAB2101B12500D60151 /* CMBlockBuffer+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CMBlockBuffer+Extension.swift"; sourceTree = "<group>"; };
 		70174FAC2101B12500D60151 /* CMFormatDescription+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CMFormatDescription+Extension.swift"; sourceTree = "<group>"; };
@@ -170,7 +167,6 @@
 		70174FB02101B12500D60151 /* CVPixelBuffer+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CVPixelBuffer+Extension.swift"; sourceTree = "<group>"; };
 		70174FB12101B12500D60151 /* Data+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+Extension.swift"; sourceTree = "<group>"; };
 		70174FB22101B12500D60151 /* ExpressibleByIntegerLiteral+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ExpressibleByIntegerLiteral+Extension.swift"; sourceTree = "<group>"; };
-		70174FB32101B12500D60151 /* Mirror+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Mirror+Extension.swift"; sourceTree = "<group>"; };
 		70174FB42101B12500D60151 /* URL+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+Extension.swift"; sourceTree = "<group>"; };
 		70174FB52101B12500D60151 /* VTSession+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VTSession+Extension.swift"; sourceTree = "<group>"; };
 		70174FB72101B12600D60151 /* FLVAACPacket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FLVAACPacket.swift; sourceTree = "<group>"; };
@@ -242,6 +238,8 @@
 		7057B0D62134154F00EFBCBA /* LiveStreamer_Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveStreamer_Delegate.swift; sourceTree = "<group>"; };
 		70C5E3C8226D627800B6ADE9 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		70C5E3DD226F13B400B6ADE9 /* LiveStreamer_Protocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveStreamer_Protocol.swift; sourceTree = "<group>"; };
+		70C5E3E12270234500B6ADE9 /* Running.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Running.swift; sourceTree = "<group>"; };
+		70C5E3E32270236500B6ADE9 /* DataConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataConvertible.swift; sourceTree = "<group>"; };
 		7B5DC24E424FE880A8C3A724EA64EF67 /* Pods-LiveStreamer_Example-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-LiveStreamer_Example-resources.sh"; sourceTree = "<group>"; };
 		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		B80F5E5D6B52A8B68546B8BE5C2939B8 /* LiveStreamer.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = LiveStreamer.xcconfig; sourceTree = "<group>"; };
@@ -387,7 +385,6 @@
 			isa = PBXGroup;
 			children = (
 				70174FA22101B12500D60151 /* Codec */,
-				70174FA62101B12500D60151 /* Core */,
 				70174FA92101B12500D60151 /* Extension */,
 				70174FC12101B12600D60151 /* HTTP */,
 				70174FC72101B12600D60151 /* ISO */,
@@ -409,15 +406,6 @@
 			path = Codec;
 			sourceTree = "<group>";
 		};
-		70174FA62101B12500D60151 /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				70174FA72101B12500D60151 /* Constant.swift */,
-				70174FA82101B12500D60151 /* Protocol.swift */,
-			);
-			path = Core;
-			sourceTree = "<group>";
-		};
 		70174FA92101B12500D60151 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
@@ -430,7 +418,6 @@
 				70174FB02101B12500D60151 /* CVPixelBuffer+Extension.swift */,
 				70174FB12101B12500D60151 /* Data+Extension.swift */,
 				70174FB22101B12500D60151 /* ExpressibleByIntegerLiteral+Extension.swift */,
-				70174FB32101B12500D60151 /* Mirror+Extension.swift */,
 				70174FB42101B12500D60151 /* URL+Extension.swift */,
 				70174FB52101B12500D60151 /* VTSession+Extension.swift */,
 			);
@@ -548,6 +535,8 @@
 				70174FFB2101B12600D60151 /* TimerDriver.swift */,
 				70174FFC2101B12600D60151 /* VideoGravityUtil.swift */,
 				70C5E3C8226D627800B6ADE9 /* Log.swift */,
+				70C5E3E12270234500B6ADE9 /* Running.swift */,
+				70C5E3E32270236500B6ADE9 /* DataConvertible.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -805,7 +794,6 @@
 				701750402101B12600D60151 /* AVMixerRecorder.swift in Sources */,
 				7017502E2101B12600D60151 /* HTTPRequest.swift in Sources */,
 				7017504B2101B12600D60151 /* NetStream.swift in Sources */,
-				701750162101B12600D60151 /* Constant.swift in Sources */,
 				701750322101B12600D60151 /* M3U.swift in Sources */,
 				7017501A2101B12600D60151 /* CMFormatDescription+Extension.swift in Sources */,
 				701750582101B12600D60151 /* RTMPTSocket.swift in Sources */,
@@ -813,7 +801,6 @@
 				7017504A2101B12600D60151 /* NetSocket.swift in Sources */,
 				701750422101B12600D60151 /* ScalingMode.swift in Sources */,
 				70174FFE2101B12600D60151 /* DeviceUtil+Extenstion.swift in Sources */,
-				701750172101B12600D60151 /* Protocol.swift in Sources */,
 				701750452101B12600D60151 /* VideoIOComponent.swift in Sources */,
 				7017505D2101B12600D60151 /* DisplayLinkedQueue.swift in Sources */,
 				70174FFF2101B12600D60151 /* GLHKView.swift in Sources */,
@@ -830,11 +817,12 @@
 				7017502B2101B12600D60151 /* FLVSoundType.swift in Sources */,
 				7017502A2101B12600D60151 /* FLVSoundSize.swift in Sources */,
 				7017504D2101B12600D60151 /* AMF3Serializer.swift in Sources */,
-				701750212101B12600D60151 /* Mirror+Extension.swift in Sources */,
+				70C5E3E22270234500B6ADE9 /* Running.swift in Sources */,
 				7017504C2101B12600D60151 /* AMF0Serializer.swift in Sources */,
 				7017502D2101B12600D60151 /* FLVVideoCodec.swift in Sources */,
 				701750632101B12600D60151 /* VideoGravityUtil.swift in Sources */,
 				7057B0D72134154F00EFBCBA /* LiveStreamer_Delegate.swift in Sources */,
+				70C5E3E42270236500B6ADE9 /* DataConvertible.swift in Sources */,
 				701750272101B12600D60151 /* FLVFrameType.swift in Sources */,
 				701750512101B12600D60151 /* RTMPHandshake.swift in Sources */,
 				701750412101B12600D60151 /* IOComponent.swift in Sources */,
@@ -924,7 +912,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = "Target Support Files/LiveStreamer/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -937,7 +925,8 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";

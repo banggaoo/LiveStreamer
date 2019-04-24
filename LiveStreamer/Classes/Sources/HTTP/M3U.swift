@@ -14,7 +14,6 @@ struct M3U {
 }
 
 extension M3U: CustomStringConvertible {
-    // MARK: CustomStringConvertible
     var description: String {
         var lines: [String] = [
             "#EXTM3U",
@@ -30,7 +29,6 @@ extension M3U: CustomStringConvertible {
     }
 }
 
-// MARK: -
 struct M3UMediaInfo {
     var url: URL
     var duration: Double

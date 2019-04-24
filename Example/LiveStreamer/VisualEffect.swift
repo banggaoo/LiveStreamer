@@ -3,7 +3,6 @@ import UIKit
 import AVFoundation
 
 final class CurrentTimeEffect: VisualEffect {
-
     let filter: CIFilter? = CIFilter(name: "CISourceOverCompositing")
 
     let label: UILabel = {
@@ -37,9 +36,7 @@ final class PronamaEffect: VisualEffect {
 
     var extent: CGRect = CGRect.zero {
         didSet {
-            if extent == oldValue {
-                return
-            }
+            if extent == oldValue { return }
             UIGraphicsBeginImageContext(extent.size)
             let image: UIImage = UIImage(named: "Logo.png")!
             image.draw(at: CGPoint(x: 50, y: 60))
@@ -54,9 +51,7 @@ final class PronamaEffect: VisualEffect {
     }
 
     override func execute(_ image: CIImage) -> CIImage {
-        guard let filter: CIFilter = filter else {
-            return image
-        }
+        guard let filter: CIFilter = filter else { return image }
         extent = image.extent
         filter.setValue(pronama!, forKey: "inputImage")
         filter.setValue(image, forKey: "inputBackgroundImage")
@@ -68,9 +63,7 @@ final class MonochromeEffect: VisualEffect {
     let filter: CIFilter? = CIFilter(name: "CIColorMonochrome")
     
     override func execute(_ image: CIImage) -> CIImage {
-        guard let filter: CIFilter = filter else {
-            return image
-        }
+        guard let filter: CIFilter = filter else { return image }
         filter.setValue(image, forKey: "inputImage")
         filter.setValue(CIColor(red: 0.75, green: 0.75, blue: 0.75), forKey: "inputColor")
         filter.setValue(1.0, forKey: "inputIntensity")
@@ -82,9 +75,7 @@ final class BlurEffect: VisualEffect {
     let filter: CIFilter? = CIFilter(name: "CIGaussianBlur")
     
     override func execute(_ image: CIImage) -> CIImage {
-        guard let filter: CIFilter = filter else {
-            return image
-        }
+        guard let filter: CIFilter = filter else { return image }
         filter.setValue(image, forKey: "inputImage")
         filter.setValue(1.0, forKey: "inputRadius")
         //filter.setValue(1.0, forKey: "inputIntensity")

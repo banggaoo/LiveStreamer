@@ -197,9 +197,7 @@ public class RTMPConnection: EventDispatcher {
     var operations: [Int: Responder] = [: ]
     var windowSizeC: Int64 = RTMPConnection.defaultWindowSizeS {
         didSet {
-            guard socket.connected else {
-                return
-            }
+            guard socket.connected else { return }
             socket.doOutput(chunk: RTMPChunk(
                 type: .zero,
                 streamId: RTMPChunk.StreamID.control.rawValue,
@@ -259,9 +257,7 @@ public class RTMPConnection: EventDispatcher {
     }
     
     public func call(_ commandName: String, responder: Responder?, arguments: Any?...) {
-        guard connected else {
-            return
-        }
+        guard connected else { return }
         currentTransactionId += 1
         let message: RTMPCommandMessage = RTMPCommandMessage(
             streamId: 0,
@@ -313,9 +309,7 @@ public class RTMPConnection: EventDispatcher {
     }
     
     func close(isDisconnected: Bool) {
-        guard connected || isDisconnected else {
-            return
-        }
+        guard connected || isDisconnected else { return }
         if !isDisconnected {
             uri = nil
         }
@@ -329,9 +323,7 @@ public class RTMPConnection: EventDispatcher {
     
     func createStream(_ stream: RTMPStream) {
         let responder: Responder = Responder(result: { (data) -> Void in
-            guard let id: Double = data[0] as? Double else {
-                return
-            }
+            guard let id: Double = data[0] as? Double else { return }
             stream.id = UInt32(id)
             self.streams[stream.id] = stream
             stream.readyState = .open
@@ -513,9 +505,7 @@ extension RTMPConnection: RTMPSocketDelegate {
     }
     
     func didSetTotalBytesIn(_ totalBytesIn: Int64) {
-        guard windowSizeS * (sequence + 1) <= totalBytesIn else {
-            return
-        }
+        guard windowSizeS * (sequence + 1) <= totalBytesIn else { return }
         socket.doOutput(chunk: RTMPChunk(
             type: sequence == 0 ? .zero : .one,
             streamId: RTMPChunk.StreamID.control.rawValue,

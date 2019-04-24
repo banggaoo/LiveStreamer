@@ -189,9 +189,6 @@ public class HTTPService: NetService {
             return
         }
         client.inputBuffer.removeAll()
-      /*  if logger.isEnabledFor(level: .trace) {
-            printLog("\(request): \(self)")
-        }*/
         switch request.method {
         case "GET":
             get(request, client: client)
@@ -257,9 +254,7 @@ public class HLSService: HTTPService {
     private(set) var streams: [HTTPStream] = []
 
     public func addHTTPStream(_ stream: HTTPStream) {
-        for i in 0..<streams.count where stream.name == streams[i].name {
-            return
-        }
+        for i in 0..<streams.count where stream.name == streams[i].name { return }
         streams.append(stream)
     }
 

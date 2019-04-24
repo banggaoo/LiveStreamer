@@ -26,9 +26,7 @@ final class RTMPMuxer {
 extension RTMPMuxer: AudioEncoderDelegate {
     // MARK: AudioEncoderDelegate
     func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
-        guard let formatDescription: CMFormatDescription = formatDescription else {
-            return
-        }
+        guard let formatDescription: CMFormatDescription = formatDescription else { return }
         var buffer: Data = Data([RTMPMuxer.aac, FLVAACPacketType.seq.rawValue])
         buffer.append(contentsOf: AudioSpecificConfig(formatDescription: formatDescription).bytes)
         delegate?.sampleOutput(audio: buffer, withTimestamp: 0, muxer: self)
@@ -37,9 +35,7 @@ extension RTMPMuxer: AudioEncoderDelegate {
     func sampleOutput(audio sampleBuffer: CMSampleBuffer) {
         let presentationTimeStamp: CMTime = sampleBuffer.presentationTimeStamp
         let delta: Double = (audioTimestamp == CMTime.zero ? 0 : presentationTimeStamp.seconds - audioTimestamp.seconds) * 1000
-        guard let data: Data = sampleBuffer.dataBuffer?.data, 0 <= delta else {
-            return
-        }
+        guard let data: Data = sampleBuffer.dataBuffer?.data, 0 <= delta else { return }
         var buffer: Data = Data([RTMPMuxer.aac, FLVAACPacketType.raw.rawValue])
         buffer.append(data)
         delegate?.sampleOutput(audio: buffer, withTimestamp: delta, muxer: self)
@@ -52,9 +48,7 @@ extension RTMPMuxer: VideoEncoderDelegate {
     func didSetFormatDescription(video formatDescription: CMFormatDescription?) {
         guard
             let formatDescription: CMFormatDescription = formatDescription,
-            let avcC: Data = AVCConfigurationRecord.getData(formatDescription) else {
-            return
-        }
+            let avcC: Data = AVCConfigurationRecord.getData(formatDescription) else { return }
         var buffer = Data([FLVFrameType.key.rawValue << 4 | FLVVideoCodec.avc.rawValue, FLVAVCPacketType.seq.rawValue, 0, 0, 0])
         buffer.append(avcC)
         delegate?.sampleOutput(video: buffer, withTimestamp: 0, muxer: self)
@@ -71,9 +65,7 @@ extension RTMPMuxer: VideoEncoderDelegate {
             compositionTime = Int32((decodeTimeStamp.seconds - decodeTimeStamp.seconds) * 1000)
         }
         let delta: Double = (videoTimestamp == CMTime.zero ? 0 : decodeTimeStamp.seconds - videoTimestamp.seconds) * 1000
-        guard let data = sampleBuffer.dataBuffer?.data, 0 <= delta else {
-            return
-        }
+        guard let data = sampleBuffer.dataBuffer?.data, 0 <= delta else { return }
         var buffer = Data([((keyframe ? FLVFrameType.key.rawValue : FLVFrameType.inter.rawValue) << 4) | FLVVideoCodec.avc.rawValue, FLVAVCPacketType.nal.rawValue])
         buffer.append(contentsOf: compositionTime.bigEndian.data[1..<4])
         buffer.append(data)
@@ -98,9 +90,7 @@ extension RTMPMuxer: MP4SamplerDelegate {
     }
 
     func didSet(config: Data, withID: Int, type: AVMediaType) {
-        guard configs[withID] != config else {
-            return
-        }
+        guard configs[withID] != config else { return }
         configs[withID] = config
         switch type {
         case .video:

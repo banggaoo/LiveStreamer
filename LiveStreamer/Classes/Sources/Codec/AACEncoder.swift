@@ -49,9 +49,7 @@ final class AACEncoder: NSObject {
 
     @objc var bitrate: UInt32 = AACEncoder.defaultBitrate {
         didSet {
-            guard bitrate != oldValue else {
-                return
-            }
+            guard bitrate != oldValue else { return }
             lockQueue.async {
                 if let format = self._inDestinationFormat {
                     self.setBitrateUntilNoErr(self.bitrate * format.mChannelsPerFrame)
@@ -71,23 +69,20 @@ final class AACEncoder: NSObject {
     var inClassDescriptions: [AudioClassDescription] = AACEncoder.defaultInClassDescriptions
     var formatDescription: CMFormatDescription? {
         didSet {
-            if !CMFormatDescriptionEqual(formatDescription, otherFormatDescription: oldValue) {
-                delegate?.didSetFormatDescription(audio: formatDescription)
-            }
+            guard CMFormatDescriptionEqual(formatDescription, otherFormatDescription: oldValue) == false else { return }
+            delegate?.didSetFormatDescription(audio: formatDescription)
         }
     }
     var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AACEncoder.lock")
     weak var delegate: AudioEncoderDelegate?
-      var running: Bool = false
+    var running: Bool = false
     private var maximumBuffers: Int = AACEncoder.defaultMaximumBuffers
     private var bufferListSize: Int = AACEncoder.defaultBufferListSize
     private var currentBufferList: UnsafeMutableAudioBufferListPointer?
     private var inSourceFormat: AudioStreamBasicDescription? {
         didSet {
             printLog("\(String(describing: self.inSourceFormat))")
-            guard let inSourceFormat: AudioStreamBasicDescription = self.inSourceFormat else {
-                return
-            }
+            guard let inSourceFormat: AudioStreamBasicDescription = self.inSourceFormat else { return }
             let nonInterleaved: Bool = inSourceFormat.mFormatFlags & kAudioFormatFlagIsNonInterleaved != 0
             maximumBuffers = nonInterleaved ? Int(inSourceFormat.mChannelsPerFrame) : AACEncoder.defaultMaximumBuffers
             bufferListSize = nonInterleaved ? AudioBufferList.sizeInBytes(maximumBuffers: maximumBuffers) : AACEncoder.defaultBufferListSize
@@ -114,9 +109,7 @@ final class AACEncoder: NSObject {
             }
             return _inDestinationFormat!
         }
-        set {
-            _inDestinationFormat = newValue
-        }
+        set { _inDestinationFormat = newValue }
     }
 
     private var inputDataProc: AudioConverterComplexInputDataProc = {(
@@ -152,9 +145,7 @@ final class AACEncoder: NSObject {
     }
 
     func encodeSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
-        guard let format: CMAudioFormatDescription = sampleBuffer.formatDescription, running else {
-            return
-        }
+        guard let format: CMAudioFormatDescription = sampleBuffer.formatDescription, running else { return }
 
         if inSourceFormat == nil {
             inSourceFormat = format.streamBasicDescription?.pointee
@@ -173,12 +164,12 @@ final class AACEncoder: NSObject {
             blockBufferOut: &blockBuffer
         )
 
-        if blockBuffer == nil {
+        guard blockBuffer != nil else {
             printLog("IllegalState for blockBuffer")
             return
         }
 
-        if muted {
+        if muted == true {
             for i in 0..<currentBufferList!.count {
                 memset(currentBufferList![i].mData, 0, Int(currentBufferList![i].mDataByteSize))
             }
@@ -223,7 +214,7 @@ final class AACEncoder: NSObject {
             }
 
             free(outOutputData.unsafeMutablePointer)
-        } while !finished
+        } while finished == false
     }
 
     func invalidate() {
@@ -269,9 +260,7 @@ final class AACEncoder: NSObject {
     }
 
     private func setProperty<T>(id: AudioConverterPropertyID, data: T) throws {
-        guard let converter: AudioConverterRef = _converter else {
-            return
-        }
+        guard let converter: AudioConverterRef = _converter else { return }
         let size = UInt32(MemoryLayout<T>.size)
         var buffer = data
         let status = AudioConverterSetProperty(converter, id, size, &buffer)

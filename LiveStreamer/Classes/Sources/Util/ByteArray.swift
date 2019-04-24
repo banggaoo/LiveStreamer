@@ -317,10 +317,3 @@ public class ByteArray: ByteArrayConvertible {
         return result
     }
 }
-
-extension ByteArray: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    public var description: String {
-        return Mirror(reflecting: self).description
-    }
-}

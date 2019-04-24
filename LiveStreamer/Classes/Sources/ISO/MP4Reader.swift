@@ -80,13 +80,6 @@ class MP4Box {
     }
 }
 
-extension MP4Box: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
-        return Mirror(reflecting: self).description
-    }
-}
-
 // MARK: -
 class MP4ContainerBox: MP4Box {
 
@@ -197,13 +190,9 @@ final class MP4SyncSampleBox: MP4Box {
 
 // MARK: -
 final class MP4TimeToSampleBox: MP4Box {
-    struct Entry: CustomStringConvertible {
+    struct Entry {
         var sampleCount: UInt32 = 0
         var sampleDuration: UInt32 = 0
-
-        var description: String {
-            return Mirror(reflecting: self).description
-        }
 
         init(sampleCount: UInt32, sampleDuration: UInt32) {
             self.sampleCount = sampleCount
@@ -437,14 +426,10 @@ final class MP4SampleDescriptionBox: MP4ContainerBox {
 
 // MARK: -
 final class MP4SampleToChunkBox: MP4Box {
-    struct Entry: CustomStringConvertible {
+    struct Entry {
         var firstChunk: UInt32 = 0
         var samplesPerChunk: UInt32 = 0
         var sampleDescriptionIndex: UInt32 = 0
-
-        var description: String {
-            return Mirror(reflecting: self).description
-        }
 
         init(firstChunk: UInt32, samplesPerChunk: UInt32, sampleDescriptionIndex: UInt32) {
             self.firstChunk = firstChunk
@@ -475,14 +460,10 @@ final class MP4SampleToChunkBox: MP4Box {
 
 // MARK: -
 final class MP4EditListBox: MP4Box {
-    struct Entry: CustomStringConvertible {
+    struct Entry {
         var segmentDuration: UInt32 = 0
         var mediaTime: UInt32 = 0
         var mediaRate: UInt32 = 0
-
-        var description: String {
-            return Mirror(reflecting: self).description
-        }
 
         init(segmentDuration: UInt32, mediaTime: UInt32, mediaRate: UInt32) {
             self.segmentDuration = segmentDuration
@@ -718,12 +699,5 @@ extension MP4TrakReader: TimerDriverDelegate {
         } else {
             driver.stopRunning()
         }
-    }
-}
-
-extension MP4TrakReader: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
-        return Mirror(reflecting: self).description
     }
 }

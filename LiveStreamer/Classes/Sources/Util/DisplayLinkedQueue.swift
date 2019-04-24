@@ -22,25 +22,19 @@ import AVFoundation
         init(target: NSObject, selector sel: Selector) {
             super.init()
             status = CVDisplayLinkCreateWithActiveCGDisplays(&displayLink)
-            guard let displayLink: CVDisplayLink = displayLink else {
-                return
-            }
+            guard let displayLink: CVDisplayLink = displayLink else { return }
             self.delegate = target
             self.selector = sel
             CVDisplayLinkSetOutputCallback(displayLink, callback, Unmanaged.passUnretained(self).toOpaque())
         }
 
         func add(to runloop: RunLoop, forMode mode: RunLoopMode) {
-            guard let displayLink: CVDisplayLink = displayLink else {
-                return
-            }
+            guard let displayLink: CVDisplayLink = displayLink else { return }
             status = CVDisplayLinkStart(displayLink)
         }
 
         func invalidate() {
-            guard let displayLink: CVDisplayLink = displayLink else {
-                return
-            }
+            guard let displayLink: CVDisplayLink = displayLink else { return }
             status = CVDisplayLinkStop(displayLink)
         }
     }
@@ -64,9 +58,7 @@ final class DisplayLinkedQueue: NSObject {
     private var displayLink: DisplayLink? {
         didSet {
             oldValue?.invalidate()
-            guard let displayLink: DisplayLink = displayLink else {
-                return
-            }
+            guard let displayLink: DisplayLink = displayLink else { return }
             displayLink.frameInterval = 1
             displayLink.add(to: .main, forMode: RunLoop.Mode.common)
         }
@@ -84,9 +76,7 @@ final class DisplayLinkedQueue: NSObject {
     }
 
     @objc func update(displayLink: DisplayLink) {
-        guard let first: CMSampleBuffer = buffers.first, isReady else {
-            return
-        }
+        guard let first: CMSampleBuffer = buffers.first, isReady else { return }
         if mediaTime == 0 {
             mediaTime = displayLink.timestamp
         }
@@ -103,9 +93,7 @@ extension DisplayLinkedQueue: Running {
     // MARK: Running
     func startRunning() {
         lockQueue.async {
-            guard !self.running else {
-                return
-            }
+            guard !self.running else { return }
             self.displayLink = DisplayLink(target: self, selector: #selector(self.update(displayLink:)))
             self.running = true
         }
@@ -113,9 +101,7 @@ extension DisplayLinkedQueue: Running {
 
     func stopRunning() {
         lockQueue.async {
-            guard self.running else {
-                return
-            }
+            guard self.running else { return }
             self.displayLink = nil
             self.buffers.removeAll()
             self.running = false

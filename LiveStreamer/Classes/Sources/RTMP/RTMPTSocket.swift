@@ -121,9 +121,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
                 RTMPConnection.Code.connectClosed.data("") : RTMPConnection.Code.connectFailed.data("")
             events.append(Event(type: Event.RTMP_STATUS, bubbles: false, data: data))
         }
-        guard let connectionID: String = connectionID else {
-            return
-        }
+        guard let connectionID: String = connectionID else { return }
         doRequest("/close/\(connectionID)", Data(), didClose)
     }
     
@@ -210,9 +208,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         if let _: Error = error {
             printLog("\(error)")
         }
-        guard let data: Data = data else {
-            return
-        }
+        guard let data: Data = data else { return }
         connectionID = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
         doRequest("/idle/\(connectionID!)/0", Data([0x00]), didIdle0)
         /*  if logger.isEnabledFor(level: .trace) {
@@ -241,9 +237,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     }
     
     private func idle() {
-        guard let connectionID: String = connectionID, connected else {
-            return
-        }
+        guard let connectionID: String = connectionID, connected else { return }
         outputQueue.sync {
             let index: Int64 = OSAtomicIncrement64(&self.index)
             doRequest("/idle/\(connectionID)/\(index)", Data([0x00]), didIdle)
@@ -255,9 +249,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     }
     
     @objc private func on(timer: Timer) {
-        guard (Double(delay) / 10) < abs(lastResponse.timeIntervalSinceNow), !isRequesting else {
-            return
-        }
+        guard (Double(delay) / 10) < abs(lastResponse.timeIntervalSinceNow), !isRequesting else { return }
         idle()
     }
     

@@ -3,32 +3,29 @@ import AVFoundation
 
 extension DeviceUtil {
     static public func videoOrientation(by notification: Notification) -> AVCaptureVideoOrientation? {
-        guard let device: UIDevice = notification.object as? UIDevice else {
-            return nil
-        }
+        guard let device: UIDevice = notification.object as? UIDevice else { return nil }
         return videoOrientation(by: device.orientation)
     }
 
-    static public func videoOrientation(by orientation: UIDeviceOrientation) -> AVCaptureVideoOrientation? {
+    static public func reverseLandscapeOrientation(by orientation: UIDeviceOrientation) -> AVCaptureVideoOrientation? {
         switch orientation {
-        case .portrait:
-            return .portrait
-        case .portraitUpsideDown:
-            return .portraitUpsideDown
-        case .landscapeLeft:
-            return .landscapeRight
-        case .landscapeRight:
-            return .landscapeLeft
-        default:
-            return nil
+        case .portrait: return .portrait
+        case .portraitUpsideDown: return .portraitUpsideDown
+        case .landscapeLeft: return .landscapeRight
+        case .landscapeRight: return .landscapeLeft
+        default: return nil
         }
+    }
+
+    static public func videoOrientation(by orientation: UIDeviceOrientation) -> AVCaptureVideoOrientation? {
+        return reverseLandscapeOrientation(by: orientation)
     }
 }
 
 extension AVCaptureDevice {
 
     func supportedPreset(_ preset: AVCaptureSession.Preset) -> AVCaptureSession.Preset {
-        if self.supportsSessionPreset(preset) { return preset }
+        if self.supportsSessionPreset(preset) == true { return preset }
         
         let formatDescription = activeFormat.formatDescription
         let dimension = CMVideoFormatDescriptionGetDimensions(formatDescription)

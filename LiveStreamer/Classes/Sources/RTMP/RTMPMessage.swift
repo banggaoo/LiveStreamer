@@ -100,9 +100,7 @@ final class RTMPSetChunkSizeMessage: RTMPMessage {
             return super.payload
         }
         set {
-            if super.payload == newValue {
-                return
-            }
+            if super.payload == newValue { return }
             size = UInt32(data: newValue).bigEndian
             super.payload = newValue
         }
@@ -138,9 +136,7 @@ final class RTMPAbortMessge: RTMPMessage {
             return super.payload
         }
         set {
-            if super.payload == newValue {
-                return
-            }
+            if super.payload == newValue { return }
             chunkStreamId = UInt32(data: newValue).bigEndian
             super.payload = newValue
         }
@@ -167,9 +163,7 @@ final class RTMPAcknowledgementMessage: RTMPMessage {
             return super.payload
         }
         set {
-            if super.payload == newValue {
-                return
-            }
+            if super.payload == newValue { return }
             sequence = UInt32(data: newValue).bigEndian
             super.payload = newValue
         }
@@ -210,9 +204,7 @@ final class RTMPWindowAcknowledgementSizeMessage: RTMPMessage {
             return super.payload
         }
         set {
-            if super.payload == newValue {
-                return
-            }
+            if super.payload == newValue { return }
             size = UInt32(data: newValue).bigEndian
             super.payload = newValue
         }
@@ -256,9 +248,7 @@ final class RTMPSetPeerBandwidthMessage: RTMPMessage {
             return super.payload
         }
         set {
-            if super.payload == newValue {
-                return
-            }
+            if super.payload == newValue { return }
             size = UInt32(data: newValue[0..<4]).bigEndian
             limit = Limit(rawValue: newValue[4]) ?? .unknown
             super.payload = newValue
@@ -396,9 +386,7 @@ final class RTMPDataMessage: RTMPMessage {
             return super.payload
         }
         set {
-            guard super.payload != newValue else {
-                return
-            }
+            guard super.payload != newValue else { return }
             
             if length == newValue.count {
                 serializer.writeBytes(newValue)
@@ -435,9 +423,7 @@ final class RTMPDataMessage: RTMPMessage {
     }
     
     override func execute(_ connection: RTMPConnection) {
-        guard let stream: RTMPStream = connection.streams[streamId] else {
-            return
-        }
+        guard let stream: RTMPStream = connection.streams[streamId] else { return }
         OSAtomicAdd64(Int64(payload.count), &stream.info.byteCount)
     }
 }
@@ -478,9 +464,7 @@ final class RTMPSharedObjectMessage: RTMPMessage {
             return super.payload
         }
         set {
-            if super.payload == newValue {
-                return
-            }
+            if super.payload == newValue { return }
             
             if length == newValue.count {
                 serializer.writeBytes(newValue)
@@ -557,9 +541,7 @@ final class RTMPAudioMessage: RTMPMessage {
             return super.payload
         }
         set {
-            if super.payload == newValue {
-                return
-            }
+            if super.payload == newValue { return }
             
             super.payload = newValue
             
@@ -590,13 +572,9 @@ final class RTMPAudioMessage: RTMPMessage {
     }
     
     override func execute(_ connection: RTMPConnection) {
-        guard let stream: RTMPStream = connection.streams[streamId] else {
-            return
-        }
+        guard let stream: RTMPStream = connection.streams[streamId] else { return }
         OSAtomicAdd64(Int64(payload.count), &stream.info.byteCount)
-        guard codec.isSupported else {
-            return
-        }
+        guard codec.isSupported else { return }
         if let config: AudioSpecificConfig = createAudioSpecificConfig() {
             stream.mixer.audioIO.playback.fileTypeHint = kAudioFileAAC_ADTSType
             stream.mixer.audioIO.playback.config = config
@@ -641,13 +619,9 @@ final class RTMPVideoMessage: RTMPMessage {
     }
     
     override func execute(_ connection: RTMPConnection) {
-        guard let stream: RTMPStream = connection.streams[streamId] else {
-            return
-        }
+        guard let stream: RTMPStream = connection.streams[streamId] else { return }
         OSAtomicAdd64(Int64(payload.count), &stream.info.byteCount)
-        guard FLVTagType.video.headerSize < payload.count else {
-            return
-        }
+        guard FLVTagType.video.headerSize < payload.count else { return }
         switch payload[1] {
         case FLVAVCPacketType.seq.rawValue:
             status = createFormatDescription(stream)
@@ -740,9 +714,7 @@ final class RTMPUserControlMessage: RTMPMessage {
             return super.payload
         }
         set {
-            if super.payload == newValue {
-                return
-            }
+            if super.payload == newValue { return }
             if length == newValue.count {
                 if let event: Event = Event(rawValue: newValue[1]) {
                     self.event = event

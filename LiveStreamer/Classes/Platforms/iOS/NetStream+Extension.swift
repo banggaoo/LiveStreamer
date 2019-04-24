@@ -3,12 +3,8 @@ import AVFoundation
 
 extension NetStream {
     public var orientation: AVCaptureVideoOrientation {
-        get {
-            return mixer.videoIO.orientation
-        }
-        set {
-            self.mixer.videoIO.orientation = newValue
-        }
+        get { return mixer.videoIO.orientation }
+        set (newValue) { self.mixer.videoIO.orientation = newValue }
     }
 
     public func attachScreen(_ screen: ScreenCaptureSession?, useScreenSize: Bool = true) {

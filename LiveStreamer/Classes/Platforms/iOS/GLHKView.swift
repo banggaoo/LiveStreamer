@@ -65,6 +65,9 @@ extension GLHKView: GLKViewDelegate {
         var fromRect: CGRect = displayImage.extent
         VideoGravityUtil.calculate(videoGravity, inRect: &inRect, fromRect: &fromRect)
         currentStream?.mixer.videoIO.context?.draw(displayImage, in: inRect, from: fromRect)
+        
+        // If you want to reverse front facing camera image
+//        currentStream?.mixer.videoIO.context?.draw(displayImage.oriented(forExifOrientation: 2), in: inRect, from: fromRect)
     }
 }
 

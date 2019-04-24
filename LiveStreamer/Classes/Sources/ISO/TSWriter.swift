@@ -70,9 +70,7 @@ class TSWriter {
         let config: Any? = streamID == 192 ? audioConfig : videoConfig
         guard var PES: PacketizedElementaryStream = PacketizedElementaryStream.create(
             sampleBuffer, timestamp: timestamps[PID]!, config: config
-        ) else {
-            return
-        }
+        ) else { return }
 
         PES.streamID = streamID
 
@@ -121,9 +119,7 @@ class TSWriter {
 
     func rotateFileHandle(_ timestamp: CMTime) -> Bool {
         let duration: Double = timestamp.seconds - rotatedTimestamp.seconds
-        if duration <= segmentDuration {
-            return false
-        }
+        if duration <= segmentDuration { return false }
 
         let fileManager: FileManager = FileManager.default
 
@@ -206,20 +202,16 @@ class TSWriter {
 }
 
 extension TSWriter: Running {
-    // MARK: Running
+
     func startRunning() {
         lockQueue.async {
-            guard self.running else {
-                return
-            }
+            guard self.running == true else { return }
             self.running = true
         }
     }
     func stopRunning() {
         lockQueue.async {
-            guard !self.running else {
-                return
-            }
+            guard self.running == false else { return }
             self.currentFileURL = nil
             self.currentFileHandle = nil
             self.removeFiles()
@@ -231,9 +223,7 @@ extension TSWriter: Running {
 extension TSWriter: AudioEncoderDelegate {
     // MARK: AudioEncoderDelegate
     func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
-        guard let formatDescription: CMAudioFormatDescription = formatDescription else {
-            return
-        }
+        guard let formatDescription: CMAudioFormatDescription = formatDescription else { return }
         audioConfig = AudioSpecificConfig(formatDescription: formatDescription)
         var data: ElementaryStreamSpecificData = ElementaryStreamSpecificData()
         data.streamType = ElementaryStreamType.adtsaac.rawValue
@@ -252,9 +242,7 @@ extension TSWriter: VideoEncoderDelegate {
     func didSetFormatDescription(video formatDescription: CMFormatDescription?) {
         guard
             let formatDescription: CMFormatDescription = formatDescription,
-            let avcC: Data = AVCConfigurationRecord.getData(formatDescription) else {
-            return
-        }
+            let avcC: Data = AVCConfigurationRecord.getData(formatDescription) else { return }
         videoConfig = AVCConfigurationRecord(data: avcC)
         var data: ElementaryStreamSpecificData = ElementaryStreamSpecificData()
         data.streamType = ElementaryStreamType.h264.rawValue
