@@ -328,14 +328,13 @@ open class LiveStreamer: NSObject, LiveStreamerControlInterface, LiveStreamerCon
     private let lfView: GLHKView
  
     deinit {
+        printLog("deinit")
         timer = nil
         _ = stopStreamingIfCan()
         stopRecording()
-        //        rtmpStream.close()
-        //        rtmpStream.dispose()
-
+        rtmpStream.close()
+        rtmpStream.dispose()
         unRegisterFPSObserver()
-        printLog("deinit")
     }
     
     open override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
