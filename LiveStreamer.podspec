@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
 
   s.source_files = 'LiveStreamer/Classes/**/*'
   
-  # s.swift_version = '4.2'
+  s.swift_version = '5.0'
   # s.swift_versions = ['3.2', '4.0', '4.2']
 
 end
