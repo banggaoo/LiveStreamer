@@ -53,6 +53,7 @@ public protocol LiveStreamerConfigureInterface: class {
     var videoSize: CGSize { get set }
     var videoFPS: Float { get set }
     var recordFileName: String { get set }
+    var syncOrientation: Bool { get set }
 }
 
 public protocol LiveStreamerRetryProtocol: class {

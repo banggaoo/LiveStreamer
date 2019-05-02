@@ -66,7 +66,7 @@ open class LiveStreamer: NSObject, LiveStreamerControlInterface, LiveStreamerCon
     public func startRecording() {
         guard rtmpStream.recordingState == .ready else { return }
         
-        rtmpStream.syncOrientation = false
+        syncOrientation = false
         rtmpStream.startRecording()
     }
     
@@ -74,7 +74,7 @@ open class LiveStreamer: NSObject, LiveStreamerControlInterface, LiveStreamerCon
         guard rtmpStream.recordingState == .recording else { return }
         
         // Prevent rotation while recording
-        rtmpStream.syncOrientation = true
+        syncOrientation = true
         rtmpStream.stopRecording()
     }
  
@@ -186,6 +186,10 @@ open class LiveStreamer: NSObject, LiveStreamerControlInterface, LiveStreamerCon
     public var videoFPS: Float = Preference.defaultFPS {
         didSet { rtmpStream.captureSettings["fps"] = videoFPS }
     }
+    
+    public var syncOrientation: Bool = true {
+        didSet { rtmpStream.syncOrientation = syncOrientation }
+    }
  
     // MARK: Retry Protocol
     
@@ -209,7 +213,7 @@ open class LiveStreamer: NSObject, LiveStreamerControlInterface, LiveStreamerCon
         zoomRate = 1.0
         abrOn = true
         torch = false
-        rtmpStream.syncOrientation = true
+        syncOrientation = true
 
         registerFPSObserver()
     }
@@ -288,7 +292,7 @@ open class LiveStreamer: NSObject, LiveStreamerControlInterface, LiveStreamerCon
         
         setScreenRatio(with: videoSize)
         // Prevent rotation while recording
-        rtmpStream.syncOrientation = false
+        syncOrientation = false
 
         addRTMPObserver()
         startRTMPConnection(with: liveStreamAddress?.uri)
@@ -297,7 +301,7 @@ open class LiveStreamer: NSObject, LiveStreamerControlInterface, LiveStreamerCon
     private func stopStreaming() {
         stopRetryConnectionTimer()
         
-        rtmpStream.syncOrientation = true
+        syncOrientation = true
 
         stopRTMPConnection()
         removeRTMPObserver()
