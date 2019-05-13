@@ -137,9 +137,10 @@ public class NetStream: NSObject {
     
     #if os(iOS) || os(macOS)
     public func attachCamera(_ camera: AVCaptureDevice?, onError: ((_ error: NSError) -> Void)? = nil) {
-        lockQueue.async {
+        ensureLockQueue {
             do {
                 try self.mixer.videoIO.attachCamera(camera)
+                self.mixer.videoIO.setSampleBufferDelegate()
             } catch let error as NSError {
                 onError?(error)
             }
@@ -147,9 +148,10 @@ public class NetStream: NSObject {
     }
     
     public func attachAudio(_ audio: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool = false, onError: ((_ error: NSError) -> Void)? = nil) {
-        lockQueue.async {
+        ensureLockQueue {
             do {
                 try self.mixer.audioIO.attachAudio(audio, automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession)
+                self.mixer.audioIO.setSampleBufferDelegate()
             } catch let error as NSError {
                 onError?(error)
             }
@@ -209,7 +211,7 @@ public class NetStream: NSObject {
         if DispatchQueue.getSpecific(key: NetStream.queueKey) == NetStream.queueValue {
             callback()
         } else {
-            lockQueue.sync {
+            lockQueue.sync {  // Will cause deadlock if lockQueue is current queue. So we checked current queue as above
                 callback()
             }
         }
