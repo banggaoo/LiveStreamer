@@ -219,7 +219,9 @@ final class H264Encoder: NSObject {
 
     func encodeImageBuffer(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime) {
         guard running && locked == 0 else { return }
-        guard invalidateSession == false else { return }
+        if invalidateSession == true {
+            session = nil
+        }
         guard let session: VTCompressionSession = session else { return }
         
         var flags: VTEncodeInfoFlags = []
