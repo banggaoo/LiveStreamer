@@ -223,9 +223,12 @@ public class RTMPStream: NetStream {
                 mixer.audioIO.encoder.delegate = muxer
                 mixer.videoIO.encoder.delegate = muxer
                 sampler?.delegate = muxer
-                mixer.startRunning()
-                videoWasSent = false
-                audioWasSent = false
+
+                mixer.videoIO.lockQueue.async {
+                    self.mixer.startRunning()
+                    self.videoWasSent = false
+                    self.audioWasSent = false
+                }
             case .publishing:
                 send(handlerName: "@setDataFrame", arguments: "onMetaData", createMetaData())
                 mixer.audioIO.encoder.startRunning()
@@ -270,8 +273,6 @@ public class RTMPStream: NetStream {
         self.rtmpConnection = connection
         super.init()
         
-        activeAudioSession()
-        
         dispatcher = EventDispatcher(target: self)
         rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(on(status:)), observer: self)
         if rtmpConnection.connected {
@@ -280,17 +281,10 @@ public class RTMPStream: NetStream {
     }
     
     deinit {
-        mixer.stopRunning()
-        rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector: #selector(on(status:)), observer: self)
-    }
-    
-    private func activeAudioSession() {
-        do {
-            try AVAudioSession.sharedInstance().setPreferredSampleRate(Preference.sampleRate)
-            try AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .default, options: [.allowBluetooth])
-            try AVAudioSession.sharedInstance().setActive(true)
-        } catch {
+        mixer.videoIO.lockQueue.async {
+            self.mixer.stopRunning()
         }
+        rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector: #selector(on(status:)), observer: self)
     }
     
     public func receiveAudio(_ flag: Bool) {
