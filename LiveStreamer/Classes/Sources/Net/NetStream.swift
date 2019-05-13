@@ -176,11 +176,15 @@ public class NetStream: NSObject {
     }
     
     public func registerEffect(video effect: VisualEffect) -> Bool {
-        return mixer.videoIO.registerEffect(effect)
+        return mixer.videoIO.lockQueue.sync {
+            self.mixer.videoIO.registerEffect(effect)
+        }
     }
     
     public func unregisterEffect(video effect: VisualEffect) -> Bool {
-        return mixer.videoIO.unregisterEffect(effect)
+        return mixer.videoIO.lockQueue.sync {
+            self.mixer.videoIO.unregisterEffect(effect)
+        }
     }
     
     public func dispose() {
