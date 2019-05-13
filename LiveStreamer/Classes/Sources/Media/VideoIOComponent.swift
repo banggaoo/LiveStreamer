@@ -225,20 +225,21 @@ final class VideoIOComponent: IOComponent {
         input = try AVCaptureDeviceInput(device: camera)
         mixer.session.addOutput(output)
         for connection in output.connections where connection.isVideoOrientationSupported {
-            
-            if camera.position == .front {
-                connection.isVideoMirrored = true
-            }
-            
-//            if connection.isVideoStabilizationSupported {
-//                connection.preferredVideoStabilizationMode = AVCaptureVideoStabilizationMode.auto
-//            }
+            setVideoMirroredIfFrontCamera(connection, camera: camera)
             connection.videoOrientation = orientation
         }
-
+        
         fps *= 1
         position = camera.position
         drawable?.position = camera.position
+    }
+    private func setVideoMirroredIfFrontCamera(_ connection: AVCaptureConnection, camera: AVCaptureDevice) {
+        guard camera.position == .front else { return }
+        connection.isVideoMirrored = true
+    }
+    private func setVideoStabilizationIfSupported(_ connection: AVCaptureConnection) {
+        guard connection.isVideoStabilizationSupported == true else { return }
+        connection.preferredVideoStabilizationMode = AVCaptureVideoStabilizationMode.auto
     }
 
     func setSampleBufferDelegate() {

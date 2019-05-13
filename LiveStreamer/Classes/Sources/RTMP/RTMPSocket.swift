@@ -79,15 +79,12 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
         for i in 0..<chunks.count - 1 {
             doOutput(data: chunks[i])
         }
-        doOutput(data: chunks.last!, locked: locked)
-        /* if logger.isEnabledFor(level: .trace) {
-         printLog(chunk.description)
-         }*/
+        doOutput(data: chunks.last!, locked: locked) 
         return chunk.message!.length
     }
     
     func connect(withName: String, port: Int) {
-        printLog("connect \(inputQueue) \(self.inputStream) \(self.outputStream)")
+        printLog("connect \(inputQueue) \(String(describing: self.inputStream)) \(self.outputStream)")
         inputQueue.async {
             
             Stream.getStreamsToHost(
@@ -144,18 +141,9 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
         printLog("deinitConnection")
         if isDisconnected {
             printLog("isDisconnected")
-            
             let data: ASObject = (readyState == .handshakeDone) ?
                 RTMPConnection.Code.connectClosed.data("") : RTMPConnection.Code.connectFailed.data("")
-            /*
-             if let eventCode = eventCode, eventCode == .errorOccurred {
-             
-             data = RTMPConnection.Code.connectClosed.data("")
-             }*/
-            
             delegate?.dispatch(Event.RTMP_STATUS, bubbles: false, data: data)
-            
-            //events.append(Event(type: Event.RTMP_STATUS, bubbles: false, data: data))
         }
         readyState = .closing
         super.deinitConnection(isDisconnected: isDisconnected, eventCode: eventCode)
@@ -168,14 +156,11 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
     }
     
     override func errorOccur() {
-        
         let data: ASObject = RTMPConnection.Code.connectError.data("")
-
         delegate?.dispatch(Event.RTMP_STATUS, bubbles: false, data: data)
     }
     
     override func retryConnection() {
         printLog("retryConnection")
-        
     }
 }
