@@ -1,8 +1,8 @@
 {
   "name": "LiveStreamer",
-  "version": "0.1.0",
-  "summary": "A short description of LiveStreamer.",
-  "description": "TODO: Add long description of the pod here.",
+  "version": "0.5.4",
+  "summary": "Live Streaming.",
+  "description": "Live Streaming for iOS.",
   "homepage": "https://github.com/banggaoo/LiveStreamer",
   "license": {
     "type": "MIT",
@@ -13,10 +13,11 @@
   },
   "source": {
     "git": "https://github.com/banggaoo/LiveStreamer.git",
-    "tag": "0.1.0"
+    "tag": "0.5.4"
   },
   "platforms": {
-    "ios": "8.0"
+    "ios": "10.0"
   },
-  "source_files": "LiveStreamer/Classes/**/*"
+  "source_files": "LiveStreamer/Classes/**/*",
+  "swift_version": "4.2"
 }

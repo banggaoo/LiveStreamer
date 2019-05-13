@@ -10,6 +10,7 @@
 #endif
 #endif
 
+#import "LiveStreamer.h"
 
 FOUNDATION_EXPORT double LiveStreamerVersionNumber;
 FOUNDATION_EXPORT const unsigned char LiveStreamerVersionString[];

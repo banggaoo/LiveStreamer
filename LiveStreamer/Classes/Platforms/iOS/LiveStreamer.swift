@@ -63,14 +63,14 @@ open class LiveStreamer: NSObject, LiveStreamerControlInterface, LiveStreamerCon
         broadcastStatusForUser = .pause
     }
     
-    public func startRecording() {
+    public func startRecordingIfCan() {
         guard rtmpStream.recordingState == .ready else { return }
         
         syncOrientation = false
         rtmpStream.startRecording()
     }
     
-    public func stopRecording() {
+    public func stopRecordingIfCan() {
         guard rtmpStream.recordingState == .recording else { return }
         
         // Prevent rotation while recording
@@ -332,7 +332,7 @@ open class LiveStreamer: NSObject, LiveStreamerControlInterface, LiveStreamerCon
         printLog("deinit")
         timer = nil
         _ = stopStreamingIfCan()
-        stopRecording()
+        stopRecordingIfCan()
         rtmpStream.close()
         rtmpStream.dispose()
         unRegisterFPSObserver()
