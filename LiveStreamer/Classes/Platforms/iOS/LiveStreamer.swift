@@ -98,9 +98,6 @@ open class LiveStreamer: NSObject, LiveStreamerControlInterface, LiveStreamerCon
         set (newValue) {
             guard rtmpStream.mixer.videoIO.position != newValue else { return }
             guard let newDevice = DeviceUtil.device(withPosition: newValue) else { return }
-            let supportedPreset: AVCaptureSession.Preset = newDevice.supportedPreset(sessionPreset)
-            
-            rtmpStream.captureSettings["sessionPreset"] = supportedPreset.rawValue
             rtmpStream.attachCamera(newDevice) { error in
                 printLog(error)
             }

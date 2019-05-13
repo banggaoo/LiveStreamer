@@ -24,7 +24,7 @@ final class LiveViewController: UIViewController {
         printLog("viewDidAppear")
 
         // It is better to run startCapturing method after view is appeared
-        setCameraPosition(.front)
+        liveStreamer.cameraPosition = .front
         _ = liveStreamer.startCapturingIfCan()
     }
 
