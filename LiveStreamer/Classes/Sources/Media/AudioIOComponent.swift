@@ -70,6 +70,9 @@ final class AudioIOComponent: IOComponent {
         mixer.session.automaticallyConfiguresApplicationAudioSession = automaticallyConfiguresApplicationAudioSession
         #endif
         mixer.session.addOutput(output)
+    }
+    
+    func setSampleBufferDelegate() {
         output.setSampleBufferDelegate(self, queue: lockQueue)
     }
 
