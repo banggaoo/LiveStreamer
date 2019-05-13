@@ -10,6 +10,7 @@
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
+		687B9B2CD173127714E7CB23 /* Pods_LiveStreamer_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91DA8C03D4D14B47E186EF7E /* Pods_LiveStreamer_Example.framework */; };
 		70174E95210180BD00D60151 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174E8E210180BC00D60151 /* AppDelegate.swift */; };
 		70174E96210180BD00D60151 /* LiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174E8F210180BD00D60151 /* LiveViewController.swift */; };
 		70174E97210180BD00D60151 /* VisualEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70174E90210180BD00D60151 /* VisualEffect.swift */; };
@@ -91,6 +92,7 @@
 			files = (
 				70174EAA2101844D00D60151 /* UIKit.framework in Frameworks */,
 				70174EA8210183B000D60151 /* Pods_LiveStreamer_Tests.framework in Frameworks */,
+				687B9B2CD173127714E7CB23 /* Pods_LiveStreamer_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,7 +369,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-LiveStreamer_Example/Pods-LiveStreamer_Example-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-LiveStreamer_Example/Pods-LiveStreamer_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/LiveStreamer/LiveStreamer.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -376,7 +378,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-LiveStreamer_Example/Pods-LiveStreamer_Example-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-LiveStreamer_Example/Pods-LiveStreamer_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		E98821C621AA7070C9C749DF /* [CP] Check Pods Manifest.lock */ = {

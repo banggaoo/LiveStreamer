@@ -93,7 +93,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         
         outputQueue.sync {
             self.outputBuffer.append(contentsOf: bytes)
-            if !self.isRequesting {
+            if self.isRequesting == false{
                 self.doOutput(data: self.outputBuffer)
                 self.outputBuffer.removeAll()
             }

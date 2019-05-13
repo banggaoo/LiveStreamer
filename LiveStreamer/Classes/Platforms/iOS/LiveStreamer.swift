@@ -63,14 +63,14 @@ open class LiveStreamer: NSObject, LiveStreamerControlInterface, LiveStreamerCon
         broadcastStatusForUser = .pause
     }
     
-    public func startRecording() {
+    public func startRecordingIfCan() {
         guard rtmpStream.recordingState == .ready else { return }
         
         syncOrientation = false
         rtmpStream.startRecording()
     }
     
-    public func stopRecording() {
+    public func stopRecordingIfCan() {
         guard rtmpStream.recordingState == .recording else { return }
         
         // Prevent rotation while recording
@@ -98,9 +98,6 @@ open class LiveStreamer: NSObject, LiveStreamerControlInterface, LiveStreamerCon
         set (newValue) {
             guard rtmpStream.mixer.videoIO.position != newValue else { return }
             guard let newDevice = DeviceUtil.device(withPosition: newValue) else { return }
-            let supportedPreset: AVCaptureSession.Preset = newDevice.supportedPreset(sessionPreset)
-            
-            rtmpStream.captureSettings["sessionPreset"] = supportedPreset.rawValue
             rtmpStream.attachCamera(newDevice) { error in
                 printLog(error)
             }
@@ -335,7 +332,7 @@ open class LiveStreamer: NSObject, LiveStreamerControlInterface, LiveStreamerCon
         printLog("deinit")
         timer = nil
         _ = stopStreamingIfCan()
-        stopRecording()
+        stopRecordingIfCan()
         rtmpStream.close()
         rtmpStream.dispose()
         unRegisterFPSObserver()

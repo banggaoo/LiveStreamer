@@ -11,7 +11,7 @@ final class CurrentTimeEffect: VisualEffect {
         return label
     }()
 
-    override func execute(_ image: CIImage) -> CIImage {
+    override func execute(_ image: CIImage, info: CMSampleBuffer?) -> CIImage {
         let now: Date = Date()
         let nowDescription: String = now.description
 
@@ -50,7 +50,7 @@ final class PronamaEffect: VisualEffect {
         super.init()
     }
 
-    override func execute(_ image: CIImage) -> CIImage {
+    override func execute(_ image: CIImage, info: CMSampleBuffer?) -> CIImage {
         guard let filter: CIFilter = filter else { return image }
         extent = image.extent
         filter.setValue(pronama!, forKey: "inputImage")
@@ -62,7 +62,7 @@ final class PronamaEffect: VisualEffect {
 final class MonochromeEffect: VisualEffect {
     let filter: CIFilter? = CIFilter(name: "CIColorMonochrome")
     
-    override func execute(_ image: CIImage) -> CIImage {
+    override func execute(_ image: CIImage, info: CMSampleBuffer?) -> CIImage {
         guard let filter: CIFilter = filter else { return image }
         filter.setValue(image, forKey: "inputImage")
         filter.setValue(CIColor(red: 0.75, green: 0.75, blue: 0.75), forKey: "inputColor")
@@ -74,7 +74,7 @@ final class MonochromeEffect: VisualEffect {
 final class BlurEffect: VisualEffect {
     let filter: CIFilter? = CIFilter(name: "CIGaussianBlur")
     
-    override func execute(_ image: CIImage) -> CIImage {
+    override func execute(_ image: CIImage, info: CMSampleBuffer?) -> CIImage {
         guard let filter: CIFilter = filter else { return image }
         filter.setValue(image, forKey: "inputImage")
         filter.setValue(1.0, forKey: "inputRadius")

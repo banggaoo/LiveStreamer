@@ -536,9 +536,6 @@ extension RTMPConnection: RTMPSocketDelegate {
         }
         
         if let message: RTMPMessage = chunk.message, chunk.ready {
-            /*  if logger.isEnabledFor(level: .trace) {
-             printLog(chunk.description)
-             }*/
             switch chunk.type {
             case .zero:
                 streamsmap[chunk.streamId] = message.streamId

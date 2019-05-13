@@ -24,7 +24,7 @@ final class LiveViewController: UIViewController {
         printLog("viewDidAppear")
 
         // It is better to run startCapturing method after view is appeared
-        setCameraPosition(.front)
+        liveStreamer.cameraPosition = .front
         _ = liveStreamer.startCapturingIfCan()
     }
 
@@ -78,11 +78,11 @@ final class LiveViewController: UIViewController {
     
     private func startRecoding() {
         UIApplication.shared.isIdleTimerDisabled = true
-        liveStreamer.startRecording()
+        liveStreamer.startRecordingIfCan()
     }
     private func stopRecording() {
         UIApplication.shared.isIdleTimerDisabled = false
-        liveStreamer.stopRecording()
+        liveStreamer.stopRecordingIfCan()
     }
  
     // MARK: UI
@@ -105,7 +105,10 @@ final class LiveViewController: UIViewController {
     @IBOutlet private weak var audioBitrateLabel: UILabel!
     @IBOutlet private weak var audioBitrateSlider: UISlider!
 
-    @IBAction private func on(close: UIButton) {
+    @IBAction func didTapCloseButton(_ sender: Any) {
+        close()
+    }
+    private func close() { 
         dismiss(animated: true, completion: nil)
     }
 

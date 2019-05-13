@@ -30,8 +30,8 @@ public protocol LiveStreamerControlInterface: class {
     func stopStreamingIfCan() -> Bool
     func pauseStreaming()
     
-    func startRecording()
-    func stopRecording()
+    func startRecordingIfCan()
+    func stopRecordingIfCan()
     
     func applyEffectorIfCan(_ effector: VisualEffect) -> Bool
     func removeCurrentEffectorIfCan() -> Bool

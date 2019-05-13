@@ -200,7 +200,6 @@ public class RTMPStream: NetStream {
                 mixer.audioIO.encoder.stopRunning()
                 mixer.videoIO.encoder.stopRunning()
                 sampler?.stopRunning()
-            //mixer.recorder.stopRunning()
             default:
                 break
             }
@@ -223,19 +222,17 @@ public class RTMPStream: NetStream {
                 mixer.audioIO.encoder.delegate = muxer
                 mixer.videoIO.encoder.delegate = muxer
                 sampler?.delegate = muxer
-                mixer.startRunning()
-                videoWasSent = false
-                audioWasSent = false
+
+                mixer.videoIO.lockQueue.async {
+                    self.mixer.startRunning()
+                    self.videoWasSent = false
+                    self.audioWasSent = false
+                }
             case .publishing:
                 send(handlerName: "@setDataFrame", arguments: "onMetaData", createMetaData())
                 mixer.audioIO.encoder.startRunning()
                 mixer.videoIO.encoder.startRunning()
                 sampler?.startRunning()
-                /*
-                 if howToPublish == .localRecord {
-                 mixer.recorder.fileName = info.resourceName
-                 mixer.recorder.startRunning()
-                 }*/
             default:
                 break
             }
@@ -270,8 +267,6 @@ public class RTMPStream: NetStream {
         self.rtmpConnection = connection
         super.init()
         
-        activeAudioSession()
-        
         dispatcher = EventDispatcher(target: self)
         rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(on(status:)), observer: self)
         if rtmpConnection.connected {
@@ -280,22 +275,14 @@ public class RTMPStream: NetStream {
     }
     
     deinit {
-        mixer.stopRunning()
-        rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector: #selector(on(status:)), observer: self)
-    }
-    
-    private func activeAudioSession() {
-        do {
-            try AVAudioSession.sharedInstance().setPreferredSampleRate(Preference.sampleRate)
-            try AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .default, options: [.allowBluetooth])
-            try AVAudioSession.sharedInstance().setActive(true)
-        } catch {
+        mixer.videoIO.lockQueue.async {
+            self.mixer.stopRunning()
         }
+        rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector: #selector(on(status:)), observer: self)
     }
     
     public func receiveAudio(_ flag: Bool) {
         lockQueue.async {
-            
             guard self.readyState == .playing else { return }
             
             self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
@@ -311,7 +298,6 @@ public class RTMPStream: NetStream {
     
     public func receiveVideo(_ flag: Bool) {
         lockQueue.async {
-            
             guard self.readyState == .playing else { return }
             
             self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
@@ -391,8 +377,7 @@ public class RTMPStream: NetStream {
     
     public func publish(_ name: String?, type: RTMPStream.HowToPublish = .live) {
         lockQueue.async {
-            guard let name: String = name else {
-                // stop publishing
+            guard let name: String = name else {  // stop publishing
                 
                 switch self.readyState {
                 case .publish, .publishing:
@@ -419,13 +404,6 @@ public class RTMPStream: NetStream {
             }
             
             if self.info.resourceName == name && self.readyState == .publishing {
-                /*  switch type {
-                 case .localRecord:
-                 self.mixer.recorder.fileName = self.info.resourceName
-                 self.mixer.recorder.startRunning()
-                 default:
-                 self.mixer.recorder.stopRunning()
-                 }*/
                 self.howToPublish = type
                 return
             }
@@ -449,18 +427,13 @@ public class RTMPStream: NetStream {
     }
     
     public func startRecording() {
-        
         if recordingState == .ready {
-            
-            //self.mixer.recorder.fileName = "Movie"
-            //self.mixer.recorder.delegate = self;
             mixer.recorder.startRunning()
             recordingState = .recording
         }
     }
     
     public func stopRecording() {
-        
         if recordingState == .recording {
             mixer.recorder.stopRunning()
             recordingState = .ready
@@ -469,7 +442,6 @@ public class RTMPStream: NetStream {
     
     public func close() {
         printLog("close")
-        
         guard readyState != .closed else { return }
         
         play()
@@ -477,19 +449,21 @@ public class RTMPStream: NetStream {
         lockQueue.sync {
             printLog("self.readyState = .closed")
             self.readyState = .closed
-            /*
-             self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
-             type: .zero,
-             streamId: RTMPChunk.StreamID.command.rawValue,
-             message: RTMPCommandMessage(
-             streamId: 0,
-             transactionId: 0,
-             objectEncoding: self.objectEncoding,
-             commandName: "deleteStream",
-             commandObject: nil,
-             arguments: [self.id]
-             )), locked: nil)
-             */
+        }
+    }
+    private func deleteStream() {
+        lockQueue.async {
+            _ = self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
+                type: .zero,
+                streamId: RTMPChunk.StreamID.command.rawValue,
+                message: RTMPCommandMessage(
+                    streamId: 0,
+                    transactionId: 0,
+                    objectEncoding: self.objectEncoding,
+                    commandName: "deleteStream",
+                    commandObject: nil,
+                    arguments: [self.id]
+            )), locked: nil)
         }
     }
     
@@ -509,7 +483,6 @@ public class RTMPStream: NetStream {
     }
     
     public func isPaused() -> Bool {
-        
         return paused
     }
     

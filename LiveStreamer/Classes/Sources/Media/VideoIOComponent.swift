@@ -208,7 +208,7 @@ final class VideoIOComponent: IOComponent {
         mixer.session.beginConfiguration()
         defer {
             mixer.session.commitConfiguration()
-            if torch {
+            if torch == true {
                 setTorchMode(.on)
             }
         }
@@ -225,21 +225,25 @@ final class VideoIOComponent: IOComponent {
         input = try AVCaptureDeviceInput(device: camera)
         mixer.session.addOutput(output)
         for connection in output.connections where connection.isVideoOrientationSupported {
-            
-            if camera.position == .front {
-                connection.isVideoMirrored = true
-            }
-            
-            if connection.isVideoStabilizationSupported {
-                //connection.preferredVideoStabilizationMode = AVCaptureVideoStabilizationMode.auto
-            }
+            setVideoMirroredIfFrontCamera(connection, camera: camera)
             connection.videoOrientation = orientation
         }
-        output.setSampleBufferDelegate(self, queue: lockQueue)
-
+        
         fps *= 1
         position = camera.position
         drawable?.position = camera.position
+    }
+    private func setVideoMirroredIfFrontCamera(_ connection: AVCaptureConnection, camera: AVCaptureDevice) {
+        guard camera.position == .front else { return }
+        connection.isVideoMirrored = true
+    }
+    private func setVideoStabilizationIfSupported(_ connection: AVCaptureConnection) {
+        guard connection.isVideoStabilizationSupported == true else { return }
+        connection.preferredVideoStabilizationMode = AVCaptureVideoStabilizationMode.auto
+    }
+
+    func setSampleBufferDelegate() {
+        output.setSampleBufferDelegate(self, queue: lockQueue)
     }
 
     func setTorchMode(_ torchMode: AVCaptureDevice.TorchMode) {
@@ -285,9 +289,9 @@ final class VideoIOComponent: IOComponent {
         CVPixelBufferLockBaseAddress(buffer, .readOnly)
         defer { CVPixelBufferUnlockBaseAddress(buffer, .readOnly) }
         
-        if drawable != nil || !effects.isEmpty {
-            let image: CIImage = effect(buffer)
-            if !effects.isEmpty {
+        if (drawable != nil) || (effects.isEmpty == false) {
+            let image: CIImage = effect(buffer, info: sampleBuffer)
+            if effects.isEmpty == false {
                 #if os(macOS)
                 // green edge hack for OSX
                 buffer = CVPixelBuffer.create(image)!
@@ -296,78 +300,50 @@ final class VideoIOComponent: IOComponent {
             }
             drawable?.draw(image: image)
         }
-        
         encoder.encodeImageBuffer(
             buffer,
             presentationTimeStamp: sampleBuffer.presentationTimeStamp,
             duration: sampleBuffer.duration
         )
-        //printLog("buffer\(buffer)sampleBuffer.presentationTimeStamp\(sampleBuffer.presentationTimeStamp)sampleBuffer.duration\(sampleBuffer.duration)")
-        
         mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: .video)
-        
-        /*
-        CVPixelBufferLockBaseAddress(buffer, .readOnly)
-        defer { CVPixelBufferUnlockBaseAddress(buffer, .readOnly) }
-        let image: CIImage = effect(buffer)
-        if !effects.isEmpty {
-            #if os(macOS)
-                // green edge hack for OSX
-                buffer = CVPixelBuffer.create(image)!
-            #endif
-            context?.render(image, to: buffer)
-        }
-        encoder.encodeImageBuffer(
-            buffer,
-            presentationTimeStamp: sampleBuffer.presentationTimeStamp,
-            duration: sampleBuffer.duration
-        )
-        drawable?.draw(image: image)
-        mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: .video)
- */
     }
 
-    func effect(_ buffer: CVImageBuffer) -> CIImage {
+    @inline(__always)
+    func effect(_ buffer: CVImageBuffer, info: CMSampleBuffer?) -> CIImage {
         var image: CIImage = CIImage(cvPixelBuffer: buffer)
         for effect in effects {
-            image = effect.execute(image)
+            image = effect.execute(image, info: info)
         }
         return image
     }
 
     func registerEffect(_ effect: VisualEffect) -> Bool {
-        objc_sync_enter(effects)
-        defer {
-            objc_sync_exit(effects)
-        }
+        effect.ciContext = context
         return effects.insert(effect).inserted
     }
 
     func unregisterEffect(_ effect: VisualEffect) -> Bool {
-        objc_sync_enter(effects)
-        defer {
-            objc_sync_exit(effects)
-        }
+        effect.ciContext = nil
         return effects.remove(effect) != nil
     }
 }
 
 extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
-    // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
+
     func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         appendSampleBuffer(sampleBuffer)
     }
 }
 
 extension VideoIOComponent: VideoDecoderDelegate {
-    // MARK: VideoDecoderDelegate
+
     func sampleOutput(video sampleBuffer: CMSampleBuffer) {
         queue.enqueue(sampleBuffer)
     }
 }
 
 extension VideoIOComponent: DisplayLinkedQueueDelegate {
-    // MARK: DisplayLinkedQueue
+
     func queue(_ buffer: CMSampleBuffer) {
         mixer?.audioIO.playback.startQueueIfNeed()
         drawable?.draw(image: CIImage(cvPixelBuffer: buffer.imageBuffer!))
