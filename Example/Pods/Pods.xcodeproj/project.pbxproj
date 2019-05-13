@@ -692,7 +692,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0930;
-				LastUpgradeCheck = 0930;
+				LastUpgradeCheck = 1020;
 			};
 			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -982,6 +982,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1037,7 +1038,7 @@
 			};
 			name = Release;
 		};
-		37283032D7566382969B3A5300C67327 /* Debug */ = {
+		34EE52F4D334D5A7CE084C0CC5283A24 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2D7A2AA388EC3A287BAE2FC176C349D0 /* LiveStreamer.xcconfig */;
 			buildSettings = {
@@ -1073,6 +1074,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1167,7 +1169,7 @@
 			};
 			name = Debug;
 		};
-		9B98E1267DE450B08E7B3B233722A435 /* Release */ = {
+		A5A23F075E5ADB5914741FA5F9425246 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2D7A2AA388EC3A287BAE2FC176C349D0 /* LiveStreamer.xcconfig */;
 			buildSettings = {
@@ -1233,8 +1235,8 @@
 		7CA8BEC70E54B98F7DDF813266169F11 /* Build configuration list for PBXNativeTarget "LiveStreamer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				37283032D7566382969B3A5300C67327 /* Debug */,
-				9B98E1267DE450B08E7B3B233722A435 /* Release */,
+				34EE52F4D334D5A7CE084C0CC5283A24 /* Debug */,
+				A5A23F075E5ADB5914741FA5F9425246 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
