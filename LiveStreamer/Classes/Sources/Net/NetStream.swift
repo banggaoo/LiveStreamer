@@ -95,12 +95,8 @@ public class NetStream: NSObject {
             return videoSettings
         }
         set {
-            if DispatchQueue.getSpecific(key: NetStream.queueKey) == NetStream.queueValue {
-                mixer.videoIO.encoder.setValuesForKeys(newValue)
-            } else {
-                ensureLockQueue {
-                    self.mixer.videoIO.encoder.setValuesForKeys(newValue)
-                }
+            ensureLockQueue {
+                self.mixer.videoIO.encoder.setValuesForKeys(newValue)
             }
         }
     }
@@ -190,13 +186,6 @@ public class NetStream: NSObject {
     public func dispose() {
         lockQueue.async {
             self.mixer.dispose()
-            
-            let session: AVAudioSession = AVAudioSession.sharedInstance()
-            do {
-                try session.setActive(false)
-            } catch {
-                printLog("Unexpected error: \(error).")
-            }
         }
     }
     
