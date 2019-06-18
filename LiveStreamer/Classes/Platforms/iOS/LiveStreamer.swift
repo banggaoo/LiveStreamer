@@ -197,6 +197,11 @@ open class LiveStreamer: NSObject, LiveStreamerControlInterface, LiveStreamerCon
     // MARK: Configure
     
     private func configureDefaultBroadcast() {
+        
+        try? AVAudioSession.sharedInstance().setPreferredSampleRate(Preference.sampleRate)
+        try? AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .default, options: [])
+        try? AVAudioSession.sharedInstance().setActive(true)
+
         configureRecorder()
         
         videoSize = Preference.videoSize
@@ -330,6 +335,7 @@ open class LiveStreamer: NSObject, LiveStreamerControlInterface, LiveStreamerCon
  
     deinit {
         printLog("deinit")
+        try? AVAudioSession.sharedInstance().setActive(false)
         timer = nil
         _ = stopStreamingIfCan()
         stopRecordingIfCan()
