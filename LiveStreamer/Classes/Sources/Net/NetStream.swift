@@ -95,12 +95,8 @@ public class NetStream: NSObject {
             return videoSettings
         }
         set {
-            if DispatchQueue.getSpecific(key: NetStream.queueKey) == NetStream.queueValue {
-                mixer.videoIO.encoder.setValuesForKeys(newValue)
-            } else {
-                ensureLockQueue {
-                    self.mixer.videoIO.encoder.setValuesForKeys(newValue)
-                }
+            ensureLockQueue {
+                self.mixer.videoIO.encoder.setValuesForKeys(newValue)
             }
         }
     }
@@ -137,9 +133,10 @@ public class NetStream: NSObject {
     
     #if os(iOS) || os(macOS)
     public func attachCamera(_ camera: AVCaptureDevice?, onError: ((_ error: NSError) -> Void)? = nil) {
-        lockQueue.async {
+        ensureLockQueue {
             do {
                 try self.mixer.videoIO.attachCamera(camera)
+                self.mixer.videoIO.setSampleBufferDelegate()
             } catch let error as NSError {
                 onError?(error)
             }
@@ -147,9 +144,10 @@ public class NetStream: NSObject {
     }
     
     public func attachAudio(_ audio: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool = false, onError: ((_ error: NSError) -> Void)? = nil) {
-        lockQueue.async {
+        ensureLockQueue {
             do {
                 try self.mixer.audioIO.attachAudio(audio, automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession)
+                self.mixer.audioIO.setSampleBufferDelegate()
             } catch let error as NSError {
                 onError?(error)
             }
@@ -178,23 +176,20 @@ public class NetStream: NSObject {
     }
     
     public func registerEffect(video effect: VisualEffect) -> Bool {
-        return mixer.videoIO.registerEffect(effect)
+        return mixer.videoIO.lockQueue.sync {
+            self.mixer.videoIO.registerEffect(effect)
+        }
     }
     
     public func unregisterEffect(video effect: VisualEffect) -> Bool {
-        return mixer.videoIO.unregisterEffect(effect)
+        return mixer.videoIO.lockQueue.sync {
+            self.mixer.videoIO.unregisterEffect(effect)
+        }
     }
     
     public func dispose() {
         lockQueue.async {
             self.mixer.dispose()
-            
-            let session: AVAudioSession = AVAudioSession.sharedInstance()
-            do {
-                try session.setActive(false)
-            } catch {
-                printLog("Unexpected error: \(error).")
-            }
         }
     }
     
@@ -209,7 +204,7 @@ public class NetStream: NSObject {
         if DispatchQueue.getSpecific(key: NetStream.queueKey) == NetStream.queueValue {
             callback()
         } else {
-            lockQueue.sync {
+            lockQueue.sync {  // Will cause deadlock if lockQueue is current queue. So we checked current queue as above
                 callback()
             }
         }
